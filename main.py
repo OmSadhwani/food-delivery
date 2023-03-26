@@ -1,9 +1,10 @@
 from website import create_app
 
+#check for bitly thing...
+
 
 app = create_app()
 
 
-if __na:
-    app.run()debu
-g=Truedebugg 
+if __name__=="__main__":
+    app.run(debug=True)
