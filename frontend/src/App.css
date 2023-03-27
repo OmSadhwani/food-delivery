@@ -9,7 +9,7 @@
 .services,
 .products,
 .sign-up {
-  background-image: url('/src/images/img.jpg');
+  background-image: url('/src/images/img18.jpg');
   display: flex;
   height: 90vh;
   align-items: center;
@@ -36,7 +36,7 @@
 }
 
 .sign-up {
-  background-image: url('/src/images/img.jpg');
+  background-image: url('/src/images/img6.jpg');
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;

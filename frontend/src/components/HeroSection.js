@@ -2,30 +2,16 @@ import React from 'react';
 import '../App.css';
 import { Button } from './Button';
 import './HeroSection.css';
+import MyVideo from "../videos/video1.mp4"
 
-function HeroSection() {
+function HeroSection() { 
   return (
     <div className='hero-container'>
-      <video src='/videos/video-1.mp4' autoPlay loop muted />
-      <h1>ADVENTURE AWAITS</h1>
-      <p>What are you waiting for?</p>
-      <div className='hero-btns'>
-        <Button
-          className='btns'
-          buttonStyle='btn--outline'
-          buttonSize='btn--large'
-        >
-          GET STARTED
-        </Button>
-        <Button
-          className='btns'
-          buttonStyle='btn--primary'
-          buttonSize='btn--large'
-          onClick={console.log('hey')}
-        >
-          WATCH TRAILER <i className='far fa-play-circle' />
-        </Button>
-      </div>
+      <video width="100%" height="100%" autoPlay loop muted>
+        <source src={MyVideo} type="video/mp4" />
+      </video>
+      <h1>Delivering Happiness, one meal at a time.</h1>
+      <p>Order now!</p>
     </div>
   );
 }

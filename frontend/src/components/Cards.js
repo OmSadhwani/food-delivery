@@ -1,46 +1,45 @@
 import React from 'react';
 import './Cards.css';
 import CardItem from './CardItem';
+import { Link } from 'react-router-dom';
 
 function Cards() {
   return (
     <div className='cards'>
-      <h1>Check out these EPIC Destinations!</h1>
+      <h1>Partner With Us!</h1>
       <div className='cards__container'>
         <div className='cards__wrapper'>
           <ul className='cards__items'>
-            <CardItem
-              src='images/img.jpg'
-              text='Explore the hidden waterfall deep inside the Amazon Jungle'
-              label='Adventure'
-              path='/services'
-            />
-            <CardItem
-              src='images/img.jpg'
-              text='Travel through the Islands of Bali in a Private Cruise'
-              label='Luxury'
-              path='/services'
-            />
+            <li className='cards__item'>
+              <Link className='cards__item__link' to='/login'>
+                <figure className='cards__item__pic-wrap' data-category='Restaurant'>
+                  <img
+                    className='cards__item__img'
+                    alt='img'
+                    src={require('../images/img2.jpg')}
+                  />
+                </figure>
+                <div className='cards__item__info'>
+                <h5 className='cards__item__text'>Register as a Restaurant</h5>
+                </div>
+              </Link>
+            </li>
           </ul>
           <ul className='cards__items'>
-            <CardItem
-              src='images/img.jpg'
-              text='Set Sail in the Atlantic Ocean visiting Uncharted Waters'
-              label='Mystery'
-              path='/services'
-            />
-            <CardItem
-              src='images/img.jpg'
-              text='Experience Football on Top of the Himilayan Mountains'
-              label='Adventure'
-              path='/products'
-            />
-            <CardItem
-              src='images/img.jpg'
-              text='Ride through the Sahara Desert on a guided camel tour'
-              label='Adrenaline'
-              path='/sign-up'
-            />
+            <li className='cards__item'>
+                <Link className='cards__item__link' to='/login'>
+                  <figure className='cards__item__pic-wrap' data-category='Delivery Partner'>
+                    <img
+                      className='cards__item__img'
+                      alt='img'
+                      src={require('../images/img8.jpg')}
+                    />
+                  </figure>
+                  <div className='cards__item__info'>
+                  <h5 className='cards__item__text'>Register as a Delivery Partner</h5>
+                  </div>
+                </Link>
+              </li>
           </ul>
         </div>
       </div>

@@ -2,11 +2,15 @@ import React from 'react';
 import './Footer.css';
 import { Button } from './Button';
 import { Link } from 'react-router-dom';
+import { FaLinkedin } from 'react-icons/fa';
+import { FaFacebook } from 'react-icons/fa';
+import { FaTwitter } from 'react-icons/fa';
+import { FaInstagram } from 'react-icons/fa';
 
 function Footer() {
-  return (
+  return (    
     <div className='footer-container'>
-      <section className='footer-subscription'>
+      {/* <section className='footer-subscription'>
         <p className='footer-subscription-heading'>
           Join the Adventure newsletter to receive our best vacation deals
         </p>
@@ -24,33 +28,19 @@ function Footer() {
             <Button buttonStyle='btn--outline'>Subscribe</Button>
           </form>
         </div>
-      </section>
+      </section> */}
       <div class='footer-links'>
         <div className='footer-link-wrapper'>
           <div class='footer-link-items'>
             <h2>About Us</h2>
             <Link to='/sign-up'>How it works</Link>
-            <Link to='/'>Testimonials</Link>
-            <Link to='/'>Careers</Link>
-            <Link to='/'>Investors</Link>
-            <Link to='/'>Terms of Service</Link>
           </div>
           <div class='footer-link-items'>
             <h2>Contact Us</h2>
             <Link to='/'>Contact</Link>
-            <Link to='/'>Support</Link>
-            <Link to='/'>Destinations</Link>
-            <Link to='/'>Sponsorships</Link>
           </div>
         </div>
         <div className='footer-link-wrapper'>
-          <div class='footer-link-items'>
-            <h2>Videos</h2>
-            <Link to='/'>Submit Video</Link>
-            <Link to='/'>Ambassadors</Link>
-            <Link to='/'>Agency</Link>
-            <Link to='/'>Influencer</Link>
-          </div>
           <div class='footer-link-items'>
             <h2>Social Media</h2>
             <Link to='/'>Instagram</Link>
@@ -64,11 +54,11 @@ function Footer() {
         <div class='social-media-wrap'>
           <div class='footer-logo'>
             <Link to='/' className='social-logo'>
-              TRVL
+              DoorDine
               <i class='fab fa-typo3' />
             </Link>
           </div>
-          <small class='website-rights'>TRVL © 2020</small>
+          <small class='website-rights'>DoorDine © 2023</small>
           <div class='social-icons'>
             <Link
               class='social-icon-link facebook'
@@ -76,7 +66,7 @@ function Footer() {
               target='_blank'
               aria-label='Facebook'
             >
-              <i class='fab fa-facebook-f' />
+              <FaFacebook/>
             </Link>
             <Link
               class='social-icon-link instagram'
@@ -84,7 +74,7 @@ function Footer() {
               target='_blank'
               aria-label='Instagram'
             >
-              <i class='fab fa-instagram' />
+              <FaInstagram/>
             </Link>
             <Link
               class='social-icon-link youtube'
@@ -100,7 +90,7 @@ function Footer() {
               target='_blank'
               aria-label='Twitter'
             >
-              <i class='fab fa-twitter' />
+              <FaTwitter/>
             </Link>
             <Link
               class='social-icon-link twitter'
@@ -108,12 +98,14 @@ function Footer() {
               target='_blank'
               aria-label='LinkedIn'
             >
-              <i class='fab fa-linkedin' />
+              <FaLinkedin/>
             </Link>
           </div>
         </div>
       </section>
     </div>
+    // <>
+    // </>
   );
 }
 
