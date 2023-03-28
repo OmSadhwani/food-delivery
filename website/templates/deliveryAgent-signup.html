@@ -1,65 +1,41 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Delivery Agent Sign Up</title>
-    <style>
-      /* Style the form container */
-      .container {
-        margin-top: 50px;
-        display: flex;
-        justify-content: center;
-      }
-      /* Style the form */
-      form {
-        border: 1px solid black;
-        padding: 20px;
-        border-radius: 5px;
-        width: 400px;
-        font-size: 16px;
-      }
-      /* Style the form labels and inputs */
-      label {
-        display: block;
-        margin-bottom: 10px;
-        font-weight: bold;
-      }
-      input[type="text"],
-      input[type="email"],
-      input[type="password"],
-      textarea {
-        width: 100%;
-        padding: 10px;
-        border-radius: 5px;
-        border: 1px solid #ccc;
-        margin-bottom: 20px;
-        font-size: 16px;
-      }
-      /* Style the submit button */
-      input[type="submit"] {
-        background-color: #4CAF50;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        padding: 10px;
-        cursor: pointer;
-        font-size: 16px;
-      }
-    </style>
+    <title>User Signup Form</title>
   </head>
   <body>
-    <div class="container">
-      <form action="" method="POST">
-        <h2>Sign Up</h2>
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" required>
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required>
-        <label for="area">Area:</label>
-        <textarea id="area" name="area" rows="4" required></textarea>
-        <input type="submit" value="Submit">
-      </form>
-    </div>
+    <form action="/deliveryAgentSignup" method="post">
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name" value="{{ name }}" required><br><br>
+
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" value="{{ email }}"required><br><br>
+
+      <label for="gender">Gender:</label>
+      <select id="gender" name="gender">
+        <option value="male" {% if gender == "male" %}selected{% endif %}>Male</option>
+        <option value="female" {% if gender == "female" %}selected{% endif %}>Female</option>
+        <option value="other" {% if gender == "other" %}selected{% endif %}>Other</option>
+      </select><br><br>
+
+      <label for="area">Area:</label>
+      <select id="area" name="area">
+        <option value="Delhi" {% if area == "Delhi" %}selected{% endif %}>Delhi</option>
+        <option value="Mumbai" {% if area == "Mumbai" %}selected{% endif %}>Mumbai</option>
+        <option value="Calcutta" {% if area == "Calcutta" %}selected{% endif %}>Calcutta</option>
+        <option value="Other" {% if area == "Other" %}selected{% endif %}>Other</option>
+      </select><br><br>
+
+      <label for="mobile">Mobile:</label>
+      <input type="tel" id="mobile" name="mobile" pattern="[0-9]{10}" value="{{ mobile }}"required><br><br>
+
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" minlength="6" required><br><br>
+
+      <label for="confirm_password">Confirm Password:</label>
+      <input type="password" id="confirm_password" name="confirm_password" minlength="6" required><br><br>
+
+      <input type="submit" value="Sign Up">
+    </form>
   </body>
 </html>

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>User Signup Form</title>
+	<title>Customer Signup Form</title>
 </head>
 <body>
-	<form action="#" method="post">
+	<form action="/customerSignup" method="post">
 		<label for="name">Name:</label>
 		<input type="text" id="name" name="name" value="{{ name }}" required><br><br>
 		
@@ -13,9 +13,9 @@
 		
 		<label for="gender">Gender:</label>
 		<select id="gender" name="gender">
-			<option value="male">Male</option>
-			<option value="female">Female</option>
-			<option value="other">Other</option>
+			<option value="male" {% if gender == "male" %}selected{% endif %}>Male</option>
+			<option value="female" {% if gender == "female" %}selected{% endif %}>Female</option>
+			<option value="other" {% if gender == "other" %}selected{% endif %}>Other</option>
 		</select><br><br>
 		
 		<label for="mobile">Mobile Number:</label>

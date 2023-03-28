@@ -1,5 +1,5 @@
 from flask import Blueprint, request, redirect, url_for, session, render_template
-from . import db,pyrebase_pb
+from .models import db,pyrebase_pb
 from firebase_admin import auth
 import time
 
@@ -19,13 +19,12 @@ def customerLogin():
             user = pyrebase_pb.auth().sign_in_with_email_and_password(email, password)
 
             type_json = db.collection("userType").document(user["localId"]).get().to_dict()
+            print(type_json)
             if (type_json["type"]!="customer"):
                 print("Invalid credentials!")
                 return redirect(url_for('Auth.customerLogin'))
 
-
             json_data = db.collection("customer").document(user["localId"]).get().to_dict()
-
             session['user'] = json_data
             session['user']['userType'] = "customer"
 
@@ -62,8 +61,6 @@ def customerSignup():
                 print("Address is too short")
             elif password!=confirm_password:
                 print("Both the passwords don't match")
-
-            print(address)
 
             return redirect(url_for('Auth.customerSignup'),
                                    name=name,
@@ -173,28 +170,44 @@ def restaurantSignup():
     if request.method == 'POST':
         name = request.form.get('name')
         email = request.form.get('email')
-        password1 = request.form.get('password')
-        # password2 = request.form.get('password2')
+        area = request.form.get('area')
+
+        password = request.form.get('password')
+        confirm_password = request.form.get('confirm_password')
 
         #checks...
-        if len(email)<4:
-            pass
-        elif len(name)<2:
-            pass
-        # elif password1!=password2:
-        #     pass
-        elif len(password1)<3:
-            pass
+        if len(name)<2 or password!=confirm_password:
+            if len(name)<2:
+                print("Name is too short")
+            else:
+                print("Both the passwords don't match!")
+
+            return redirect(url_for('Auth.restaurantSignup'),
+                            name=name,
+                            email=email,
+                            area=area)
+        elif area=="Other":
+            print("We currently don't have service in your area.")
         else:
             #add user to database
             try:
 
-                user = auth.create_user(email=email, password=password1)
+                user = auth.create_user(email=email, password=password)
+
+            except ValueError as v:
+                print("Error: "+str(v))
+                return redirect(url_for('Auth.restaurantSignup'),
+                                name=name,
+                                email=email,
+                                area=area)
 
             except Exception as e:
-                print(e)
-                print("Unable to process request")
-                return redirect(url_for('Auth.restaurantSignup'))
+                print("Error: "+str(e))
+                print("Unable to process request!")
+                return redirect(url_for('Auth.restaurantSignup'),
+                                name=name,
+                                email=email,
+                                area=area)
             
             try:
                 rating_ref = db.collection("rating").document()
@@ -206,16 +219,17 @@ def restaurantSignup():
                     "email": email,
                     "restaurantId":user.uid,
                     "ratingId":rating_ref.id,
-                    
-                    "pendingOrderId": []
+                    "areaId": area,
+                    "pendingOrderId": [],
+                    "isRecommended": False
                     #fill it up....
                 }
                 db.collection("restaurant").document(user.uid).set(restaurant_json_data)
                 db.collection("userType").document(user.uid).set({"type":"restaurant"})
                 
             except Exception as e:
-                print(e)
-                print("Unable to process request")
+                print("Error: "+str(e))
+                print("Unable to process request!")
                 return redirect(url_for('Auth.restaurantSignup'))
 
             print("Successfully signed up. Now login with the same credentials!")
@@ -262,28 +276,55 @@ def deliveryAgentSignup():
     if request.method == 'POST':
         name = request.form.get('name')
         email = request.form.get('email')
-        password1 = request.form.get('password')
-        # password2 = request.form.get('password2')
+        gender = request.form.get('gender')
+        area = request.form.get('area')
+        mobile = request.form.get('mobile')
+
+        password = request.form.get('password')
+        confirm_password = request.form.get('confirm_password')
 
         #checks...
-        if len(email)<4:
-            pass
-        elif len(name)<2:
-            pass
-        # elif password1!=password2:
-        #     pass
-        elif len(password1)<3:
-            pass
+        if len(name)<2 or password!=confirm_password:
+            if len(name)<2:
+                print("Name is too short")
+            elif password!=confirm_password:
+                print("Both the passwords don't match!")
+
+            return redirect(url_for('Auth.deliveryAgentSignup'),
+                            name=name,
+                            email=email,
+                            gender=gender,
+                            area=area,
+                            mobile=mobile)
+        
+        elif area=="Other":
+            print("We currently don't have service in your area.")
+            return redirect(url_for('Auth.deliveryAgentSignup'))
+        
         else:
             #add user to database
             try:
 
-                user = auth.create_user(email=email, password=password1)
+                user = auth.create_user(email=email, password=password)
+
+            except ValueError as v:
+                print("Error: "+str(v))
+                return redirect(url_for('Auth.deliveryAgentSignup'),
+                                name=name,
+                                email=email,
+                                gender=gender,
+                                area=area,
+                                mobile=mobile)
 
             except Exception as e:
-                print(e)
-                print("Unable to process request")
-                return redirect(url_for('Auth.deliveryAgentSignup'))
+                print("Error: "+str(e))
+                print("Unable to process request!")
+                return redirect(url_for('Auth.deliveryAgentSignup'),
+                                name=name,
+                                email=email,
+                                gender=gender,
+                                area=area,
+                                mobile=mobile)
             
             try:
                 rating_ref = db.collection("rating").document()
@@ -293,19 +334,21 @@ def deliveryAgentSignup():
                 deliveryAgent_json_data = {
                     "name": name,
                     "email": email,
-
                     "deliveryAgentId":user.uid,
                     "ratingId":rating_ref.id,
-
-                    "pendingOrderId": []
+                    "mobileNumber": mobile,
+                    "gender": gender,
+                    "areaId": area,
+                    "isAvailable": True,
+                    "currentOrderId": ""
                     #fill it up....
                 }
                 db.collection("deliveryAgent").document(user.uid).set(deliveryAgent_json_data)
                 db.collection("userType").document(user.uid).set({"type":"deliveryAgent"})
                 
             except Exception as e:
-                print(e)
-                print("Unable to process request")
+                print("Error: "+str(e))
+                print("Unable to process request!")
                 return redirect(url_for('Auth.deliveryAgentSignup'))
 
             print("Successfully signed up. Now login with the same credentials!")
@@ -339,4 +382,4 @@ def managementSignup():
 @Auth.route('/logout')
 def logout():
     session.clear()
-    return redirect(url_for('home'))
+    return redirect(url_for('views.home'))
