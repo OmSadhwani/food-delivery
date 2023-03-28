@@ -14,9 +14,8 @@ def customerDashboard():
     if user['userType']=="customer":
         return render_template('customer-dashboard.html',user=user)
     else:
-        return redirect(url_for('logout'))
+        return redirect(url_for('Auth.logout'))
 
-    # return "<h2>this is customer dashboard</h2>"
 
 
 @views.route('/restaurantDashboard')
@@ -25,10 +24,8 @@ def restaurantDashboard():
     if user['userType']=="restaurant":
         return render_template('restaurant-dashboard.html',user=user)
     else:
-        return redirect(url_for('logout'))
+        return redirect(url_for('Auth.logout'))
 
-    
-    # return "<h2>this is restaurant dashboard</h2>"
 
 
 @views.route('/deliveryAgentDashboard')
@@ -37,10 +34,8 @@ def deliveryAgentDashboard():
     if user['userType']=="deliveryAgent":
         return render_template('deliveryAgent-dashboard.html',user=user)
     else:
-        return redirect(url_for('logout'))
+        return redirect(url_for('Auth.logout'))
 
-    
-    # return "<h2>this is deliveryAgent dashboard</h2>"
 
 
 @views.route('/adminDashboard')

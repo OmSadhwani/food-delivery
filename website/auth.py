@@ -14,32 +14,17 @@ def customerLogin():
         password = request.form.get('password')
 
         try:
-            # #user = pyrebase_pb.Auth().sign_in_with_email_and_password(email,password)
-            # print("s1")
-            # # user = auth.get_user_by_email(email)
-            # time.sleep(0.05)
-            # user = pyrebase_pb.auth().sign_in_with_email_and_password(email, password)
-            # print('s2')
-            # # if pyrebase_pb.auth().verify_password(password, user.password_hash)==False:
-            # #     print("pass")
-            # #     pass #wrong password
 
-            # if user.custom_claims.get("userType") != "customer":
-            #     print("cust")
-            #     pass #not a customer
             time.sleep(0.01)
-            auth_user = auth.get_user_by_email(email)
-            uid = auth_user.uid
-            auth_user = auth.update_user(uid,email=email,password=password)
+            user = pyrebase_pb.auth().sign_in_with_email_and_password(email, password)
 
-            custom_claims = {"userType":"customer"}
+            type_json = db.collection("userType").document(user["localId"]).get().to_dict()
+            if (type_json["type"]!="customer"):
+                print("Invalid credentials!")
+                return redirect(url_for('Auth.customerLogin'))
 
-            if not (auth.get_user(uid).custom_claims == custom_claims):
-                #wrong credentials
-                print("wrong credentials!")
-                return redirect(url_for('customerLogin'))
 
-            json_data = db.collection("customer").document(uid).get().to_dict()
+            json_data = db.collection("customer").document(user["localId"]).get().to_dict()
 
             session['user'] = json_data
             session['user']['userType'] = "customer"
@@ -48,9 +33,9 @@ def customerLogin():
 
 
         except Exception as e:
-            #print(e)
+            print(e)
             print("Unable to process request")
-            return render_template('customer-login.html')
+            return redirect(url_for('Auth.customerLogin'))
 
     return render_template('customer-login.html')
 
@@ -58,6 +43,133 @@ def customerLogin():
 
 @Auth.route('/customerSignup',methods=['GET','POST'])
 def customerSignup():
+    if request.method == 'POST':
+        name = request.form.get('name')
+        email = request.form.get('email')
+        gender = request.form.get('email')
+        mobile = request.form.get('mobile')
+        area = request.form.get('area')
+        address = request.form.get('address')
+
+        password = request.form.get('password')
+        confirm_password = request.form.get('confirm_password')
+
+        #checks...
+        if len(name)<2 or len(address)<2 or password!=confirm_password:
+            if(len(name))<2:
+                print("Name is too short")
+            elif len(address)<2:
+                print("Address is too short")
+            elif password!=confirm_password:
+                print("Both the passwords don't match")
+
+            print(address)
+
+            return redirect(url_for('Auth.customerSignup'),
+                                   name=name,
+                                   email=email,
+                                   gender=gender,
+                                   mobile=mobile,
+                                   area=area,
+                                   address=address)
+
+        elif area=="Other":
+            print("We currently don't deliver in your area.")
+            return redirect(url_for("Auth.customerSignup"))
+        else:
+            #add user to database
+            try:
+
+                user = auth.create_user(email=email, password=password)
+
+            except ValueError as v:
+                print("Error: "+str(v))
+                return render_template(url_for('Auth.customerSignup'),
+                                            name=name,
+                                            email=email,
+                                            gender=gender,
+                                            mobile=mobile,
+                                            area=area,
+                                            address=address)
+
+            except Exception as e:
+                print("Error: "+str(e))
+                print("Unable to process request!")
+                return render_template(url_for('Auth.customerSignup'),
+                                            name=name,
+                                            email=email,
+                                            gender=gender,
+                                            mobile=mobile,
+                                            area=area,
+                                            address=address)
+            
+            try:
+                rating_ref = db.collection("rating").document()
+                rating_json_data = {"inputs":0, "sum":0.0, "rating":0.0, "ratingId":rating_ref.id}
+                rating_ref.set(rating_json_data)
+
+                customer_json_data = {
+                    "name": name,
+                    "email": email,
+                    "customerId":user.uid,
+                    "ratingId":rating_ref.id,
+                    "gender": gender,
+                    "mobileNumber": mobile,
+                    "areaId": area,
+                    "address": address,
+                    "pendingOrderId": []
+                    #fill it up....
+                }
+                db.collection("customer").document(user.uid).set(customer_json_data)
+                db.collection("userType").document(user.uid).set({"type":"customer"})
+                
+            except Exception as e:
+                print("Error: "+str(e))
+                print("Unable to process request!")
+                return redirect(url_for('Auth.customerSignup'))
+
+            print("Successfully signed up. Now login with the same credentials!")
+            return redirect(url_for('Auth.customerLogin'))
+     
+    return render_template('customer-signup.html')
+
+
+
+@Auth.route('/restaurantLogin',methods=['GET','POST'])
+def restaurantLogin():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+
+        try:
+
+            time.sleep(0.01)
+            user = pyrebase_pb.auth().sign_in_with_email_and_password(email, password)
+
+            type_json = db.collection("userType").document(user["localId"]).get().to_dict()
+            if (type_json["type"]!="restaurant"):
+                print("Invalid credentials!")
+                return redirect(url_for('Auth.restaurantLogin'))
+
+
+            json_data = db.collection("restaurant").document(user["localId"]).get().to_dict()
+
+            session['user'] = json_data
+            session['user']['userType'] = "restaurant"
+
+            return redirect(url_for('views.restaurantDashboard'))
+
+
+        except Exception as e:
+            print(e)
+            print("Unable to process request")
+            return redirect(url_for('Auth.restaurantLogin'))
+
+    return render_template('restaurant-login.html')
+
+
+@Auth.route('/restaurantSignup',methods=['GET','POST'])
+def restaurantSignup():
     if request.method == 'POST':
         name = request.form.get('name')
         email = request.form.get('email')
@@ -76,135 +188,13 @@ def customerSignup():
         else:
             #add user to database
             try:
-                customer_ref = db.collection("customer")
-                query = customer_ref.where('email','==',email).get()
-                if len(query) > 0:
-                    print("An account with the same email already exists!")
-                    return redirect(url_for('customerSignup'))
-                else:
-                    user = auth.create_user(email=email,password=password1)
-                    custom_claims={"userType":"customer"}
-                    auth.set_custom_user_claims(user.uid, custom_claims)
+
+                user = auth.create_user(email=email, password=password1)
+
             except Exception as e:
-                #print(e)
+                print(e)
                 print("Unable to process request")
-                return render_template('customer-signup.html')
-            
-            try:
-                rating_ref = db.collection("rating").document()
-                rating_json_data = {"inputs":0, "sum":0.0, "rating":0.0, "ratingId":rating_ref.id}
-                rating_ref.set(rating_json_data)
-
-                customer_json_data = {
-                    "name": name,
-                    "email": email,
-
-                    "customerId":user.uid,
-                    "ratingId":rating_ref.id,
-
-                    "pendingOrderId": []
-                    #fill it up....
-                }
-                db.collection("customer").document(user.uid).set(customer_json_data)
-                
-            except Exception as e:
-                #print(e)
-                print("Unable to process request")
-                return render_template('customer-signup.html')
-
-            #signup successful
-            session['user'] = customer_json_data
-            session['user']['userType'] = "customer"
-            #redirect to the next page
-            return redirect(url_for('views.customerDashboard'))
-     
-    return render_template('customer-signup.html')
-
-
-
-@Auth.route('/restaurantLogin',methods=['GET','POST'])
-def restaurantLogin():
-    if request.method == 'POST':
-        email = request.form.get('email')
-        password = request.form.get('password')
-
-        try:
-            # #user = pyrebase_pb.Auth().sign_in_with_email_and_password(email,password)
-            # print("s1")
-            # # user = auth.get_user_by_email(email)
-            # time.sleep(0.05)
-            # user = pyrebase_pb.auth().sign_in_with_email_and_password(email, password)
-            # print('s2')
-            # # if pyrebase_pb.auth().verify_password(password, user.password_hash)==False:
-            # #     print("pass")
-            # #     pass #wrong password
-
-            # if user.custom_claims.get("userType") != "customer":
-            #     print("cust")
-            #     pass #not a customer
-            time.sleep(0.01)
-            auth_user = auth.get_user_by_email(email)
-            uid = auth_user.uid
-            auth_user = auth.update_user(uid,email=email,password=password)
-
-            custom_claims = {"userType":"restaurant"}
-
-            if not (auth.get_user(uid).custom_claims == custom_claims):
-                #wrong credentials
-                print("wrong credentials!")
-                return redirect(url_for('restaurantLogin'))
-
-            json_data = db.collection("restaurant").document(uid).get().to_dict()
-
-            session['user'] = json_data
-            session['user']['userType'] = "restaurant"
-
-            return redirect(url_for('views.restaurantDashboard'))
-
-
-        except Exception as e:
-            #print(e)
-            print("Unable to process request")
-            return render_template('restaurant-login.html')
-
-    return render_template('restaurant-login.html')
-
-
-@Auth.route('/restaurantSignup',methods=['GET','POST'])
-def restaurantSignup():
-    if request.method == 'POST':
-        name = request.form.get('name')
-        email = request.form.get('email')
-        area = request.form.get('area')
-        password1 = request.form.get('password1')
-        # password2 = request.form.get('password2')
-
-
-        #checks...
-        if len(email)<4:
-            pass
-        elif len(name)<2:
-            pass
-        # elif password1!=password2:
-        #     pass
-        elif len(password1)<3:
-            pass
-        else:
-            #add user to database
-            try:
-                restaurant_ref = db.collection("restaurant")
-                query = restaurant_ref.where('email','==',email).get()
-                if len(query) > 0:
-                    print("An account with the same email already exists!")
-                    return redirect(url_for('restaurantSignup'))
-                else:
-                    user = auth.create_user(email=email,password=password1)
-                    custom_claims={"userType":"restaurant"}
-                    auth.set_custom_user_claims(user.uid, custom_claims)
-            except Exception as e:
-                #print(e)
-                print("Unable to process request")
-                return render_template('restaurant-signup.html')
+                return redirect(url_for('Auth.restaurantSignup'))
             
             try:
                 rating_ref = db.collection("rating").document()
@@ -214,29 +204,23 @@ def restaurantSignup():
                 restaurant_json_data = {
                     "name": name,
                     "email": email,
-
                     "restaurantId":user.uid,
                     "ratingId":rating_ref.id,
-
-                    "areaId" : area,
-
-                    "pendingOrderId": [],
-
-                    "isRecommended":False
+                    
+                    "pendingOrderId": []
                     #fill it up....
                 }
                 db.collection("restaurant").document(user.uid).set(restaurant_json_data)
-            except:
-                #print(e)
+                db.collection("userType").document(user.uid).set({"type":"restaurant"})
+                
+            except Exception as e:
+                print(e)
                 print("Unable to process request")
-                return render_template('restaurant-signup.html')
+                return redirect(url_for('Auth.restaurantSignup'))
 
-            #signup successful
-            session['user'] = restaurant_json_data
-            session['user']['userType'] = "restaurant"
-            #redirect to the next page
-            return redirect(url_for('restaurantDashboard'))
-
+            print("Successfully signed up. Now login with the same credentials!")
+            return redirect(url_for('Auth.restaurantLogin'))
+     
     return render_template('restaurant-signup.html')
 
 
@@ -248,32 +232,17 @@ def deliveryAgentLogin():
         password = request.form.get('password')
 
         try:
-            # #user = pyrebase_pb.Auth().sign_in_with_email_and_password(email,password)
-            # print("s1")
-            # # user = auth.get_user_by_email(email)
-            # time.sleep(0.05)
-            # user = pyrebase_pb.auth().sign_in_with_email_and_password(email, password)
-            # print('s2')
-            # # if pyrebase_pb.auth().verify_password(password, user.password_hash)==False:
-            # #     print("pass")
-            # #     pass #wrong password
 
-            # if user.custom_claims.get("userType") != "customer":
-            #     print("cust")
-            #     pass #not a customer
             time.sleep(0.01)
-            auth_user = auth.get_user_by_email(email)
-            uid = auth_user.uid
-            auth_user = auth.update_user(uid,email=email,password=password)
+            user = pyrebase_pb.auth().sign_in_with_email_and_password(email, password)
 
-            custom_claims = {"userType":"deliveryAgent"}
+            type_json = db.collection("userType").document(user["localId"]).get().to_dict()
+            if (type_json["type"]!="deliveryAgent"):
+                print("Invalid credentials!")
+                return redirect(url_for('Auth.deliveryAgentLogin'))
 
-            if not (auth.get_user(uid).custom_claims == custom_claims):
-                #wrong credentials
-                print("wrong credentials!")
-                return redirect(url_for('deliveryAgentLogin'))
 
-            json_data = db.collection("deliveryAgent").document(uid).get().to_dict()
+            json_data = db.collection("deliveryAgent").document(user["localId"]).get().to_dict()
 
             session['user'] = json_data
             session['user']['userType'] = "deliveryAgent"
@@ -282,9 +251,9 @@ def deliveryAgentLogin():
 
 
         except Exception as e:
-            #print(e)
+            print(e)
             print("Unable to process request")
-            return render_template('deliveryAgent-login.html')
+            return redirect(url_for('Auth.deliveryAgentLogin'))
 
     return render_template('deliveryAgent-login.html')
 
@@ -293,10 +262,8 @@ def deliveryAgentSignup():
     if request.method == 'POST':
         name = request.form.get('name')
         email = request.form.get('email')
-        area = request.form.get('area')
-        password1 = request.form.get('password1')
+        password1 = request.form.get('password')
         # password2 = request.form.get('password2')
-
 
         #checks...
         if len(email)<4:
@@ -310,53 +277,39 @@ def deliveryAgentSignup():
         else:
             #add user to database
             try:
-                delivery_ref = db.collection("deliveryAgent")
-                query = delivery_ref.where('email','==',email).get()
-                if len(query) > 0:
-                    #print(e)
-                    print("An account with the same email already exists!")
-                    return render_template('deliveryAgent-signup.html')
-                else:
-                    user = auth.create_user(email=email,password=password1)
-                    custom_claims={"userType":"deliveryAgent"}
-                    auth.set_custom_user_claims(user.uid, custom_claims)
-            except:
-               #print(e)
+
+                user = auth.create_user(email=email, password=password1)
+
+            except Exception as e:
+                print(e)
                 print("Unable to process request")
-                return render_template('deliveryAgent-signup.html')
+                return redirect(url_for('Auth.deliveryAgentSignup'))
             
             try:
                 rating_ref = db.collection("rating").document()
                 rating_json_data = {"inputs":0, "sum":0.0, "rating":0.0, "ratingId":rating_ref.id}
                 rating_ref.set(rating_json_data)
 
-                del_agent_json_data = {
+                deliveryAgent_json_data = {
                     "name": name,
                     "email": email,
 
                     "deliveryAgentId":user.uid,
                     "ratingId":rating_ref.id,
 
-                    "areaId" : area,
-
-                    "pendingOrderId": [],
-
-                    "isAvailable":True,
-                    "currentOrderId":""
+                    "pendingOrderId": []
                     #fill it up....
                 }
-                db.collection("deliveryAgent").document(user.uid).set(del_agent_json_data)
-            except:
-               #print(e)
+                db.collection("deliveryAgent").document(user.uid).set(deliveryAgent_json_data)
+                db.collection("userType").document(user.uid).set({"type":"deliveryAgent"})
+                
+            except Exception as e:
+                print(e)
                 print("Unable to process request")
-                return render_template('deliveryAgent-signup.html')
+                return redirect(url_for('Auth.deliveryAgentSignup'))
 
-            #signup successful
-            session['user'] = del_agent_json_data
-            session['user']['userType'] = "deliveryAgent"
-            #redirect to the next page
-            return redirect(url_for('deliveryAgentDashboard'))
-
+            print("Successfully signed up. Now login with the same credentials!")
+            return redirect(url_for('Auth.deliveryAgentLogin'))
      
     return render_template('deliveryAgent-signup.html')
 
