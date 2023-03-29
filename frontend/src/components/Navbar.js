@@ -72,8 +72,8 @@ function Navbar() {
               </Link>
             </li>
           </ul>
-          {button && <Button buttonSize='btn--large' buttonStyle='btn--outline'>Login</Button>}
-          {button && <Button buttonSize='btn--large' buttonStyle='btn--outline'>SignUp</Button>}
+          {button && <Button linkto='login-customer' buttonSize='btn--large' buttonStyle='btn--outline'>Login</Button>}
+          {button && <Button linkto='sign-up-customer' buttonSize='btn--large' buttonStyle='btn--outline'>SignUp</Button>}
         </div>
       </nav>
     </>

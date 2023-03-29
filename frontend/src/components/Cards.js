@@ -1,9 +1,28 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import View from 'react';
+import { Button } from './Button';
 import './Cards.css';
 import CardItem from './CardItem';
 import { Link } from 'react-router-dom';
 
 function Cards() {
+
+  const [click, setClick] = useState(false);
+  const [button, setButton] = useState(true);
+
+  const showButton = () => {
+    if (window.innerWidth <= 960) {
+      setButton(false);
+    } else {
+      setButton(true);
+    }
+  };
+
+  useEffect(() => {
+    showButton();
+  }, []);
+
+
   return (
     <div className='cards'>
       <h1>Partner With Us!</h1>
@@ -20,7 +39,8 @@ function Cards() {
                   />
                 </figure>
                 <div className='cards__item__info'>
-                <h5 className='cards__item__text'>Register as a Restaurant</h5>
+                    {button && <Button linkto='login-restaurant' buttonSize='btn--large' buttonStyle='btn--outline'>Login</Button>}
+                    {button && <Button linkto='sign-up-restaurant' buttonSize='btn--large' buttonStyle='btn--outline'>SignUp</Button>}
                 </div>
               </Link>
             </li>
@@ -36,7 +56,8 @@ function Cards() {
                     />
                   </figure>
                   <div className='cards__item__info'>
-                  <h5 className='cards__item__text'>Register as a Delivery Partner</h5>
+                        {button && <Button linkto='login-delivery-partner' buttonSize='btn--large' buttonStyle='btn--outline'>Login</Button>}
+                        {button && <Button linkto='/sign-up-delivery-partner' buttonSize='btn--large' buttonStyle='btn--outline'>SignUp</Button>}
                   </div>
                 </Link>
               </li>

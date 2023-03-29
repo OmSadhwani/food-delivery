@@ -1,6 +1,15 @@
 import React from 'react';
 import '../../App.css';
+import RegistrationForm from '../RegistrationForm';
 
-export default function SignUp() {
-  return <h1 className='sign-up'></h1>;
+function SignUp() {
+  return(
+    <>
+      <div>
+        <RegistrationForm/>  
+      </div>;
+    </>
+  );
 }
+
+export default SignUp;

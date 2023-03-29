@@ -6,10 +6,14 @@
 }
 
 .home,
-.services,
-.products,
-.sign-up {
-  background-image: url('/src/images/img18.jpg');
+.about-us,
+.login-customer,
+.sign-up-customer,
+.sign-up-restaurant,
+.login-restaurant,
+.sign-up-delivery-agent,
+.login-delivery-partner {
+  background-image: url('./images/img18.jpg');
   display: flex;
   height: 90vh;
   align-items: center;
@@ -17,29 +21,11 @@
   font-size: 3rem;
 }
 
-.services {
-  background-image: url('/src/images/img.jpg');
+.sign-up-customer{
+  background-color: #fff;
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
-  color: #fff;
-  font-size: 100px;
-}
-
-.products {
-  background-image: url('/src/images/img.jpg');
-  background-position: center;
-  background-size: fill;
-  background-repeat: no-repeat;
-  color: #fff;
-  font-size: 100px;
-}
-
-.sign-up {
-  background-image: url('/src/images/img6.jpg');
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
-  color: #fff;
+  color: #000;
   font-size: 100px;
 }
