@@ -12,11 +12,11 @@ def root():
 def home():
     return {"name":"apoorv", "status":1}
 
-@views.route('/create' , methods=['POST'])
-def create():
-    request_data = json.loads(request.data)
-    print(request_data)
-    return {"Name":"Apoorv"}
+# @views.route('/create' , methods=['POST'])
+# def create():
+#     request_data = json.loads(request.data)
+#     print(request_data)
+#     return {"Name":"Apoorv"}
     
 
 @views.route('/customerDashboard')

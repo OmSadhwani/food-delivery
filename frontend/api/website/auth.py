@@ -1,4 +1,4 @@
-from flask import Blueprint, request, redirect, url_for, session, render_template
+from flask import Blueprint, request, redirect, url_for, session, render_template,json
 from .models import db,pyrebase_pb,areas
 from firebase_admin import auth
 import time
@@ -43,23 +43,25 @@ def customerLogin():
 @Auth.route('/customerSignup',methods=['GET','POST'])
 def customerSignup():
     if request.method == 'POST':
-        name = request.form.get('name')
-        email = request.form.get('email')
-        gender = request.form.get('email')
-        mobile = request.form.get('mobile')
-        area = request.form.get('area')
-        address = request.form.get('address')
+        requestt = json.loads(request.data)
+        print(requestt)
+        name = requestt['name']
+        email = requestt['email']
+        gender = requestt['gender']
+        mobile = requestt['mobile']
+        area = requestt['area']        
+        address = requestt['address']
 
-        password = request.form.get('password')
-        confirm_password = request.form.get('confirm_password')
+        password = requestt['password']
+        confirmpassword = requestt['confirmpassword']
 
         #checks...
-        if len(name)<2 or len(address)<2 or password!=confirm_password:
+        if len(name)<2 or len(address)<2 or password!=confirmpassword:
             if(len(name))<2:
                 print("Name is too short")
             elif len(address)<2:
                 print("Address is too short")
-            elif password!=confirm_password:
+            elif password!=confirmpassword:
                 print("Both the passwords don't match")
 
             return render_template('customer-signup.html',

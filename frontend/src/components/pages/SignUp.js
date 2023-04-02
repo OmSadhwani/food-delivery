@@ -16,7 +16,7 @@ function SignUp() {
   const handleSubmit = (event) => {
     event.preventDefault()
     console.log(inputs)
-    fetch('/create' , {
+    fetch('/customerSignup' , {
       method:"POST",
       body:JSON.stringify(inputs),
     }).then(response => response.json())
@@ -63,9 +63,9 @@ function SignUp() {
                   <input className="form__input" name="password" type="password" id="password" required placeholder="Password" value={inputs.password} onChange={handleChange}/>
               </div>
               <br/>
-              {/* <div className="confirm-password">
-                  <input className="form__input" name="confirm-password" type="password" id="confirm-password" placeholder="Confirm Password" value={inputs.confirm-password} onChange={handleChange}/>
-              </div> */}
+              <div className="confirm-password">
+                  <input className="form__input" name="confirmpassword" type="password" id="confirm-password" placeholder="Confirm Password" value={inputs.confirmpassword} onChange={handleChange}/>
+              </div>
           <div class="footer">
               <a href='/customerLogin'>
               <button type="submit" className="btn1">Register</button>
