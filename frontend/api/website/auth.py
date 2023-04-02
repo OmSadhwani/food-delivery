@@ -121,8 +121,10 @@ def customerSignup():
 @Auth.route('/restaurantLogin',methods=['GET','POST'])
 def restaurantLogin():
     if request.method == 'POST':
-        email = request.form.get('email')
-        password = request.form.get('password')
+        requestt = json.loads(request.data)
+        print(requestt)
+        email = requestt['email']
+        password = requestt['password']
 
         try:
 
@@ -131,8 +133,9 @@ def restaurantLogin():
 
             type_json = db.collection("userType").document(user["localId"]).get().to_dict()
             if (type_json["type"]!="restaurant"):
-                print("Invalid credentials!")
-                return redirect(url_for('Auth.restaurantLogin'))
+                message="Invalid credentials!"
+                return {"message":message}
+                # return redirect(url_for('Auth.restaurantLogin'))
 
 
             json_data = db.collection("restaurant").document(user["localId"]).get().to_dict()
@@ -140,42 +143,50 @@ def restaurantLogin():
             session['user'] = json_data
             session['user']['userType'] = "restaurant"
 
-            return redirect(url_for('views.restaurantDashboard'))
+            # return redirect(url_for('views.restaurantDashboard'))
+            return {"message":"Success"}
 
 
         except Exception as e:
-            print(e)
-            print("Unable to process request")
-            return redirect(url_for('Auth.restaurantLogin'))
+            # print(e)
+            # print("Unable to process request")
+            message=str(e)
+            message+=" Unable to process request"
+            # return redirect(url_for('Auth.restaurantLogin'))
+            return {"message":message}
 
-    return render_template('restaurant-login.html')
+    # return render_template('restaurant-login.html')
 
 
 @Auth.route('/restaurantSignup',methods=['GET','POST'])
 def restaurantSignup():
     if request.method == 'POST':
-        name = request.form.get('name')
-        email = request.form.get('email')
-        area = request.form.get('area')
+        requestt = json.loads(request.data)
+        print(requestt)
+        name = requestt['name']
+        email = requestt['email']
+        area = requestt['area']
 
-        password = request.form.get('password')
-        confirm_password = request.form.get('confirm_password')
+        password = requestt['password']
+        confirm_password = requestt['confirmpassword']
 
         #checks...
         if len(name)<2 or password!=confirm_password:
             if len(name)<2:
-                print("Name is too short")
+                message="Name is too short"
             else:
-                print("Both the passwords don't match!")
+                message="Both the passwords don't match!"
 
-            return render_template('restaurant-signup.html',
-                            name=name,
-                            email=email,
-                            area=area,
-                            areas=areas)
+            # return render_template('restaurant-signup.html',
+            #                 name=name,
+            #                 email=email,
+            #                 area=area,
+            #                 areas=areas)
+            return {"message":message}
         elif area=="Other":
-            print("We currently don't have service in your area.")
-            return redirect(url_for('Auth.restaurantSignup'))
+            message="We currently don't have service in your area."
+            return {"message":message}
+            # return redirect(url_for('Auth.restaurantSignup'))
         else:
             #add user to database
             try:
@@ -184,20 +195,25 @@ def restaurantSignup():
 
             except ValueError as v:
                 print("Error: "+str(v))
-                return render_template('restaurant-signup.html',
-                                name=name,
-                                email=email,
-                                area=area,
-                                areas=areas)
+                message=str(v)
+                return {"message":message}
+                # return render_template('restaurant-signup.html',
+                #                 name=name,
+                #                 email=email,
+                #                 area=area,
+                #                 areas=areas)
 
             except Exception as e:
-                print("Error: "+str(e))
-                print("Unable to process request!")
-                return render_template('restaurant-signup.html',
-                                name=name,
-                                email=email,
-                                area=area,
-                                areas=areas)
+                message="Error "+str(e)
+                message+=" Unable to process request!"
+                return {"message":message}
+                # print("Error: "+str(e))
+                # print("Unable to process request!")
+                # return render_template('restaurant-signup.html',
+                #                 name=name,
+                #                 email=email,
+                #                 area=area,
+                #                 areas=areas)
             
             try:
                 rating_ref = db.collection("rating").document()
@@ -218,14 +234,17 @@ def restaurantSignup():
                 db.collection("userType").document(user.uid).set({"type":"restaurant"})
                 
             except Exception as e:
-                print("Error: "+str(e))
-                print("Unable to process request!")
-                return redirect(url_for('Auth.restaurantSignup'))
+                message="Error: "+str(e)
+                message+="Unable to process request!"
+                # return redirect(url_for('Auth.restaurantSignup'))
+                return {"message":message}
 
-            print("Successfully signed up. Now login with the same credentials!")
-            return redirect(url_for('Auth.restaurantLogin'))
+            # print("Successfully signed up. Now login with the same credentials!")
+            
+            # return redirect(url_for('Auth.restaurantLogin'))
+            return {"message":"Success"}
      
-    return render_template('restaurant-signup.html',areas=areas)
+    # return render_template('restaurant-signup.html',areas=areas)
 
 
 
