@@ -1,4 +1,4 @@
-from flask import Blueprint, session, redirect, url_for, render_template, jsonify
+from flask import Blueprint, session,request, redirect, url_for, render_template, jsonify
 from .models import db,pyrebase_pb
 from flask import request,json
 
@@ -131,4 +131,81 @@ def allDeliveryAgents():
         session['deliveryAgentList'].append(temp_dict)
 
     return render_template('allDeliveryAgents.html',user=user)
+
+@views.route('/createMenu')
+def createMenu():
+    user = session['user']
+    if(not user['userType']=='restaurant'):
+        return redirect(url_for('Auth.logout'))
+    ResMenuId= session['userId']
+    foodItemList=[]
+    foodItems= db.collection('restaurant').document(ResMenuId).collection('foodItem').stream()
+    for foodItem in foodItems :
+        tdict= foodItem.to_dict()
+    
+        foodItemList.append(tdict)
+    try:
+        message= session['foodMessage']
+        session['foodMessage']="False"
+    except:
+        session['foodMessage']="False"
+        message="False"
+    return render_template('createMenu.html',user=user,menuList=foodItemList,message=message)
+
+@views.route('/addFoodItem')
+def addFoodItem():
+    user= session['user']
+    if(user['userType']=='restaurant'):
+        message=session['foodMessage']
+        session['foodMessage']="False"
+        return render_template('addFoodItem.html',user=user,message=message)
+    else:
+        return redirect(url_for('Auth.logout'))
+    
+@views.route('addFoodItem/add',methods=['POST','GET'])
+def Add():
+    if session['user']['userType'] != 'restaurant':
+        return redirect(url_for('Auth.logout'))
+    name= request.form['name']
+    price= request.form['price']
+    # local file obj
+
+    try:
+        foodItem={
+            "name": name,
+            "pricePerItem": price,
+            "isRecommended": False,
+            "restaurantId": session["userId"],
+            "picSrc": ""
+        }
+        doc = db.collection("restaurant").document(session["userId"]).collection("foodItem").document()
+        doc.set(foodItem)
+        db.collection("restaurant").document(session["userId"]).collection("foodItem").document(doc.id).update({"foodItemId":doc.id})
+    except:
+        session['foodMessage'] = "Error adding food item text data in database"
+        return redirect(url_for('addFoodItem'))
+    
+@views.route('/finishMenu')
+def finishMenu():
+    user= session['user']
+    if user['userType']=="restaurant" :
+        return render_template('finishMenu.html',user=user)
+    else:
+        return redirect(url_for('Auth.logout'))
+
+
+@views.route('/displayFoodItems/<restaurantUserId>')
+def FoodItems(restaurantUserId):
+    user= session['user']
+    if not session['user']['userType']=='customer' and not session['user']['userType']=='admin':
+        return redirect(url_for('Auth.logout'))
+    session['ResMenuId']=restaurantUserId 
+    foodItemList=[]
+    foodItems= db.collection('restaurant').document(session['ResMenuId']).collection('foodItem').stream()
+    for foodItem in foodItems:
+        tdict= foodItem.to_dict()
+        foodItemList.append(tdict)
+    session['currentMenu']=foodItemList
+    return render_template('allFoodItem.html',user=user,foodItemlist=foodItemList)
+
 
