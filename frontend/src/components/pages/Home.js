@@ -6,10 +6,22 @@ import Footer from '../Footer';
 
 function Home() {
 
+  const [initialData, setInitialData] = useState([{}])
+
+  useEffect(() => {
+    fetch('/home').then(
+      response => response.json()
+    ).then(data => setInitialData(data))
+  }, []);
+
+
   return (
     <>
       <HeroSection />
       <Cards />
+      <div>
+      <h1>{initialData.name}</h1>
+      </div>
       <Footer />
     </>
   );

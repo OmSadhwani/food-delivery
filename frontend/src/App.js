@@ -15,7 +15,7 @@ function App() {
   // const [initialData, setInitialData] = useState([{}])
 
   // useEffect(() => {
-  //   fetch('/api').then(
+  //   fetch('/').then(
   //     response => response.json()
   //   ).then(data => setInitialData(data))
   // }, []);
@@ -26,6 +26,7 @@ function App() {
         <Navbar />
         <Routes>
           <Route exact path='/' element={<Home/>} />
+          <Route exact path='/home' element={<Home/>} />
           <Route exact path='/about-us' element={<AboutUs/>} />
           <Route exact path='/customerLogin' element={<Login/>} />
           <Route exact path='/customerSignup' element={<SignUp/>} />

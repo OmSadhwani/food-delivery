@@ -1,7 +1,16 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import '../../App.css';
 
 function Login() {
+
+//     const [initialData, setInitialData] = useState([{}])
+
+//   useEffect(() => {
+//     fetch('/customerLogin').then(
+//       response => response.json()
+//     ).then(data => setInitialData(data))
+//   }, []);
+
     return(
         <>
         <div className="form">

@@ -1,13 +1,23 @@
 from flask import Blueprint, session, redirect, url_for, render_template, jsonify
 from .models import db,pyrebase_pb
+from flask import request,json
 
 views = Blueprint('views',__name__)
 
 @views.route('/')
-def home():
-    # return  render_template('home.html')
-    pass
+def root():
+    return redirect(url_for('views.home'))
 
+@views.route('/home')
+def home():
+    return {"name":"apoorv", "status":1}
+
+@views.route('/create' , methods=['POST'])
+def create():
+    request_data = json.loads(request.data)
+    print(request_data)
+    return {"Name":"Apoorv"}
+    
 
 @views.route('/customerDashboard')
 def customerDashboard():
