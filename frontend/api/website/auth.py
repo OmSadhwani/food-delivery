@@ -10,8 +10,10 @@ Auth = Blueprint('Auth',__name__)
 @Auth.route('/customerLogin',methods=['GET','POST'])
 def customerLogin():
     if request.method == 'POST':
-        email = request.form.get('email')
-        password = request.form.get('password')
+        requestt = json.loads(request.data)
+        print(requestt)
+        email = requestt['email']
+        password = requestt['password']
 
         try:
 
@@ -21,22 +23,23 @@ def customerLogin():
             type_json = db.collection("userType").document(user["localId"]).get().to_dict()
             print(type_json)
             if (type_json["type"]!="customer"):
-                print("Invalid credentials!")
-                return redirect(url_for('Auth.customerLogin'))
+                message="Invalid credentials!"
+                return {"message": message}
 
             json_data = db.collection("customer").document(user["localId"]).get().to_dict()
             session['user'] = json_data
             session['user']['userType'] = "customer"
+            return {"message": "Success"}
 
-            return redirect(url_for('views.customerDashboard'))
+
+            
 
 
         except Exception as e:
-            print(e)
-            print("Unable to process request")
-            return redirect(url_for('Auth.customerLogin'))
+            message=e
+            message+="Unable to process request"
+            return {"message": message}
 
-    return render_template('customer-login.html')
 
 
 
@@ -58,24 +61,17 @@ def customerSignup():
         #checks...
         if len(name)<2 or len(address)<2 or password!=confirmpassword:
             if(len(name))<2:
-                print("Name is too short")
+                message="Name is too short"
             elif len(address)<2:
-                print("Address is too short")
+                message="Address is too short"
             elif password!=confirmpassword:
-                print("Both the passwords don't match")
+                message="Both the passwords don't match"
 
-            return render_template('customer-signup.html',
-                            name=name,
-                            email=email,
-                            gender=gender,
-                            mobile=mobile,
-                            area=area,
-                            address=address,
-                            areas=areas)
+            return {"message":message}
 
         elif area=="Other":
-            print("We currently don't deliver in your area.")
-            return redirect(url_for("Auth.customerSignup"))
+            message="We currently don't deliver in your area."
+            return {"message":message}
         else:
             #add user to database
             try:
@@ -83,27 +79,12 @@ def customerSignup():
                 user = auth.create_user(email=email, password=password)
 
             except ValueError as v:
-                print("Error: "+str(v))
-                return render_template('customer-signup.html',
-                                            name=name,
-                                            email=email,
-                                            gender=gender,
-                                            mobile=mobile,
-                                            area=area,
-                                            address=address,
-                                            areas=areas)
-
+                message="Error "+str(v)
+                return {"message":message}
             except Exception as e:
-                print("Error: "+str(e))
-                print("Unable to process request!")
-                return render_template('customer-signup.html',
-                                            name=name,
-                                            email=email,
-                                            gender=gender,
-                                            mobile=mobile,
-                                            area=area,
-                                            address=address,
-                                            areas=areas)
+                message="Error "+str(e)
+                message+="Unable to process request!"
+                return {"message":message}
             
             try:
                 rating_ref = db.collection("rating").document()
@@ -126,14 +107,14 @@ def customerSignup():
                 db.collection("userType").document(user.uid).set({"type":"customer"})
                 
             except Exception as e:
-                print("Error: "+str(e))
-                print("Unable to process request!")
-                return redirect(url_for('Auth.customerSignup'))
+                message="Error: "+str(e)
+                message+=". Unable to process request!"
+                return {"message":message}
 
-            print("Successfully signed up. Now login with the same credentials!")
-            return redirect(url_for('Auth.customerLogin'))
+            message="Success"
+            return {"message": message}
      
-    return render_template('customer-signup.html',areas=areas)
+    
 
 
 
@@ -251,8 +232,10 @@ def restaurantSignup():
 @Auth.route('/deliveryAgentLogin',methods=['GET','POST'])
 def deliveryAgentLogin():
     if request.method == 'POST':
-        email = request.form.get('email')
-        password = request.form.get('password')
+        requestt = json.loads(request.data)
+        print(requestt)
+        email = requestt['email']
+        password = requestt['password']
 
         try:
 
@@ -261,8 +244,8 @@ def deliveryAgentLogin():
 
             type_json = db.collection("userType").document(user["localId"]).get().to_dict()
             if (type_json["type"]!="deliveryAgent"):
-                print("Invalid credentials!")
-                return redirect(url_for('Auth.deliveryAgentLogin'))
+                message="Invalid credentials!"
+                return {"message": message}
 
 
             json_data = db.collection("deliveryAgent").document(user["localId"]).get().to_dict()
@@ -270,46 +253,42 @@ def deliveryAgentLogin():
             session['user'] = json_data
             session['user']['userType'] = "deliveryAgent"
 
-            return redirect(url_for('views.deliveryAgentDashboard'))
+            return {"message":"Success"}
 
 
         except Exception as e:
-            print(e)
-            print("Unable to process request")
-            return redirect(url_for('Auth.deliveryAgentLogin'))
+            message=str(e)
+            message+=". Unable to process request"
+            return {"message":message}
 
-    return render_template('deliveryAgent-login.html')
+    
 
 @Auth.route('/deliveryAgentSignup',methods=['GET','POST'])
 def deliveryAgentSignup():
     if request.method == 'POST':
-        name = request.form.get('name')
-        email = request.form.get('email')
-        gender = request.form.get('gender')
-        area = request.form.get('area')
-        mobile = request.form.get('mobile')
+        requestt = json.loads(request.data)
+        print(requestt)
+        name = requestt['name']
+        email = requestt['email']
+        gender = requestt['gender']
+        area = requestt['area']
+        mobile = requestt['mobile']
 
-        password = request.form.get('password')
-        confirm_password = request.form.get('confirm_password')
+        password = requestt['password']
+        confirmpassword = requestt['confirmpassword']
 
         #checks...
-        if len(name)<2 or password!=confirm_password:
+        if len(name)<2 or password!=confirmpassword:
             if len(name)<2:
-                print("Name is too short")
-            elif password!=confirm_password:
-                print("Both the passwords don't match!")
+                message="Name is too short"
+            elif password!=confirmpassword:
+                message="Both the passwords don't match!"
 
-            return render_template('deliveryAgent-signup.html',
-                            name=name,
-                            email=email,
-                            gender=gender,
-                            area=area,
-                            mobile=mobile,
-                            areas=areas)
+            return {"message": message}
         
         elif area=="Other":
-            print("We currently don't have service in your area.")
-            return redirect(url_for('Auth.deliveryAgentSignup'))
+            message="We currently don't have service in your area."
+            return {"message": message}
         
         else:
             #add user to database
@@ -318,25 +297,13 @@ def deliveryAgentSignup():
                 user = auth.create_user(email=email, password=password)
 
             except ValueError as v:
-                print("Error: "+str(v))
-                return render_template('deliveryAgent-signup.html',
-                                name=name,
-                                email=email,
-                                gender=gender,
-                                area=area,
-                                mobile=mobile,
-                                areas=areas)
+                message="Error: "+str(v)
+                return {"message": message}
 
             except Exception as e:
-                print("Error: "+str(e))
-                print("Unable to process request!")
-                return render_template('deliveryAgent-signup.html',
-                                name=name,
-                                email=email,
-                                gender=gender,
-                                area=area,
-                                mobile=mobile,
-                                areas=areas)
+                message="Error: "+str(e)
+                message+="Unable to process request!"
+                return {"message":message}
             
             try:
                 rating_ref = db.collection("rating").document()
@@ -357,16 +324,17 @@ def deliveryAgentSignup():
                 }
                 db.collection("deliveryAgent").document(user.uid).set(deliveryAgent_json_data)
                 db.collection("userType").document(user.uid).set({"type":"deliveryAgent"})
+                # return {"message": "Success"}
                 
             except Exception as e:
-                print("Error: "+str(e))
-                print("Unable to process request!")
-                return redirect(url_for('Auth.deliveryAgentSignup'))
+                message="Error: "+str(e)
+                message="Unable to process request!"
+                return {"message":message}
 
-            print("Successfully signed up. Now login with the same credentials!")
-            return redirect(url_for('Auth.deliveryAgentLogin'))
+            message="Successfully signed up. Now login with the same credentials!"
+            return {"message":"Success"}
      
-    return render_template('deliveryAgent-signup.html',areas=areas)
+    
 
 
 

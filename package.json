@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "firebase": "^9.19.1",
+    "firestore": "^1.1.6",
+    "react-flash-message": "^1.0.8"
+  }
+}

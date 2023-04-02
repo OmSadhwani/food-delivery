@@ -20,7 +20,7 @@ function Home() {
       <HeroSection />
       <Cards />
       <div>
-      <h1>{initialData.name}</h1>
+      <h1></h1>
       </div>
       <Footer />
     </>
