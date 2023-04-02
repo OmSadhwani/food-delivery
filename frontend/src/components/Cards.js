@@ -39,8 +39,8 @@ function Cards() {
                   />
                 </figure>
                 <div className='cards__item__info'>
-                    {button && <Button linkto='login-restaurant' buttonSize='btn--large' buttonStyle='btn--outline'>Login</Button>}
-                    {button && <Button linkto='sign-up-restaurant' buttonSize='btn--large' buttonStyle='btn--outline'>SignUp</Button>}
+                    {button && <Button linkto='restaurantLogin' buttonSize='btn--large' buttonStyle='btn--outline'>Login</Button>}
+                    {button && <Button linkto='restaurantSignup' buttonSize='btn--large' buttonStyle='btn--outline'>SignUp</Button>}
                 </div>
               </Link>
             </li>
@@ -56,8 +56,8 @@ function Cards() {
                     />
                   </figure>
                   <div className='cards__item__info'>
-                        {button && <Button linkto='login-delivery-partner' buttonSize='btn--large' buttonStyle='btn--outline'>Login</Button>}
-                        {button && <Button linkto='/sign-up-delivery-partner' buttonSize='btn--large' buttonStyle='btn--outline'>SignUp</Button>}
+                        {button && <Button linkto='deliveryAgentLogin' buttonSize='btn--large' buttonStyle='btn--outline'>Login</Button>}
+                        {button && <Button linkto='deliveryAgentSignup' buttonSize='btn--large' buttonStyle='btn--outline'>SignUp</Button>}
                   </div>
                 </Link>
               </li>

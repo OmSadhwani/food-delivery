@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import Navbar from './components/Navbar';
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
@@ -12,6 +12,14 @@ import SignUpDeliveryPartner from './components/pages/SignUpDeliveryPartner';
 import LoginDeliveryPartner from './components/pages/LoginDeliveryPartner';
 
 function App() {
+  // const [initialData, setInitialData] = useState([{}])
+
+  // useEffect(() => {
+  //   fetch('/api').then(
+  //     response => response.json()
+  //   ).then(data => setInitialData(data))
+  // }, []);
+
   return (
     <>
       <Router>
@@ -19,12 +27,12 @@ function App() {
         <Routes>
           <Route exact path='/' element={<Home/>} />
           <Route exact path='/about-us' element={<AboutUs/>} />
-          <Route exact path='/login-customer' element={<Login/>} />
-          <Route exact path='/sign-up-customer' element={<SignUp/>} />
-          <Route exact path='/sign-up-restaurant' element={<SignUpRestaurant/>} />
-          <Route exact path='/login-restaurant' element={<LoginRestaurant/>} />
-          <Route exact path='/sign-up-delivery-partner' element={<SignUpDeliveryPartner/>} />
-          <Route exact path='/login-delivery-partner' element={<LoginDeliveryPartner/>} />
+          <Route exact path='/customerLogin' element={<Login/>} />
+          <Route exact path='/customerSignup' element={<SignUp/>} />
+          <Route exact path='/restaurantSignup' element={<SignUpRestaurant/>} />
+          <Route exact path='/restaurantLogin' element={<LoginRestaurant/>} />
+          <Route exact path='/deliveryAgentSignup' element={<SignUpDeliveryPartner/>} />
+          <Route exact path='/deliveryAgentLogin' element={<LoginDeliveryPartner/>} />
         </Routes>
       </Router>
     </>

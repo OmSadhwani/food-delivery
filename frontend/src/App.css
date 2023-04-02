@@ -7,12 +7,12 @@
 
 .home,
 .about-us,
-.login-customer,
-.sign-up-customer,
-.sign-up-restaurant,
-.login-restaurant,
-.sign-up-delivery-agent,
-.login-delivery-partner {
+.customerLogin,
+.customerSignup,
+.restaurantSignup,
+.restaurantLogin,
+.deliveryAgentSignup,
+.deliveryAgentLogin {
   background-image: url('./images/img18.jpg');
   display: flex;
   height: 90vh;
@@ -21,7 +21,7 @@
   font-size: 3rem;
 }
 
-.sign-up-customer{
+.customerSignup{
   background-color: #fff;
   background-position: center;
   background-size: cover;
