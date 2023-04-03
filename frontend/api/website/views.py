@@ -3,10 +3,13 @@ from .models import db,pyrebase_pb
 
 views = Blueprint('views',__name__)
 
-@views.route('/')
-def home():
-    # return  render_template('home.html')
-    pass
+# @views.route('/')
+# def root():
+#     redirect(url_for('views.home'))
+
+# @views.route('/home')
+# def home():
+#     pass
 
 
 @views.route('/customerDashboard')
