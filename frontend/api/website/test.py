@@ -47,7 +47,7 @@ def testRestaurantsignup(email,password,area,name):
             "isRecommended" : False
         }
         db.collection("restaurant").document(user.uid).set(json_data)
-        db.collection("type").document(user.uid).set({"type" : "restaurant"})
+        db.collection("userType").document(user.uid).set({"userType" : "restaurant"})
         
     except Exception as e:
         error_message.append(str(e))
@@ -87,7 +87,7 @@ def testDeliveryAgentsignup(email,password,gender,area,mobile,name):
             "isAvailable" : True
         }
         db.collection("deliveryAgent").document(user.uid).set(json_data)
-        db.collection("type").document(user.uid).set({"type" : "deliveryAgent"})
+        db.collection("userType").document(user.uid).set({"userType" : "deliveryAgent"})
     except Exception as e:
         error_message.append(str(e))
     
@@ -129,7 +129,7 @@ def testCustomerSignup(email,password,gender,area,mobile,name):
             
         }
         db.collection("customer").document(user.uid).set(json_data)
-        db.collection("type").document(user.uid).set({"type" : "customer"})
+        db.collection("userType").document(user.uid).set({"userType" : "customer"})
     except Exception as e:
         error_message.append(str(e))
 
@@ -217,12 +217,12 @@ def testdelete_user(user_id):
         error_message.append(str(e))
 
     try:
-        user_type = db.collection('type').document(user_id).get().to_dict()["type"]
+        user_type = db.collection('userType').document(user_id).get().to_dict()["userType"]
         # if(user_type=="restaurant"):
         #     # If you have larger collections, you may want to delete the documents in smaller batches to avoid out-of-memory errors.
         #     delete_collection(db.collection("restaurant").document(user_id).collection("foodItem"),1000)
-    
-        db.collection("type").document(user_id).delete()
+        db.collection(user_type).document(user_id).delete()
+        db.collection("userType").document(user_id).delete()
     except Exception as e:
         error_message.append(str(e))
 
@@ -244,13 +244,13 @@ if __name__ == "__main__":
     these are the caller functions
     '''
 
-    # print(testRestaurantsignup("5star@gmail.com","1234056","Delhi","5star"))
+    # print(testRestaurantsignup("7stars@gmail.com","1234056","Delhi","5star"))
     # print(testDeliveryAgentsignup("omsadhwani@gmail.com","234567","Male","vadodara",1236547890,"Om"))
     # print(testCustomerSignup("ou@gmail.com","546321","Female","jflks",1236547890,"iopl"))
     # print(testGetAllCustomer())
     # print(testGetAllDelivery())
     # print(testGetAllRestaurant())
-    print(testdelete_user("rPSmPzKP0oS1dDd1o4MdFeoWtGr2"))
+    print(testdelete_user("5Jm3XBHGRgd4GSIXcf0gwzJ6BLu1"))
     
     # calltestdelete_user()
     # calltestfoodItemAdder()
