@@ -16,7 +16,7 @@ cred = credentials.Certificate('website/fbadminconfig.json')
 firebase = firebase_admin.initialize_app(cred, json.load(open('website/fbconfig.json')))
 pyrebase_pb = pyrebase.initialize_app(json.load(open('website/fbconfig.json')))
 db = firestore.client()
-bucket = storage.bucket()
+
 
 
 DEBUG=True
@@ -250,7 +250,7 @@ if __name__ == "__main__":
     # print(testGetAllCustomer())
     # print(testGetAllDelivery())
     # print(testGetAllRestaurant())
-    print(testdelete_user("5Jm3XBHGRgd4GSIXcf0gwzJ6BLu1"))
+    #print(testdelete_user("5Jm3XBHGRgd4GSIXcf0gwzJ6BLu1"))
     
     # calltestdelete_user()
     # calltestfoodItemAdder()
