@@ -20,21 +20,21 @@ def home():
 #     return {"Name":"Apoorv"}
     
 
-@views.route('/customerDashboard')
+@views.route('/customerDashboard',methods=['POST'])
 def customerDashboard():
     user = session['user']
     if user['userType']=="customer":
-        return render_template('customer-dashboard.html',user=user)
+        return user
     else:
         return redirect(url_for('Auth.logout'))
 
 
 
-@views.route('/restaurantDashboard')
+@views.route('/restaurantDashboard',methods=['POST'])
 def restaurantDashboard():
     user = session['user']
     if user['userType']=="restaurant":
-        return render_template('restaurant-dashboard.html',user=user)
+        return user
     else:
         return redirect(url_for('Auth.logout'))
 

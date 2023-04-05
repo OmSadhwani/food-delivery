@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import '../../App.css';
+import Navbar from '../Navbar';
 
 
 function SignUpDeliveryAgent() {
@@ -38,6 +39,7 @@ function SignUpDeliveryAgent() {
   // const handleSubmit
   return(
     <>
+    <Navbar/>
       <div className="form">
         <h1>Sign Up Form</h1>
           <form onSubmit={handleSubmit}>

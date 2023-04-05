@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import '../../App.css';
+import Navbar from '../Navbar';
 
 function LoginRestaurant() {
 
@@ -36,6 +37,7 @@ function LoginRestaurant() {
 
     return(
         <>
+        <Navbar/>
         <div className="form">
         <h1>Login</h1>
         <form onSubmit={handleSubmit}>

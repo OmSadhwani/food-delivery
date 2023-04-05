@@ -10,6 +10,8 @@ import SignUpRestaurant from './components/pages/SignUpRestaurant';
 import LoginRestaurant from './components/pages/LoginRestaurant';
 import SignUpDeliveryPartner from './components/pages/SignUpDeliveryPartner';
 import LoginDeliveryPartner from './components/pages/LoginDeliveryPartner';
+import CustomerDashboard from './components/pages/CustomerDashboard';
+import RestaurantDashboard from './components/pages/RestaurantDashboard';
 
 function App() {
   // const [initialData, setInitialData] = useState([{}])
@@ -23,7 +25,6 @@ function App() {
   return (
     <>
       <Router>
-        <Navbar />
         <Routes>
           <Route exact path='/' element={<Home/>} />
           <Route exact path='/home' element={<Home/>} />
@@ -34,6 +35,8 @@ function App() {
           <Route exact path='/restaurantLogin' element={<LoginRestaurant/>} />
           <Route exact path='/deliveryAgentSignup' element={<SignUpDeliveryPartner/>} />
           <Route exact path='/deliveryAgentLogin' element={<LoginDeliveryPartner/>} />
+          <Route exact path='/customerDashboard' element={<CustomerDashboard/>} />
+          <Route exact path='/restaurantDashboard' element={<RestaurantDashboard/>} />
         </Routes>
       </Router>
     </>

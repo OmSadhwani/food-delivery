@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import '../../App.css';
+import Navbar from '../Navbar';
 import FlashMessage from 'react-flash-message';
 // import {RegistrationForm} from '../RegistrationForm';
 
@@ -39,7 +40,8 @@ function SignUp() {
 
   // const handleSubmit
   return(
-    <>
+    <div className='SignUp'>
+      <Navbar/>
       <div className="form">
         <h1>Sign Up Form</h1>
           <form onSubmit={handleSubmit}>
@@ -87,7 +89,7 @@ function SignUp() {
             <h1>{issuccess}</h1>
           </div>
       </div>
-    </>
+    </div>
   );
 }
 

@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import '../../App.css';
+import Navbar from '../Navbar';
 import Cards from '../Cards';
 import HeroSection from '../HeroSection';
 import Footer from '../Footer';
@@ -17,11 +18,9 @@ function Home() {
 
   return (
     <>
+      <Navbar/>
       <HeroSection />
       <Cards />
-      <div>
-      <h1></h1>
-      </div>
       <Footer />
     </>
   );
