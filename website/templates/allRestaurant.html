@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>List of Restaurants</title>
+</head>
+<body>
+	<header>
+		<h1>List of Restaurants</h1>
+	</header>
+	<main>
+		<ul>
+		{% for restaurant in restaurantList %}
+			<li><a href="/displayFoodItems/{{ restaurant.userId }}">{{ restaurant.name }}</a></li>
+		{% endfor %}
+		</ul>
+	</main>
+	<footer>
+		<p>&copy; Your Restaurant</p>
+	</footer>
+</body>
+</html>

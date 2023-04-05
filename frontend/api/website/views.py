@@ -6,18 +6,8 @@ from firebase_admin import firestore
 views = Blueprint('views',__name__)
 
 @views.route('/')
-def root():
-    return redirect(url_for('views.home'))
-
-@views.route('/home')
 def home():
-    return {"name":"apoorv", "status":1}
-
-# @views.route('/create' , methods=['POST'])
-# def create():
-#     request_data = json.loads(request.data)
-#     print(request_data)
-#     return {"Name":"Apoorv"}
+    return render_template('home.html')
     
 
 @views.route('/customerDashboard',methods=['POST'])
@@ -151,7 +141,7 @@ def createMenu():
     except:
         session['foodMessage']="False"
         message="False"
-    return render_template('createMenu.html',user=user,menuList=foodItemList,message=message)
+    return render_template('menu.html',user=user,menuList=foodItemList,message=message)
 
 @views.route('/addFoodItem')
 def addFoodItem():
@@ -163,7 +153,7 @@ def addFoodItem():
     else:
         return redirect(url_for('Auth.logout'))
     
-@views.route('addFoodItem/add',methods=['POST','GET'])
+@views.route('/addFoodItem/add',methods=['POST','GET'])
 def Add():
     if session['user']['userType'] != 'restaurant':
         return redirect(url_for('Auth.logout'))
@@ -177,11 +167,12 @@ def Add():
             "pricePerItem": price,
             "isRecommended": False,
             "restaurantId": session["userId"],
-            "picSrc": ""
+            #"picSrc": ""
         }
         doc = db.collection("restaurant").document(session["userId"]).collection("foodItem").document()
         doc.set(foodItem)
         db.collection("restaurant").document(session["userId"]).collection("foodItem").document(doc.id).update({"foodItemId":doc.id})
+        return redirect(url_for('views.createMenu'))
     except:
         session['foodMessage'] = "Error adding food item text data in database"
         return redirect(url_for('addFoodItem'))

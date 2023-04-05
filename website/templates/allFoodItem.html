@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Food Menu</title>
+</head>
+<body>
+	<h1>Food Menu</h1>
+	<form action="/order" method="POST">
+		<ul>
+			{% for index in range(3) %}
+			<li>
+				<label>{{ foodItemList[index].name }} - {{ foodItemList[index].pricePerItem }}</label>
+				<input type="number" name="{{ index+1 }}" value="0" min="0">
+			</li>
+			{% endfor %}
+		</ul>
+		<input type="submit" value="Order">
+	</form>
+</body>
+</html>
