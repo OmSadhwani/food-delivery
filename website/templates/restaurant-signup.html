@@ -14,9 +14,9 @@
       <label for="area">Area:</label>
       <select id="area" name="area">
         {% for curr_area in areas %}
-          <option value={{ curr_area["areaId"] }} {% if area=="{{ curr_area['areaId'] }}" %}selected{% endif %}>{{ curr_area['name'] }}</option>
+          <option value= {{ curr_area.areaId }} >{{ curr_area['name'] }}</option>
         {% endfor %}
-        <option value="Other" {% if area == "Other" %}selected{% endif %}>Other</option>
+        <option value="Other">Other</option>
       </select><br><br>
 
       <label for="password">Password:</label>
