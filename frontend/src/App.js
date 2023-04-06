@@ -52,7 +52,7 @@ function App() {
           <Route exact path='/personalData' element={<PersonalData/>} />
           <Route exact path='/personalDataRestaurant' element={<PersonalDataRestaurant/>} />
           <Route exact path='/allRestaurants' element={<AllRestaurants/>} />
-          <Route exact path='/order' element={<Order/>} />
+          <Route exact path='displayFoodItems/:id' element={<Order/>} />
         </Routes>
       </Router>
     </>
