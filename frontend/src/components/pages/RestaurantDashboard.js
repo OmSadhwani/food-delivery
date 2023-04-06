@@ -38,7 +38,8 @@ function RestaurantDashboard() {
     // }
 
     return(
-        <>
+        <>  
+            
             <div className="Welcome">
             <h1>Welcome {username}</h1>    
             </div>     

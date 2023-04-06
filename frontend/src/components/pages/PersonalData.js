@@ -1,6 +1,7 @@
 import React,{useState} from 'react';
 import '../../App.css';
 import Navbar from '../Navbar';
+import NavbarC from '../NavbarC'
 
 export default function PersonalData() {
 
@@ -16,6 +17,7 @@ export default function PersonalData() {
         ))
   return (
     <>
+    <NavbarC></NavbarC>
           <div>
         Address<br/>
         {details['address']}
