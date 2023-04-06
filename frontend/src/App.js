@@ -12,6 +12,12 @@ import SignUpDeliveryPartner from './components/pages/SignUpDeliveryPartner';
 import LoginDeliveryPartner from './components/pages/LoginDeliveryPartner';
 import CustomerDashboard from './components/pages/CustomerDashboard';
 import RestaurantDashboard from './components/pages/RestaurantDashboard';
+import Menu from './components/pages/Menu';
+import AddFoodMenu from './components/pages/AddFoodItem';
+import DeliveryAgentDashboard from './components/pages/DeliveryAgentDashboard'
+import PersonalDataDeliveryAgent from './components/pages/PersonalDataDeliveryAgent'
+import PersonalDataRestaurant from './components/pages/PersonalDataRestaurant'
+import PersonalData from './components/pages/PersonalData'
 
 function App() {
   // const [initialData, setInitialData] = useState([{}])
@@ -37,6 +43,12 @@ function App() {
           <Route exact path='/deliveryAgentLogin' element={<LoginDeliveryPartner/>} />
           <Route exact path='/customerDashboard' element={<CustomerDashboard/>} />
           <Route exact path='/restaurantDashboard' element={<RestaurantDashboard/>} />
+          <Route exact path='/menu' element={<Menu/>} />
+          <Route exact path='/addFoodItem' element={<AddFoodMenu/>} />
+          <Route exact path='/deliveryAgentDashboard' element={<DeliveryAgentDashboard/>} />
+          <Route exact path='/personalDataAgent' element={<PersonalDataDeliveryAgent/>} />
+          <Route exact path='/personalData' element={<PersonalData/>} />
+          <Route exact path='/personalDataRestaurant' element={<PersonalDataRestaurant/>} />
         </Routes>
       </Router>
     </>

@@ -9,8 +9,11 @@ views = Blueprint('views',__name__)
 def home():
     return render_template('home.html')
     
+@views.route('/home')
+def homie():
+    return {"Hello":"World"}
 
-@views.route('/customerDashboard',methods=['POST'])
+@views.route('/customerDashboard')
 def customerDashboard():
     user = session['user']
     if user['userType']=="customer":
@@ -34,7 +37,7 @@ def restaurantDashboard():
 def deliveryAgentDashboard():
     user = session['user']
     if user['userType']=="deliveryAgent":
-        return render_template('deliveryAgent-dashboard.html',user=user)
+        return user
     else:
         return redirect(url_for('Auth.logout'))
 
@@ -54,11 +57,14 @@ def adminDashboard():
 #show personal data of the user
 @views.route('/personalData')
 def personalData():
+    print("Hello World")
     user = session['user']
-    user['areaName'] = db.collection('area').document(user['areaId']).get().to_dict()['name']
-    user['ratingValue'] = db.collection('rating').document(user['areaId']).get().to_dict()['rating']
 
-    return render_template('personalData.html',user=user)
+    # print ("Something to be printed ", db.collection('area').document(user['areaId']).get().to_dict()['name'])
+    # user['areaName'] = db.collection('area').document(user['areaId']).get().to_dict()['name']
+    # user['ratingValue'] = db.collection('rating').document(user['areaId']).get().to_dict()['rating']
+
+    return user
 
 
 #list of the restaurants
@@ -123,42 +129,49 @@ def allDeliveryAgents():
 
     return render_template('allDeliveryAgents.html',user=user)
 
-@views.route('/createMenu')
+@views.route('/menu',methods=['GET'])
 def createMenu():
     user = session['user']
-    if(not user['userType']=='restaurant'):
-        return redirect(url_for('Auth.logout'))
-    ResMenuId= session['userId']
-    foodItemList=[]
-    foodItems= db.collection('restaurant').document(ResMenuId).collection('foodItem').stream()
-    for foodItem in foodItems :
-        tdict= foodItem.to_dict()
-    
-        foodItemList.append(tdict)
+    if  not (user['userType']=='restaurant'):
+        return {"msg":"hello"}
     try:
-        message= session['foodMessage']
+        ResMenuId= user['restaurantId']
+        foodItemList=[]
+        foodItems= db.collection('restaurant').document(ResMenuId).collection('foodItem').stream()
+        for foodItem in foodItems :
+            tdict= foodItem.to_dict()
+        
+            foodItemList.append(tdict)
         session['foodMessage']="False"
-    except:
-        session['foodMessage']="False"
-        message="False"
-    return render_template('menu.html',user=user,menuList=foodItemList,message=message)
+        return {"user":user,"menuList":foodItemList,"message":"success"}
 
-@views.route('/addFoodItem')
-def addFoodItem():
-    user= session['user']
-    if(user['userType']=='restaurant'):
-        message=session['foodMessage']
-        session['foodMessage']="False"
-        return render_template('addFoodItem.html',user=user,message=message)
-    else:
-        return redirect(url_for('Auth.logout'))
+    except Exception as e:
+        return {"error":str(e)}
+    # except:
+    #     session['foodMessage']="False"
+    #     message="False"
+    #     return {"user":user,"menuList":foodItemList,"message":"error"}
+
+# @views.route('/addFoodItem',methods=['POST'])
+# def addFoodItem():
+#     requestt = json.loads(request.data)
+#     user= session['user']
+#     if(user['userType']=='restaurant'):
+#         message=session['foodMessage']
+#         session['foodMessage']="False"
+#         return render_template('addFoodItem.html',user=user,message=message)
+#     else:
+#         return redirect(url_for('Auth.logout'))
     
-@views.route('/addFoodItem/add',methods=['POST','GET'])
+@views.route('/addFoodItem',methods=['POST'])
 def Add():
+    requestt = json.loads(request.data)
+    print(requestt)
     if session['user']['userType'] != 'restaurant':
-        return redirect(url_for('Auth.logout'))
-    name= request.form['name']
-    price= request.form['price']
+        return {"message":"Not A Restaurant"}
+    name= requestt['name']
+    price= requestt['price']
+    user = session['user']
     # local file obj
 
     try:
@@ -166,16 +179,16 @@ def Add():
             "name": name,
             "pricePerItem": price,
             "isRecommended": False,
-            "restaurantId": session["userId"],
+            "restaurantId": user['restaurantId'],
             #"picSrc": ""
         }
-        doc = db.collection("restaurant").document(session["userId"]).collection("foodItem").document()
+        doc = db.collection("restaurant").document(user['restaurantId']).collection("foodItem").document()
         doc.set(foodItem)
-        db.collection("restaurant").document(session["userId"]).collection("foodItem").document(doc.id).update({"foodItemId":doc.id})
-        return redirect(url_for('views.createMenu'))
+        db.collection("restaurant").document(user['restaurantId']).collection("foodItem").document(doc.id).update({"foodItemId":doc.id})
+        return {"message":"Success"}
     except:
         session['foodMessage'] = "Error adding food item text data in database"
-        return redirect(url_for('addFoodItem'))
+        return {"message":session['foodMessage']}
     
 @views.route('/finishMenu')
 def finishMenu():

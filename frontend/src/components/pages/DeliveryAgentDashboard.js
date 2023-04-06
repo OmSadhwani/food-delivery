@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import '../../App.css';
 
-function CustomerDashboard() {
+function DeliveryAgentDashboard() {
     
     const [username,setusername] = useState('');
 
@@ -9,7 +9,7 @@ function CustomerDashboard() {
     setusername(msg)
     }
 
-    fetch('/customerDashboard' , {
+    fetch('/deliveryAgentDashboard' , {
         method:"GET",
       }).then(response => response.json())
         .then(message => (
@@ -18,27 +18,23 @@ function CustomerDashboard() {
         ))
 
     const Redirect1 = (event) => {
-        window.location.href='/order'
+        window.location.href='/personalDataAgent'
     }
 
     const Redirect2 = (event) => {
-        window.location.href='/personalData'
+        window.location.href='/markLocation'                       //not in backend
     }
 
     const Redirect3 = (event) => {
-        window.location.href='/recommendedRestaurant'        //not in backend
+        window.location.href='/seeDeliveryRequest'        //not in backend
     }
 
     const Redirect4 = (event) => {
-        window.location.href='/allRestaurant'
+        window.location.href='/acceptDeliveryRequest'     //not in backend
     }
 
     const Redirect5 = (event) => {
-        window.location.href='/presentOrders'           //not in backend
-    }
-
-    const Redirect6 = (event) => {
-        window.location.href='/pastOrders'                      //not in backend
+        window.location.href='/currentOrder'           //not in backend
     }
 
     return(
@@ -47,25 +43,22 @@ function CustomerDashboard() {
             <h1>Welcome {username}</h1>    
             </div>     
             <div className="options">
-                <button onClick={Redirect1}>Order Now</button>
+                <button onClick={Redirect1}>Personal Details</button>
             </div>
             <div className="options">
-                <button onClick={Redirect2}>Personal Details</button>
+                <button onClick={Redirect2}>Mark Location</button>
             </div>
             <div className="options">
-                <button onClick={Redirect3}>Recommeded Restaurants</button>
+                <button onClick={Redirect3}>See Delivery Request</button>
             </div>
             <div className="options">
-                <button onClick={Redirect4}>All Restaurants</button>
+                <button onClick={Redirect4}>Accept Delivery Request</button>
             </div>
             <div className="options">
-                <button onClick={Redirect5}>Present Orders</button>
-            </div>
-            <div className="options">
-                <button onClick={Redirect6}>Past Orders</button>
+                <button onClick={Redirect5}>See Current Order</button>
             </div>
         </>
     );
 }
 
-export default CustomerDashboard;
+export default DeliveryAgentDashboard;

@@ -18,11 +18,11 @@ function RestaurantDashboard() {
         ))
 
     const Redirect1 = (event) => {
-        window.location.href='/personalData'
+        window.location.href='/personalDataRestaurant'
     }
 
     const Redirect2 = (event) => {
-        window.location.href='/createMenu'
+        window.location.href='/menu'
     }
 
     const Redirect3 = (event) => {
@@ -33,9 +33,9 @@ function RestaurantDashboard() {
         window.location.href='/pastOrdersforRestaurant'                      //not in backend
     }
     
-    const Redirect5 = (event) => {
-        window.location.href='/CurrentMenu'                      //not in backend
-    }
+    // const Redirect5 = (event) => {
+    //     window.location.href='/CurrentMenu'                      //not in backend
+    // }
 
     return(
         <>
@@ -46,7 +46,7 @@ function RestaurantDashboard() {
                 <button onClick={Redirect1}>Personal Details</button>
             </div>
             <div className="options">
-                <button onClick={Redirect2}>Create Menu</button>
+                <button onClick={Redirect2}>Menu</button>
             </div>
             <div className="options">
                 <button onClick={Redirect3}>Pending Orders</button>
@@ -54,9 +54,9 @@ function RestaurantDashboard() {
             <div className="options">
                 <button onClick={Redirect4}>Past Orders</button>
             </div>
-            <div className="options">
+            {/* <div className="options">
                 <button onClick={Redirect5}>See Current Menu</button>
-            </div>
+            </div> */}
         </>
     );
 }

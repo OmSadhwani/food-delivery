@@ -11,7 +11,7 @@ Auth = Blueprint('Auth',__name__)
 def customerLogin():
     if request.method == 'POST':
         requestt = json.loads(request.data)
-        print(requestt)
+        # print(requestt)
         email = requestt['email']
         password = requestt['password']
 
