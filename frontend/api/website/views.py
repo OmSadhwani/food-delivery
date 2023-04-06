@@ -293,7 +293,284 @@ def placeOrder():
         db.collection('order').document(orderId).update({'offerId': db.collection('customer').document(customerId).collection('promotionalOfferId').document(currentOrder['offerId']).get().to_dict()})
         db.collection('customer').document(customerId).collection('prmotionalOfferId').document(currentOrder['offerId']).delete()
 
-    return redirect(url_for('recentOrderCustomer'))
+    return redirect(url_for('views.recentOrderCustomer'))
+
+
+@views.route('/recentOrderCustomer')
+
+def recentOrderCustomer():
+    user = session['user']
+    currentOrder = session['currentOrder']
+    customerId=currentOrder['customerId']
+    listOrderId = db.collection('customer').document(customerId).get().to_dict()['pendingOrderId']
+    docs = db.collection('order').stream()
+    recentOrderList=[]
+    for doc in docs:
+        if doc.id in listOrderId:
+            temp=doc.to_dict()
+            temp['restaurantName']=db.collection('restaurant').document(temp['restaurantId']).get().to_dict()['name']
+            recentOrderList.append(temp)
+    session['presentOrderCustomer']=recentOrderList
+    
+    return render_template('recentOrderCustomer.html', recentOrderList=recentOrderList)
+
+@views.route('/recentOrderRestaurant')
+
+def recentOrderRestaurant():
+    user=session['user']
+    restaurantId = user['restaurantId']
+    listOrderId = db.collection('restaurant').document(restaurantId).get().to_dict()['pendingOrderId']
+    docs = db.collection('order').stream()
+    recentOrderList = []
+    
+    for doc in docs:
+        if doc.id in listOrderId:
+            temp = doc.to_dict()
+            print(temp['customerId'])
+            temp['customerName']=db.collection('customer').document(temp['customerId']).get().to_dict()['name']
+            recentOrderList.append(temp)
+    session['presentOrderRestaurant'] = recentOrderList
+    
+        
+    return render_template('recentOrderRestaurant.html', recentOrderList=recentOrderList)
+
+@views.route('/orderDetailRestaurant<orderId>')
+
+def orderDetailRestaurant(orderId):
+    orderId=int(orderId)
+    if orderId > len(session['presentOrderRestaurant']):
+        return redirect(url_for('recentOrderRestaurant'))
+    orderId=orderId-1
+    currentOrder=session['presentOrderRestaurant'][orderId]['orderId']
+    currentOrder=db.collection('order').document(currentOrder).get().to_dict()
+    customerName = db.collection('customer').document(currentOrder['customerId']).get().to_dict()['name']
+    restaurantName = db.collection('restaurant').document(currentOrder['restaurantId']).get().to_dict()['name']
+    orderList=currentOrder['orderList']
+    discount=currentOrder['discountValue']
+    session['currentOrderUpdating']=currentOrder
+    
+    final=max(currentOrder['orderValue']+ currentOrder['deliveryCharge']- discount,0)
+    return render_template('orderDetailsRestaurant.html', currentOrder = currentOrder, orderList=orderList, customerName=customerName, restaurantName=restaurantName, cost=currentOrder['orderValue'], deliveryCharge=currentOrder['deliveryCharge'], discount=discount, final=final, updateLevel=currentOrder['updateLevel'])
+
+@views.route('/updateStatus0<val>')
+
+def updateStatus0(val):
+    if session['user']['userType'] != 'restaurant':
+        return redirect(url_for('logout'))
+    if val == "Reject":
+        updateOrderDic = {'heading': "Rejected"}
+        db.collection('order').document(session['currentOrderUpdating']['orderId']).update({'orderUpdates' : firestore.ArrayUnion([updateOrderDic])})
+        db.collection('order').document(session['currentOrderUpdating']['orderId']).update({'isPending': False})
+        db.collection('order').document(session['currentOrderUpdating']['orderId']).update({'updateMessage': "Rejected"})
+        db.collection('order').document(session['currentOrderUpdating']['orderId']).update({'updateLevel': 1})
+        db.collection('customer').document(session['currentOrderUpdating']['customerId']).update({'pendingOrderId' : firestore.ArrayRemove([session['currentOrderUpdating']['orderId']])})
+        db.collection('restaurant').document(session['currentOrderUpdating']['restaurantId']).update({'pendingOrderId' : firestore.ArrayRemove([session['currentOrderUpdating']['orderId']])})
+        return redirect('views.recentOrderRestaurant')
+    else :
+        return render_template('getEstimatedTime.html')
+
+@views.route('/getEstimatedTime', methods=['POST','GET'])
+
+def getEstimatedTime():
+    if session['user']['userType'] != 'restaurant':
+        return redirect(url_for('logout'))
+    try:
+        estimatedTime = request.form['time']
+        updateOrderDic = {
+            'heading': "Accepted",
+            'time' : str(estimatedTime)+" min"
+            
+            }
+        
+    except Exception as e:
+        print(str(e))
+
+    try:
+        db.collection('order').document(session['currentOrderUpdating']['orderId']).update({'updateMessage': "Accepted. Preparing Food"})
+        db.collection('order').document(session['currentOrderUpdating']['orderId']).update({'updateLevel': 1})
+        db.collection('order').document(session['currentOrderUpdating']['orderId']).update({'orderUpdates' : firestore.ArrayUnion([updateOrderDic])})
+    except Exception as e:
+        print(str(e))
+
+    return redirect(url_for('views.recentOrderRestaurant'))
+
+@views.route('/updateStatus1')
+
+def updateStatus1():
+    if session['user']['userType'] != 'restaurant':
+        return redirect(url_for('Auth.logout'))
+    return render_template('views.foodPrepared.html')
+
+@views.route('/updateStatus3')
+
+def updateStatus3():
+    if session['user']['userType'] != 'restaurant':
+        return redirect(url_for('logout'))
+    currentOrder = session['currentOrderUpdating']
+    db.collection('order').document(currentOrder['orderId']).update({'updateMessage': "Out for Delivery"})
+    db.collection('order').document(currentOrder['orderId']).update({'updateLevel': 4})
+    return redirect(url_for('views.recentOrderRestaurant'))
+
+@views.route('/addPendingOrderId')
+
+def addPendingOrderId():
+
+    if session['user']['userType']!='restaurant':
+        return redirect(url_for('logout'))
+
+    pendingOrderId=session['currentOrderUpdating']['orderId'] #get from front end
+    areaId=session['user']['areaId']
+
+    db.collection('area').document(areaId).update({'availableOrderIdForPickup':firestore.ArrayUnion([pendingOrderId])})
+    db.collection('order').document(session['currentOrderUpdating']['orderId']).update({'updateMessage': "Food is Prepared"})
+    db.collection('order').document(session['currentOrderUpdating']['orderId']).update({'updateLevel': 2})
+    return redirect(url_for('views.recentOrderRestaurant'))
+
+@views.route('/moreDetailsOrder<orderId>')
+
+def moreDetailsOrder(orderId):
+    if session['user']['userType'] != 'customer':
+        return redirect(url_for('logout'))
+    orderId=int(orderId)
+    if orderId > len(session['presentOrderCustomer']):
+        return redirect(url_for('recentOrderCustomer'))
+    orderId=orderId-1
+    currentOrder=session['presentOrderCustomer'][orderId]['orderId']
+    currentOrder=db.collection('order').document(currentOrder).get().to_dict()
+    customerName = db.collection('customer').document(currentOrder['customerId']).get().to_dict()['name']
+    restaurantName = db.collection('restaurant').document(currentOrder['restaurantId']).get().to_dict()['name']
+    session['customerCurrentOrderChanging']=currentOrder
+    orderList=currentOrder['orderList']
+    discount=currentOrder['discountValue']
+    print(currentOrder['offerId'])
+    if currentOrder['offerId'] == None:
+        offerUsed=None
+    else: 
+        offerUsed=currentOrder['offerId']
+        discount=min(int(int(currentOrder['orderValue'])*int(offerUsed['discount'])/100), int(offerUsed['upperLimit']))
+    currentOrder['discountValue']=discount
+    final=max(currentOrder['orderValue']+ currentOrder['deliveryCharge']- discount,0)
+    deliveryAgentName=""
+    if currentOrder['deliveryAgentId'] != "":
+        deliveryAgentName=db.collection('deliveryAgent').document(currentOrder['deliveryAgentId']).get().to_dict()['name']
+    return render_template('moreDetailsOrder.html',  orderList=orderList, customerName=customerName, restaurantName=restaurantName, offerUsed=offerUsed, cost=currentOrder['orderValue'], deliveryCharge=currentOrder['deliveryCharge'], discount=discount, final=final, updateLevel=currentOrder['updateLevel'], orderUpdate = currentOrder['orderUpdates'],restaurantId=currentOrder['restaurantId'],customerId= currentOrder['customerId'], deliveryAgentName=deliveryAgentName)
+
+#offers walle code daalna baaki hai
+
+@views.route('/redirectDashboard')
+
+def redirectDashboard():
+    if session['sessionUser']['userType']=='customer':
+        return redirect(url_for('customerDashboard'))
+    elif session['sessionUser']['userType']=='restaurant':
+        return redirect(url_for('restaurantDashboard'))
+    elif session['sessionUser']['userType']=='deliveryAgent':
+        return redirect(url_for('deliveryAgentDashboard'))
+    elif session['sessionUser']['userType']=='admin':
+        return redirect(url_for('adminDashboard'))
+    
+
+@views.route('/deleteFoodItem<foodItemId>')
+
+def deleteFoodItem(foodItemId):
+    if session['user']['userType'] != 'restaurant':
+        return redirect(url_for('Auth.logout'))
+    restaurantId=session['userId']
+
+    #command_to delete the id
+    try:
+        db.collection("restaurant").document(restaurantId).collection('foodItem').document(foodItemId).delete()
+        session['foodMessage']="food item deletion from databse is successful"
+    except Exception as e:
+        # print(e)
+        session['foodMessage']="Error deleting food item from databse"
+
+    return redirect(url_for('views.createMenu'))
+
+#recommended retaurant aur food item walle code baaki hai
+
+@views.route('/pastOrder')
+
+def pastOrder():
+    if not session['user']['userType'] == 'restaurant' and not session['user']['userType'] == 'customer':
+        return redirect(url_for('Auth.logout'))
+    userId=session['userId']
+    userType=session['sessionUser']['userType']
+
+    pastOrderList=[]
+
+    docs = db.collection('order').stream()
+    for doc in docs:
+        temp_dict=doc.to_dict()
+        if not temp_dict['isPending'] :
+            if userType=='customer' and userId==temp_dict['customerId']:
+                temp_dict['restaurantName']=db.collection('restaurant').document(temp_dict['restaurantId']).get().to_dict()['name']
+                pastOrderList.append(temp_dict)
+            elif userType=='restaurant' and userId==temp_dict['restaurantId']:
+                temp_dict['customerName']=db.collection('customer').document(temp_dict['customerId']).get().to_dict()['name']
+                pastOrderList.append(temp_dict)
+
+    if(userType=="customer"):
+        session['presentOrderCustomer']= pastOrderList
+        session.modified = True
+        return render_template('pastOrderCustomer.html',pastOrderList=pastOrderList)
+    if(userType=="restaurant"):
+        session['presentOrderRestaurant']= pastOrderList
+        
+        return render_template('pastOrderRestaurant.html',pastOrderList=pastOrderList)
+
+
+# This will show all the nearby delivery agent in the same area to the restaurant
+@views.route('/nearbyDeliveryAgents')
+
+def nearbyDeliveryAgents():
+
+    if session['user']['userType']!='restaurant':
+        return redirect(url_for('Auth.logout'))
+
+    areaId=session['sessionUser']['areaId']
+
+    nearbyDeliveryAgentsList=[]
+    # Retrieving the data from the database
+    doc_reference = db.collection('deliveryAgent').stream()
+
+    for doc in doc_reference:
+        temp_dict=doc.to_dict()
+        if temp_dict['areaId']==areaId:
+            temp_dict['areaName'] = db.collection('area').document(temp_dict['areaId']).get().to_dict()['name']
+            temp_dict['ratingValue']= db.collection('rating').document(temp_dict['ratingId']).get().to_dict()['rating']
+            nearbyDeliveryAgentsList.append(temp_dict)
+    return render_template('nearbyDeliveryAgent.html', nearbyDeliveryAgentsList = nearbyDeliveryAgentsList)
+
+    
+
+
+# This function will show all the delivery request for the customer in the region that are sent by the restaurants
+@views.route('/seeDeliveryRequest')
+def seeDeliveryRequest():
+
+    if session['user']['userType']!='deliveryAgent':
+        return redirect(url_for('Auth.logout'))
+
+    areaId=session['user']['areaId']
+
+    orderIdForADeliveryAgent=db.collection('area').document(areaId).get().to_dict()['availableOrderIdForPickup']
+    deliveryRequestList=[]
+
+    for orderId in orderIdForADeliveryAgent:
+        temp_dict=db.collection('order').document(orderId).get().to_dict()
+
+        if temp_dict['isPending']==True: # it will be true , just doing it to be on the safe side
+            temp_dict['restaurant']=db.collection('restaurant').document(temp_dict['restaurantId']).get().to_dict()
+            temp_dict['customer']=db.collection('customer').document(temp_dict['customerId']).get().to_dict()
+            temp_dict['area']=db.collection('area').document(areaId).get().to_dict()
+            deliveryRequestList.append(temp_dict)
+    session['currentDeliveryRequest'] = deliveryRequestList
+    session.modified = True
+    return render_template("seeDeliveryRequest.html", deliveryRequestList = deliveryRequestList)
+
+
+
 
 
 
