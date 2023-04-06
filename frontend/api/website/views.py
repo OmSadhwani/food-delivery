@@ -77,7 +77,7 @@ def allRestaurant():
     for res in restaurant_ref:
         temp_dict = res.to_dict()
         temp_dict['userId'] = res.id
-        temp_dict['areaName'] = db.collection('area').document(temp_dict['areaId']).get().to_dict()['name']
+        # temp_dict['areaName'] = db.collection('area').document(temp_dict['areaId']).get().to_dict()['name']
         temp_dict['ratingValue'] = db.collection('rating').document(temp_dict['ratingId']).get().to_dict()['rating']
 
         restaurantList.append(temp_dict)
@@ -197,8 +197,10 @@ def finishMenu():
         return redirect(url_for('Auth.logout'))
 
 
-@views.route('/displayFoodItems/<restaurantUserId>')
+@views.route('/displayFoodItems/<restaurantUserId>',methods=['GET','POST'])
 def FoodItems(restaurantUserId):
+    rr=json.loads(request.data)
+    restaurantUserId=rr['id']
     user= session['user']
     if not session['user']['userType']=='customer' and not session['user']['userType']=='admin':
         return redirect(url_for('Auth.logout'))
@@ -208,8 +210,10 @@ def FoodItems(restaurantUserId):
     for foodItem in foodItems:
         tdict= foodItem.to_dict()
         foodItemList.append(tdict)
+    # print(foodItemList)
+    # print(restaurantUserId)
     session['currentMenu']=foodItemList
-    return render_template('allFoodItem.html',user=user,foodItemlist=foodItemList)
+    return {"menu":foodItemList}
     
 @views.route('/order', methods=['POST','GET'])
 def order():
