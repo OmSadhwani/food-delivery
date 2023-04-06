@@ -17,7 +17,7 @@ export default function PersonalDataDeliveryAgent() {
   return (
     <>
       <div>
-        Area ID <br/>
+        Area <br/>
         {details['areaId']}
       </div>
       <br/>
@@ -42,14 +42,16 @@ export default function PersonalDataDeliveryAgent() {
       </div>    <br/>   <div>
         Name <br/>
         {details['name']}
-      </div>    <br/>   <div>
-        Rating ID <br/>
-        {details['ratingId']}
-      </div>
+      </div>    
       <br/>   <div>
         userType <br/>
         {details['userType']}
         </div>
+        <br/>   <div>
+        Rating <br/>
+        {details['ratingValue']}
+        </div>
+
     </>
   )
 }

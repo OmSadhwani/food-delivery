@@ -57,12 +57,10 @@ def adminDashboard():
 #show personal data of the user
 @views.route('/personalData')
 def personalData():
-    print("Hello World")
+    # print("Hello World")
     user = session['user']
 
-    # print ("Something to be printed ", db.collection('area').document(user['areaId']).get().to_dict()['name'])
-    # user['areaName'] = db.collection('area').document(user['areaId']).get().to_dict()['name']
-    # user['ratingValue'] = db.collection('rating').document(user['areaId']).get().to_dict()['rating']
+    user['ratingValue'] = db.collection('rating').document(user['ratingId']).get().to_dict()['rating']
 
     return user
 

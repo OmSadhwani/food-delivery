@@ -22,8 +22,8 @@ export default function PersonalData() {
       </div>
       <br/>
       <div>
-        Area ID <br/>
-        {details['areaId']}
+        Area <br/>
+        {details['area']}
       </div>
       <br/>
       <div>

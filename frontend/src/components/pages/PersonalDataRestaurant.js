@@ -16,40 +16,33 @@ export default function PersonalDataRestaurant() {
         ))
   return (
     <>
-      {/* <div>
-        Area ID <br/>
-        {details['areaId']}
+      <div>
+        Area <br/>
+        {details['area']}
       </div>
       <br/>
       <div>
         CurrentOrderId <br/>
         {details['currentOrderId']}
-      </div>    <br/>   <div>
-        Delivery Agent ID <br/>
-        {details['deliveryAgentId']}
+      </div> 
+      <br/>   <div>
+        Is Recommended <br/>
+        {String(details['isRecommended'])}
       </div>     <br/>  <div>
         Email <br/>
         {details['email']}
-      </div>    <br/>   <div>
-        Gender <br/>
-        {details['gender']}
-      </div>     <br/>  <div>
-        Status (Availability) <br/>
-        {details['isAvailable'].toString()}
-      </div>    <br/>   <div>
-        Mobile Number <br/>
-        {details['mobileNumber']}
-      </div>    <br/>   <div>
+      </div>   <br/>   <div>
         Name <br/>
         {details['name']}
-      </div>    <br/>   <div>
-        Rating ID <br/>
-        {details['ratingId']}
       </div>
       <br/>   <div>
-        userType <br/>
-        {details['userType']}
-        </div> */}
+        Rating Value <br/>
+        {details['ratingValue']}
+      </div>
+      <div>
+        restaurantId <br/>
+        {details['restaurantId']}
+      </div>
     </>
   )
 }

@@ -47,7 +47,7 @@ def customerLogin():
 def customerSignup():
     if request.method == 'POST':
         requestt = json.loads(request.data)
-        print(requestt)
+        # print(requestt)
         name = requestt['name']
         email = requestt['email']
         gender = requestt['gender']
@@ -67,10 +67,6 @@ def customerSignup():
             elif password!=confirmpassword:
                 message="Both the passwords don't match"
 
-            return {"message":message}
-
-        elif area=="Other":
-            message="We currently don't deliver in your area."
             return {"message":message}
         else:
             #add user to database
@@ -98,13 +94,14 @@ def customerSignup():
                     "ratingId":rating_ref.id,
                     "gender": gender,
                     "mobileNumber": mobile,
-                    "areaId": area,
+                    "area": area,
                     "address": address,
                     "pendingOrderId": []
                     #fill it up....
                 }
                 db.collection("customer").document(user.uid).set(customer_json_data)
                 db.collection("userType").document(user.uid).set({"type":"customer"})
+                # db.collection("userType").document(user.uid).set({"type":"customer"})
                 
             except Exception as e:
                 message="Error: "+str(e)
@@ -183,10 +180,6 @@ def restaurantSignup():
             #                 area=area,
             #                 areas=areas)
             return {"message":message}
-        elif area=="Other":
-            message="We currently don't have service in your area."
-            return {"message":message}
-            # return redirect(url_for('Auth.restaurantSignup'))
         else:
             #add user to database
             try:
@@ -225,7 +218,7 @@ def restaurantSignup():
                     "email": email,
                     "restaurantId":user.uid,
                     "ratingId":rating_ref.id,
-                    "areaId": area,
+                    "area": area,
                     "pendingOrderId": [],
                     "isRecommended": False
                     #fill it up....
@@ -304,11 +297,6 @@ def deliveryAgentSignup():
                 message="Both the passwords don't match!"
 
             return {"message": message}
-        
-        elif area=="Other":
-            message="We currently don't have service in your area."
-            return {"message": message}
-        
         else:
             #add user to database
             try:
@@ -336,7 +324,7 @@ def deliveryAgentSignup():
                     "ratingId":rating_ref.id,
                     "mobileNumber": mobile,
                     "gender": gender,
-                    "areaId": area,
+                    "area": area,
                     "isAvailable": True,
                     "currentOrderId": ""
                     #fill it up....
