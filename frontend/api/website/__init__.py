@@ -1,5 +1,5 @@
 from flask import Flask
-from .models import areaDatabase
+# from .models import areaDatabase
 
 #check for bitly
 

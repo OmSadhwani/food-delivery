@@ -84,7 +84,7 @@ def allRestaurant():
 
     session['restaurantList'] = restaurantList
 
-    return render_template('allRestaurant.html', user=user, restaurantList=restaurantList)
+    return {"restaurantList":restaurantList}
 
 
 #list of the customers

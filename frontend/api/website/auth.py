@@ -1,5 +1,5 @@
 from flask import Blueprint, request, redirect, url_for, session, render_template,json
-from .models import db,pyrebase_pb,areas
+from .models import db,pyrebase_pb
 from firebase_admin import auth
 import time
 
