@@ -8,7 +8,7 @@ export default function SeeDeliveryRequest() {
     
     
   
-      useEffect(() => {fetch('/recentOrderCustomer' , {
+      useEffect(() => {fetch('/seeDeliveryRequest' , {
         method:"GET",
       }).then(response => response.json())
         .then(message => (
@@ -39,7 +39,7 @@ export default function SeeDeliveryRequest() {
                 ))}
             </ul>
         </div>
-    )
+    );
 
 
 }
