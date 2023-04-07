@@ -374,13 +374,11 @@ def orderDetailRestaurant(orderId):
     return  {"currentOrder":currentOrder, "orderList":orderList, "customerName":customerName, "restaurantName":restaurantName, "cost":currentOrder['orderValue'], "deliveryCharge":currentOrder['deliveryCharge'], "discount":discount, "final":final, "updateLevel":currentOrder['updateLevel']}
 
 @views.route('/updateStatus0', methods=['GET','POST'])
-def updateStatus0(val):
+def updateStatus0():
     if session['user']['userType'] != 'restaurant':
         return {"message":"error"}
-        #return redirect(url_for('logout'))
-    # if val == "Reject":
     requestt = json.loads(request.data)
-    orderId = requestt['id']
+    orderId = requestt['ordid']
     order = db.collection('order').document(orderId).get().to_dict()
     updateOrderDic = {'heading': "Rejected"}
     db.collection('order').document(orderId).update({'orderUpdates' : firestore.ArrayUnion([updateOrderDic])})
@@ -390,12 +388,10 @@ def updateStatus0(val):
     db.collection('customer').document(order['customerId']).update({'pendingOrderId' : firestore.ArrayRemove([session['currentOrderUpdating']['orderId']])})
     db.collection('restaurant').document(order['restaurantId']).update({'pendingOrderId' : firestore.ArrayRemove([session['currentOrderUpdating']['orderId']])})
     return {"message":"Success"}
-    # else :
-    #     return render_template('getEstimatedTime.html')
+    
 
-
-@views.route('/getEstimatedTime', methods=['POST','GET'])
-def getEstimatedTime():
+@views.route('/getEstimatedTime/<id>', methods=['POST','GET'])
+def getEstimatedTime(id):
     if session['user']['userType'] != 'restaurant':
         return {"message":"error"}
         # return redirect(url_for('Auth.logout'))
@@ -419,8 +415,8 @@ def getEstimatedTime():
     except Exception as e:
         return {"message":"error", "error":str(e)}
 
+    # print("Success")
     return {"message":"Success"}
-    # return redirect(url_for('views.recentOrderRestaurant'))
 
 @views.route('/updateStatus1')
 def updateStatus1():
@@ -428,14 +424,15 @@ def updateStatus1():
         return redirect(url_for('Auth.logout'))
     return render_template('foodPrepared.html')
 
-@views.route('/updateStatus3')
+@views.route('/updateStatus3',methods=['POST'])
 def updateStatus3():
     if session['user']['userType'] != 'restaurant':
         return {"message":"error"}
         # return redirect(url_for('logout'))
 
     requestt = json.loads(request.data)
-    orderId = requestt['id']
+    # print(requestt)
+    orderId = requestt
     # currentOrder = session['currentOrderUpdating']\
     try:
         db.collection('order').document(orderId).update({'updateMessage': "Out for Delivery"})
@@ -444,7 +441,6 @@ def updateStatus3():
         return {"message":"error","error":str(e)}
     
     return {"message":"Success"}
-    # return redirect(url_for('views.recentOrderRestaurant'))
 
 @views.route('/sendDeliveryRequest/<orderId>', methods=['POST','GET'])
 def sendDeliveryRequest(orderId):
@@ -667,7 +663,7 @@ def nearbyDeliveryAgents(orderId):
     if session['user']['userType']!='restaurant':
         return {"message":"error"}
         # return redirect(url_for('Auth.logout'))
-
+    
 
     area=session['user']['area']
 
@@ -677,15 +673,14 @@ def nearbyDeliveryAgents(orderId):
 
     for doc in doc_reference:
         temp_dict=doc.to_dict()
-        if temp_dict['area']==area and temp_dict['isAvailable']:
+        if temp_dict['area']==area and temp_dict['isAvailable']==True:
             #temp_dict['areaName'] = db.collection('area').document(temp_dict['areaId']).get().to_dict()['name']
             temp_dict['ratingValue']= db.collection('rating').document(temp_dict['ratingId']).get().to_dict()['rating']
             nearbyDeliveryAgentsList.append(temp_dict)
 
     return {"deliveryAgentList":nearbyDeliveryAgentsList}
-    # return render_template('nearbyDeliveryAgent.html', nearbyDeliveryAgentsList = nearbyDeliveryAgentsList)
 
-
+    
 
 
 # This function will show all the delivery request for the customer in the region that are sent by the restaurants

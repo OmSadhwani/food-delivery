@@ -27,6 +27,8 @@ import MoreDetailsOrder from './components/pages/MoreDetailsOrder'
 import SeeDeliveryRequest from './components/pages/SeeDeliveryRequest'
 import PendingOrderRestaurant from './components/pages/PendingOrderRestaurant'
 import OrderDetailsRestaurant from './components/pages/OrderDetailsRestaurant'
+import GiveEstimatedTime from './components/pages/GiveEstimatedTime'
+import SendDeliveryRequest from './components/pages/SendDeliveryRequest'
 import AcceptDeliveryRequest from './components/pages/AcceptDeliveryRequest'
 import MoreDetailsDeliveryRequest from './components/pages/MoreDetailsDeliveryRequest'
 import RatingDeliveryAgent from './components/pages/RatingDeliveryAgent'
@@ -76,6 +78,8 @@ function App() {
           <Route exact path='/ratingDeliveryAgent/:id' element={<RatingDeliveryAgent/>} />
           <Route exact path='/pendingOrdersRestaurant' element={<PendingOrderRestaurant/>} />
           <Route exact path='/orderDetailRestaurant/:id' element={<OrderDetailsRestaurant/>} />
+          <Route exact path='/giveEstimatedTime/:id' element={<GiveEstimatedTime/>} />
+          <Route exact path='/sendDeliveryRequest/:id' element={<SendDeliveryRequest/>} />
           <Route exact path='/markLocation' element={<MarkLocation/>} />
         </Routes>
       </Router>
