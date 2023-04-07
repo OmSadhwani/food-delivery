@@ -210,40 +210,48 @@ def FoodItems(restaurantUserId):
         foodItemList.append(tdict)
     session['currentMenu']=foodItemList
     return render_template('allFoodItem.html',user=user,foodItemlist=foodItemList)
-    
+
 @views.route('/order', methods=['POST','GET'])
 def order():
+    requestt = json.loads(request.data)
     foodItemList = session['currentMenu']
 
     cost=0
     orderList = []
 
-    for i in range(len(foodItemList)):
-        if not int(request.form.get(str(i+1))) == 0:
-            foodItemList[i]['frequency'] = int(request.form.get(str(i+1)))
-            foodItemList[i]['pricePerItem'] = int(foodItemList[i]['pricePerItem'])
-            orderList.append(foodItemList[i])
-            cost += int(foodItemList[i]['pricePerItem']) * int(foodItemList[i]['frequency'])
+    try:
+        for name, quantity in requestt.items():
+            for i in range(len(foodItemList)):
+                if name == foodItemList[i]['name']:
+                    foodItemList[i]['frequency'] = int(quantity)
+                    foodItemList[i]['pricePerItem'] = int(foodItemList[i]['pricePerItem'])
+                    orderList.append(foodItemList[i])
+                    cost += int(foodItemList[i]['pricePerItem']) * int(foodItemList[i]['frequency'])
 
-    session['currentOrder'] = {
-        'orderList': orderList,
-        'isPending': True,
-        'customerId': session['userId'],
-        'restaurantId': foodItemList[0]['restaurantId'],
-        'orderValue': cost,
-        'offerId': None,
-        'discountValue': 0,
-        'paidValue': 0,
-        'deliveryCharge': 50,
-        'orderDateTime': "",
-        'deliveryAgentId': "",
-        'updateLevel': 0,
-        'updateMessage': "Accept/Reject",
-        'orderUpdates': [],
-        'orderId': ''
-    }
+        session['currentOrder'] = {
+            'orderList': orderList,
+            'isPending': True,
+            'customerId': session['userId'],
+            'restaurantId': foodItemList[0]['restaurantId'],
+            'orderValue': cost,
+            'offerId': None,
+            'discountValue': 0,
+            'paidValue': 0,
+            'deliveryCharge': 50,
+            'orderDateTime': "",
+            'deliveryAgentId': "",
+            'updateLevel': 0,
+            'updateMessage': "Accept/Reject",
+            'orderUpdates': [],
+            'orderId': ''
+        }
+        
+        return {"message":"success"}
+    
+    except Exception as e:
+        return {"message":"error", "error":str(e)}
 
-    return redirect(url_for('orderDetails'))
+    #return redirect(url_for('orderDetails'))
 
 
 @views.route('/orderDetails')
