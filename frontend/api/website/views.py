@@ -372,29 +372,33 @@ def orderDetailRestaurant(orderId):
     final=max(currentOrder['orderValue']+ currentOrder['deliveryCharge']- discount,0)
     return  {"currentOrder":currentOrder, "orderList":orderList, "customerName":customerName, "restaurantName":restaurantName, "cost":currentOrder['orderValue'], "deliveryCharge":currentOrder['deliveryCharge'], "discount":discount, "final":final, "updateLevel":currentOrder['updateLevel']}
 
-@views.route('/updateStatus0<val>')
-def updateStatus0(val):
+@views.route('/updateStatus0', methods=['GET','POST'])
+def updateStatus0():
     if session['user']['userType'] != 'restaurant':
-        return redirect(url_for('logout'))
-    if val == "Reject":
-        updateOrderDic = {'heading': "Rejected"}
-        db.collection('order').document(session['currentOrderUpdating']['orderId']).update({'orderUpdates' : firestore.ArrayUnion([updateOrderDic])})
-        db.collection('order').document(session['currentOrderUpdating']['orderId']).update({'isPending': False})
-        db.collection('order').document(session['currentOrderUpdating']['orderId']).update({'updateMessage': "Rejected"})
-        db.collection('order').document(session['currentOrderUpdating']['orderId']).update({'updateLevel': 1})
-        db.collection('customer').document(session['currentOrderUpdating']['customerId']).update({'pendingOrderId' : firestore.ArrayRemove([session['currentOrderUpdating']['orderId']])})
-        db.collection('restaurant').document(session['currentOrderUpdating']['restaurantId']).update({'pendingOrderId' : firestore.ArrayRemove([session['currentOrderUpdating']['orderId']])})
-        return redirect('views.recentOrderRestaurant')
-    else :
-        return render_template('getEstimatedTime.html')
+        return {"message":"error"}
+    requestt = json.loads(request.data)
+    orderId = requestt['ordid']
+    order = db.collection('order').document(orderId).get().to_dict()
+    updateOrderDic = {'heading': "Rejected"}
+    db.collection('order').document(orderId).update({'orderUpdates' : firestore.ArrayUnion([updateOrderDic])})
+    db.collection('order').document(orderId).update({'isPending': False})
+    db.collection('order').document(orderId).update({'updateMessage': "Rejected"})
+    db.collection('order').document(orderId).update({'updateLevel': 1})
+    db.collection('customer').document(order['customerId']).update({'pendingOrderId' : firestore.ArrayRemove([session['currentOrderUpdating']['orderId']])})
+    db.collection('restaurant').document(order['restaurantId']).update({'pendingOrderId' : firestore.ArrayRemove([session['currentOrderUpdating']['orderId']])})
+    return {"message":"Success"}
     
 
-@views.route('/getEstimatedTime', methods=['POST','GET'])
-def getEstimatedTime():
+@views.route('/getEstimatedTime/<id>', methods=['POST','GET'])
+def getEstimatedTime(id):
     if session['user']['userType'] != 'restaurant':
-        return redirect(url_for('Auth.logout'))
+        print("Error")
+        return {"message":"error"}
+        # return redirect(url_for('Auth.logout'))
     try:
-        estimatedTime = request.form['time']
+        requestt = json.loads(request.data)
+        orderId = requestt['id']
+        estimatedTime = requestt['time']
         updateOrderDic = {
             'heading': "Accepted",
             'time' : str(estimatedTime)+" min"
@@ -402,16 +406,18 @@ def getEstimatedTime():
             }
         
     except Exception as e:
-        print(str(e))
+        print("Eror")
+        return {"message":"error", "error":str(e)}
 
     try:
-        db.collection('order').document(session['currentOrderUpdating']['orderId']).update({'updateMessage': "Accepted. Preparing Food"})
-        db.collection('order').document(session['currentOrderUpdating']['orderId']).update({'updateLevel': 1})
-        db.collection('order').document(session['currentOrderUpdating']['orderId']).update({'orderUpdates' : firestore.ArrayUnion([updateOrderDic])})
+        db.collection('order').document(orderId).update({'updateMessage': "Accepted. Preparing Food"})
+        db.collection('order').document(orderId).update({'updateLevel': 1})
+        db.collection('order').document(orderId).update({'orderUpdates' : firestore.ArrayUnion([updateOrderDic])})
     except Exception as e:
-        print(str(e))
+        return {"message":"error", "error":str(e)}
 
-    return redirect(url_for('views.recentOrderRestaurant'))
+    # print("Success")
+    return {"message":"Success"}
 
 @views.route('/updateStatus1')
 def updateStatus1():
@@ -419,28 +425,45 @@ def updateStatus1():
         return redirect(url_for('Auth.logout'))
     return render_template('foodPrepared.html')
 
-@views.route('/updateStatus3')
+@views.route('/updateStatus3',methods=['POST'])
 def updateStatus3():
     if session['user']['userType'] != 'restaurant':
-        return redirect(url_for('logout'))
-    currentOrder = session['currentOrderUpdating']
-    db.collection('order').document(currentOrder['orderId']).update({'updateMessage': "Out for Delivery"})
-    db.collection('order').document(currentOrder['orderId']).update({'updateLevel': 4})
-    return redirect(url_for('views.recentOrderRestaurant'))
+        return {"message":"error"}
+        # return redirect(url_for('logout'))
 
-@views.route('/addPendingOrderId')
-def addPendingOrderId():
+    requestt = json.loads(request.data)
+    # print(requestt)
+    orderId = requestt
+    # currentOrder = session['currentOrderUpdating']\
+    try:
+        db.collection('order').document(orderId).update({'updateMessage': "Out for Delivery"})
+        db.collection('order').document(orderId).update({'updateLevel': 4})
+    except Exception as e:
+        return {"message":"error","error":str(e)}
+    
+    return {"message":"Success"}
+
+@views.route('/sendDeliveryRequest/<orderId>', methods=['POST','GET'])
+def sendDeliveryRequest(orderId):
 
     if session['user']['userType']!='restaurant':
-        return redirect(url_for('logout'))
+        return {"message":"error"}
+        # return redirect(url_for('logout'))
 
-    pendingOrderId=session['currentOrderUpdating']['orderId'] #get from front end
-    areaId=session['user']['areaId']
+    requestt = json.loads(request.data)
+    orderId = requestt['id']
 
-    #db.collection('area').document(areaId).update({'availableOrderIdForPickup':firestore.ArrayUnion([pendingOrderId])})
-    db.collection('order').document(session['currentOrderUpdating']['orderId']).update({'updateMessage': "Food is Prepared"})
-    db.collection('order').document(session['currentOrderUpdating']['orderId']).update({'updateLevel': 2})
-    return redirect(url_for('views.recentOrderRestaurant'))
+    # pendingOrderId=session['currentOrderUpdating']['orderId'] #get from front end
+    # area=session['user']['area']
+
+    try:
+        #db.collection('area').document(areaId).update({'availableOrderIdForPickup':firestore.ArrayUnion([pendingOrderId])})
+        db.collection('order').document(orderId).update({'updateMessage': "Food is Prepared"})
+        db.collection('order').document(orderId).update({'updateLevel': 2})
+    except Exception as e:
+        return {"message":"error", "error":str(e)}
+
+    return {"message":"Success"}
 
 @views.route('/moreDetailsOrder/<orderId>',methods=['GET','POST'])
 def moreDetailsOrder(orderId):
@@ -634,13 +657,15 @@ def pastOrder():
 
 
 # This will show all the nearby delivery agent in the same area to the restaurant
-@views.route('/nearbyDeliveryAgents')
-def nearbyDeliveryAgents():
+@views.route('/nearbyDeliveryAgents/<orderId>')
+def nearbyDeliveryAgents(orderId):
 
     if session['user']['userType']!='restaurant':
-        return redirect(url_for('Auth.logout'))
+        return {"message":"error"}
+        # return redirect(url_for('Auth.logout'))
+    
 
-    areaId=session['user']['areaId']
+    area=session['user']['area']
 
     nearbyDeliveryAgentsList=[]
     # Retrieving the data from the database
@@ -648,11 +673,12 @@ def nearbyDeliveryAgents():
 
     for doc in doc_reference:
         temp_dict=doc.to_dict()
-        if temp_dict['areaId']==areaId:
+        if temp_dict['area']==area and temp_dict['isAvailable']==True:
             #temp_dict['areaName'] = db.collection('area').document(temp_dict['areaId']).get().to_dict()['name']
             temp_dict['ratingValue']= db.collection('rating').document(temp_dict['ratingId']).get().to_dict()['rating']
             nearbyDeliveryAgentsList.append(temp_dict)
-    return render_template('nearbyDeliveryAgent.html', nearbyDeliveryAgentsList = nearbyDeliveryAgentsList)
+
+    return {"deliveryAgentList":nearbyDeliveryAgentsList}
 
     
 

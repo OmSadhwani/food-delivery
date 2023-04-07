@@ -26,6 +26,8 @@ import RecentOrderCustomer from './components/pages/RecentOrderCustomer'
 import MoreDetailsOrder from './components/pages/MoreDetailsOrder'
 import PendingOrderRestaurant from './components/pages/PendingOrderRestaurant'
 import OrderDetailsRestaurant from './components/pages/OrderDetailsRestaurant'
+import GiveEstimatedTime from './components/pages/GiveEstimatedTime'
+import SendDeliveryRequest from './components/pages/SendDeliveryRequest'
 
 function App() {
   // const [initialData, setInitialData] = useState([{}])
@@ -67,6 +69,8 @@ function App() {
           <Route exact path='/orderDetails' element={<ConfirmOrder/>} />
           <Route exact path='/pendingOrdersRestaurant' element={<PendingOrderRestaurant/>} />
           <Route exact path='/orderDetailRestaurant/:id' element={<OrderDetailsRestaurant/>} />
+          <Route exact path='/giveEstimatedTime/:id' element={<GiveEstimatedTime/>} />
+          <Route exact path='/sendDeliveryRequest/:id' element={<SendDeliveryRequest/>} />
         </Routes>
       </Router>
     </>
