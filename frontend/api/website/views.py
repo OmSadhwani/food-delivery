@@ -223,12 +223,13 @@ def order():
     orderList = []
 
     try:
-        for i in range(len(foodItemList)):
-            if not int(requestt[foodItemList[i]['name']]) == 0:
-                foodItemList[i]['frequency'] = int(requestt[foodItemList[i]['name']])
-                foodItemList[i]['pricePerItem'] = int(foodItemList[i]['pricePerItem'])
-                orderList.append(foodItemList[i])
-                cost += int(foodItemList[i]['pricePerItem']) * int(foodItemList[i]['frequency'])
+        for name, quantity in requestt.items():
+            for i in range(len(foodItemList)):
+                if name == foodItemList[i]['name']:
+                    foodItemList[i]['frequency'] = int(quantity)
+                    foodItemList[i]['pricePerItem'] = int(foodItemList[i]['pricePerItem'])
+                    orderList.append(foodItemList[i])
+                    cost += int(foodItemList[i]['pricePerItem']) * int(foodItemList[i]['frequency'])
 
         session['currentOrder'] = {
             'orderList': orderList,
@@ -247,7 +248,9 @@ def order():
             'orderUpdates': [],
             'orderId': ''
         }
+        
         return {"message":"success"}
+    
     except Exception as e:
         return {"message":"error", "error":str(e)}
 
@@ -303,7 +306,6 @@ def placeOrder():
 
 
 @views.route('/recentOrderCustomer')
-
 def recentOrderCustomer():
     user = session['user']
     currentOrder = session['currentOrder']
