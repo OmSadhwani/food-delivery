@@ -1,7 +1,7 @@
 from flask import Blueprint, session,request, redirect, url_for, render_template, jsonify
 from .models import db,pyrebase_pb
 from flask import request,json
-from firebase_admin import firestore
+from firebase_admin import firestore, auth
 
 views = Blueprint('views',__name__)
 
@@ -248,7 +248,7 @@ def order():
             'orderUpdates': [],
             'orderId': ''
         }
-        
+
         return {"message":"success"}
     
     except Exception as e:
@@ -311,13 +311,18 @@ def recentOrderCustomer():
     currentOrder = session['currentOrder']
     customerId=currentOrder['customerId']
     listOrderId = db.collection('customer').document(customerId).get().to_dict()['pendingOrderId']
-    docs = db.collection('order').stream()
     recentOrderList=[]
-    for doc in docs:
-        if doc.id in listOrderId:
-            temp=doc.to_dict()
-            temp['restaurantName']=db.collection('restaurant').document(temp['restaurantId']).get().to_dict()['name']
-            recentOrderList.append(temp)
+    for id in listOrderId:
+        temp=db.collection('order').document(id).get().to_dict()
+        temp['restaurantName']=db.collection('restaurant').document(temp['restaurantId']).get().to_dict()['name']
+        recentOrderList.append(temp)
+
+    # docs = db.collection('order').stream()
+    # for doc in docs:
+    #     if doc.id in listOrderId:
+    #         temp=doc.to_dict()
+    #         temp['restaurantName']=db.collection('restaurant').document(temp['restaurantId']).get().to_dict()['name']
+    #         recentOrderList.append(temp)
     session['presentOrderCustomer']=recentOrderList
     
     return render_template('recentOrderCustomer.html', recentOrderList=recentOrderList)
@@ -328,15 +333,19 @@ def recentOrderRestaurant():
     user=session['user']
     restaurantId = user['restaurantId']
     listOrderId = db.collection('restaurant').document(restaurantId).get().to_dict()['pendingOrderId']
-    docs = db.collection('order').stream()
     recentOrderList = []
-    
-    for doc in docs:
-        if doc.id in listOrderId:
-            temp = doc.to_dict()
-            print(temp['customerId'])
-            temp['customerName']=db.collection('customer').document(temp['customerId']).get().to_dict()['name']
-            recentOrderList.append(temp)
+    for id in listOrderId:
+        temp = db.collection('order').document(id).get().to_dict()
+        temp['customerName']=db.collection('customer').document(temp['customerId']).get().to_dict()['name']
+        recentOrderList.append(temp)
+
+    # docs = db.collection('order').stream()
+    # for doc in docs:
+    #     if doc.id in listOrderId:
+    #         temp = doc.to_dict()
+    #         print(temp['customerId'])
+    #         temp['customerName']=db.collection('customer').document(temp['customerId']).get().to_dict()['name']
+    #         recentOrderList.append(temp)
     session['presentOrderRestaurant'] = recentOrderList
     
         
@@ -361,7 +370,6 @@ def orderDetailRestaurant(orderId):
     return render_template('orderDetailsRestaurant.html', currentOrder = currentOrder, orderList=orderList, customerName=customerName, restaurantName=restaurantName, cost=currentOrder['orderValue'], deliveryCharge=currentOrder['deliveryCharge'], discount=discount, final=final, updateLevel=currentOrder['updateLevel'])
 
 @views.route('/updateStatus0<val>')
-
 def updateStatus0(val):
     if session['user']['userType'] != 'restaurant':
         return redirect(url_for('logout'))
@@ -376,6 +384,7 @@ def updateStatus0(val):
         return redirect('views.recentOrderRestaurant')
     else :
         return render_template('getEstimatedTime.html')
+    
 
 @views.route('/getEstimatedTime', methods=['POST','GET'])
 def getEstimatedTime():
@@ -430,22 +439,22 @@ def addPendingOrderId():
     db.collection('order').document(session['currentOrderUpdating']['orderId']).update({'updateLevel': 2})
     return redirect(url_for('views.recentOrderRestaurant'))
 
-@views.route('/moreDetailsOrder<orderId>')
+@views.route('/moreDetailsOrder/<orderId>')
 def moreDetailsOrder(orderId):
     if session['user']['userType'] != 'customer':
         return redirect(url_for('logout'))
-    orderId=int(orderId)
-    if orderId > len(session['presentOrderCustomer']):
-        return redirect(url_for('recentOrderCustomer'))
-    orderId=orderId-1
-    currentOrder=session['presentOrderCustomer'][orderId]['orderId']
-    currentOrder=db.collection('order').document(currentOrder).get().to_dict()
+    # orderId=int(orderId)
+    # if orderId > len(session['presentOrderCustomer']):
+    #     return redirect(url_for('recentOrderCustomer'))
+    # orderId=orderId-1
+    # currentOrder=session['presentOrderCustomer'][orderId]['orderId']
+    currentOrder=db.collection('order').document(orderId).get().to_dict()
     customerName = db.collection('customer').document(currentOrder['customerId']).get().to_dict()['name']
     restaurantName = db.collection('restaurant').document(currentOrder['restaurantId']).get().to_dict()['name']
     session['customerCurrentOrderChanging']=currentOrder
     orderList=currentOrder['orderList']
     discount=currentOrder['discountValue']
-    print(currentOrder['offerId'])
+    # print(currentOrder['offerId'])
     if currentOrder['offerId'] == None:
         offerUsed=None
     else: 
@@ -456,9 +465,36 @@ def moreDetailsOrder(orderId):
     deliveryAgentName=""
     if currentOrder['deliveryAgentId'] != "":
         deliveryAgentName=db.collection('deliveryAgent').document(currentOrder['deliveryAgentId']).get().to_dict()['name']
-    return render_template('moreDetailsOrder.html',  orderList=orderList, customerName=customerName, restaurantName=restaurantName, offerUsed=offerUsed, cost=currentOrder['orderValue'], deliveryCharge=currentOrder['deliveryCharge'], discount=discount, final=final, updateLevel=currentOrder['updateLevel'], orderUpdate = currentOrder['orderUpdates'],restaurantId=currentOrder['restaurantId'],customerId= currentOrder['customerId'], deliveryAgentName=deliveryAgentName)
+    return {"orderList":orderList, "customerName":customerName, "restaurantName":restaurantName, "offerUsed":offerUsed, "cost":currentOrder['orderValue'], "deliveryCharge":currentOrder['deliveryCharge'], "discount":discount, "final":final, "updateLevel":currentOrder['updateLevel'], "orderUpdate":currentOrder['orderUpdates'], "restaurantId":currentOrder['restaurantId'], "customerId":currentOrder['customerId'], "deliveryAgentName":deliveryAgentName}
+    #return render_template('moreDetailsOrder.html',  orderList=orderList, customerName=customerName, restaurantName=restaurantName, offerUsed=offerUsed, cost=currentOrder['orderValue'], deliveryCharge=currentOrder['deliveryCharge'], discount=discount, final=final, updateLevel=currentOrder['updateLevel'], orderUpdate = currentOrder['orderUpdates'],restaurantId=currentOrder['restaurantId'],customerId= currentOrder['customerId'], deliveryAgentName=deliveryAgentName)
 
 #offers walle code daalna baaki hai
+
+# This will show the food items in a restaurant, i.e. showing the menu of the restaurant
+@views.route('/allFoodItem11/<restaurantUserId>')
+def allFoodItem11(restaurantUserId):
+    if not session['sessionUser']['userType'] == 'customer' and not session['sessionUser']['userType'] == 'admin':
+        return redirect(url_for('logout'))
+    session['currResMenuId']=restaurantUserId
+    return redirect(url_for('allFoodItem'))
+
+
+@views.route('/allFoodItem')
+def allFoodItem():
+
+    user=session['sessionUser']
+    if not user['userType']=='customer' and not user['userType']=='admin':
+        return redirect(url_for('logout'))
+
+    foodItemList=[]
+    docs=db.collection('restaurant').document(session['currResMenuId']).collection('foodItem').stream()
+    for doc in docs:
+        temp_dict=doc.to_dict()
+        #temp_dict['pic'] = getImageURL(temp_dict['picSrc'])
+        foodItemList.append(temp_dict)
+    session['currentMenu']=foodItemList
+    session.modified=True
+    return render_template('allFoodItem.html', user=user,foodItemList=foodItemList)
 
 @views.route('/redirectDashboard')
 def redirectDashboard():
@@ -473,7 +509,6 @@ def redirectDashboard():
     
 
 @views.route('/deleteFoodItem<foodItemId>')
-
 def deleteFoodItem(foodItemId):
     if session['user']['userType'] != 'restaurant':
         return redirect(url_for('Auth.logout'))
@@ -489,10 +524,81 @@ def deleteFoodItem(foodItemId):
 
     return redirect(url_for('views.createMenu'))
 
+def deleteUserFromDatabase(to_delete):
+
+    user_type=""
+
+    try:
+        auth.delete_user(to_delete)
+    except:
+        print("Error deleting user from authentication")
+
+    try:
+        user_type = db.collection('type').document(to_delete).get().to_dict()["type"]
+        if(user_type=="restaurant"):
+            # If you have larger collections, you may want to delete the documents in smaller batches to avoid out-of-memory errors.
+            delete_collection(db.collection("restaurant").document(to_delete).collection("foodItem"),1000)
+        db.collection(user_type).document(to_delete).delete()
+        db.collection("type").document(to_delete).delete()
+    except :
+        print("error deleting user from firestore")
+
+    # try:
+    #     # deleting profile pictures
+    #     bucket.delete_blob(user_type+"/"+to_delete+".jpg")
+        
+    #     # deleting food item images
+    #     if user_type=="restaurant":
+    #         blob_objects=bucket.list_blobs(prefix="restaurant/"+to_delete+"_")
+    #         blob_object_names=[]
+    #         for blob in blob_objects:
+    #             blob_object_names.append(blob.name)
+    #         bucket.delete_blobs(blob_object_names)
+    
+    # except Exception as e:
+    #     print(e)
+    
+
+
+@views.route('/delete/<user_type>/<delete_id>')
+def deleteUser(user_type, delete_id):
+    # print(request.args.get(user_type))
+    if not session['sessionUser']['userType'] == "admin":
+        return redirect(url_for('logout'))
+    to_delete = int(delete_id)
+    to_delete=to_delete-1
+    if user_type == "restaurant":
+        user_deleted=session['restaurantList'].pop(to_delete)
+        session.modified = True
+        deleteUserFromDatabase(user_deleted['userId'])
+        return redirect(url_for('allRestaurant'))
+    elif user_type == "customer":
+        user_deleted = session['customerList'].pop(to_delete)
+        session.modified = True
+        deleteUserFromDatabase(user_deleted['userId'])
+        return redirect(url_for('allCustomers'))
+    elif user_type == 'deliveryAgent':
+        user_deleted = session['deliveryAgentList'].pop(to_delete)
+        session.modified = True
+        deleteUserFromDatabase(user_deleted['userId'])
+        return redirect(url_for('allDeliveryAgents'))
+        
+
+def delete_collection(coll_ref, batch_size):
+    docs = coll_ref.limit(batch_size).stream()
+    deleted = 0
+
+    for doc in docs:
+        print(f'Deleting doc {doc.id} => {doc.to_dict()}')
+        doc.reference.delete()
+        deleted = deleted + 1
+
+    if deleted >= batch_size:
+        return delete_collection(coll_ref, batch_size)
+
 #recommended retaurant aur food item walle code baaki hai
 
 @views.route('/pastOrder')
-
 def pastOrder():
     if not session['user']['userType'] == 'restaurant' and not session['user']['userType'] == 'customer':
         return redirect(url_for('Auth.logout'))
@@ -621,8 +727,428 @@ def markLocation():
     if session['user']['userType']!='deliveryAgent':
         return redirect(url_for('Auth.logout'))
 
+    area = request.form.get('area')
+    db.collection('deliveryAgent').document(session['userId']).update({'area':area})
+
+    return redirect(url_for('views.deliveryAgentDashboard'))
 
 
+
+
+
+@views.route('/useOffer<toUse>')
+def useOffer(toUse):
+    if session['sessionUser']['userType'] != 'customer':
+        return redirect(url_for('logout'))
+    user=session['userId']
+    toUse=int(toUse)
+    toUse=toUse-1
+    session['currentOrderCreating']['offerId']=session['offerList'][toUse]['offerId']
+    session.modified = True
+    return redirect(url_for('orderDetails'))
+
+
+@views.route('/removeOfferFromOrder')
+def removeOfferFromOrder():
+    if session['sessionUser']['userType'] != 'customer':
+        return redirect(url_for('logout'))
+    session['currentOrderCreating']['offerId']=None
+    session.modified = True
+    return redirect(url_for('orderDetails'))
+
+
+# This will change the recommended status for the restaurant
+@views.route('/changeRecommendRestaurant<id_to_change>')
+def changeRecommendRestaurant(id_to_change):
+    if session['sessionUser']['userType'] != 'admin':
+        return redirect(url_for('logout'))
+    id=int(id_to_change)
+    id=id-1
+
+    restaurantId=session['restaurantList'][id]['restaurantId']
+
+    if session['restaurantList'][id]['isRecommended'] == False:
+        session['restaurantList'][id]['isRecommended'] = True
+        session.modified = True
+        
+    else :
+        session['restaurantList'][id]['isRecommended'] = False
+        session.modified = True
+
+    #change in database
+    isRecommended=""
+    try:
+        isRecommended = db.collection("restaurant").document(restaurantId).get().to_dict()['isRecommended']
+    except Exception as e:
+        # print(str(e))
+        # error retriving isRecommended from database
+        pass
+    
+    try:
+        db.collection("restaurant").document(restaurantId).update({'isRecommended':not isRecommended})
+    except Exception as e:
+        # print(str(e))
+        # error changing isRecommended from database
+        pass
+
+    return redirect(url_for('allRestaurant'))
+
+
+# This function will change the recommend status of the food item, will be used by admin
+@views.route('/changeRecommendFoodItem<id_to_change>')
+def changeRecommendFoodItem(id_to_change):
+    if session['sessionUser']['userType'] != 'admin':
+        return redirect(url_for('logout'))
+    id=int(id_to_change)
+    id=id-1
+    if session['currentMenu'][id]['isRecommended'] == False:
+        session['currentMenu'][id]['isRecommended'] = True
+        session.modified = True
+    else :
+        session['currentMenu'][id]['isRecommended'] = False
+        session.modified = True
+
+    foodItemId=session['currentMenu'][id]['foodItemId']
+    restaurantId=session['currentMenu'][id]['restaurantId']
+
+    isRecommended=""
+    try:
+        isRecommended = db.collection("restaurant").document(restaurantId).collection("foodItem").document(foodItemId).get().to_dict()['isRecommended']
+    except Exception as e:
+        # print(str(e))
+        # error retriving isRecommended from database
+        pass
+    
+    try:
+        db.collection("restaurant").document(restaurantId).collection("foodItem").document(foodItemId).update({'isRecommended':not isRecommended})
+    except Exception as e:
+        # print(str(e))
+        # error changing isRecommended from database
+        pass
+
+    return redirect(url_for('allFoodItem11', restaurantUserId = restaurantId ))
+
+
+# This function filters all the restaurant from the database that are recommended and stores them in the list and then later shows that list
+@views.route('/recommendedRestaurant')
+def recommendedRestaurant():
+    user=session['sessionUser']
+    if not user['userType'] == 'customer':
+        return redirect(url_for('logout'))
+    restaurantList=[]
+    tempRestaurantList=[]
+    docs=db.collection('restaurant').stream()
+    for doc in docs:
+        temp_dict=doc.to_dict()
+        temp_dict['userId']= doc.id
+        #temp_dict['pic'] = getImageURL(temp_dict['picSrc'])
+        temp_dict['areaName'] = db.collection('area').document(temp_dict['areaId']).get().to_dict()['name']
+        temp_dict['ratingValue'] = db.collection('rating').document(temp_dict['ratingId']).get().to_dict()['rating']
+        tempRestaurantList.append(temp_dict)
+    for restaurant in tempRestaurantList:
+        if restaurant['isRecommended']:
+            restaurantList.append(restaurant)
+    session['restaurantList']=restaurantList
+    session.modified = True
+    
+    return render_template('recommendedRestaurant.html', restaurantList=restaurantList, user=user)
+
+# This is the front page for the create offer module, and show all the offer created, and a button to create new offers
+@views.route('/createOffer')
+def createOffer():
+    user = session['sessionUser']
+    if not user['userType'] == 'admin':
+        return redirect(url_for('logout'))
+    currentAdminId=session['userId']
+    offerList=[]
+    # Add statement for getting a docs for the offers
+    docs=db.collection('offer').stream()
+    for doc in docs:
+        temp_dict=doc.to_dict()
+        temp_dict['offerId']= doc.id
+        offerList.append(temp_dict)
+    try:
+        message=session['offerAdditionMessage']
+        session['offerAdditionMessage']="False"
+    except: 
+        session['offerAdditionMessage']="False"
+        message="False"
+    return render_template('createOffer.html', user=user, offerList=offerList, message=message)
+
+
+
+
+# This function will show the page to add offer and will show the input fields
+@views.route('/addOffer')
+def addOffer():
+    if session['sessionUser']['userType'] != 'admin':
+        return redirect(url_for('logout'))
+    user = session['sessionUser']
+    if user['userType'] == 'admin':
+        message=session['offerAdditionMessage']
+        session['offerAdditionMessage']="False"
+        return render_template('addOffer.html', user=user, message=message)
+    else:
+        return redirect(url_for('logout'))
+
+
+# This function will add the offers in the database that will be later used in the future
+@views.route('/addOffer/adder', methods=['POST','GET'])
+def offerAdder():
+    if session['sessionUser']['userType'] != 'admin':
+        return redirect(url_for('logout'))
+    name = request.form['name']
+    discount = request.form['discount']
+    price = request.form['price']
+    
+    try:
+        json_data = {
+            "name" : name,
+            "discount" : discount,
+            "upperLimit": price,
+            "offerId":""
+        }
+        
+        doc_reference = db.collection("offer").document()
+        doc_reference.set(json_data)
+        db.collection("offer").document(doc_reference.id).update({"offerId":doc_reference.id})
+
+        session['offerAdditionMessage']="Offer added successfully."
+        return redirect(url_for('createOffer'))
+        
+    except Exception as e:
+        print(str(e))
+        session['offerAdditionMessage'] = "Error adding offer in database"
+        return redirect(url_for('addOffer'))
+
+
+
+
+# This function will show all the offers to the customer in the frontend
+@views.route('/allOffer<customer_id>')
+def allOffer(customer_id):
+    if session['sessionUser']['userType'] != 'admin':
+        return redirect(url_for('logout'))
+    customer_id=int(customer_id)
+    customer_id=customer_id-1
+    session['customerGettingOffer']=session['customerList'][customer_id]['customerId']
+    offerList=[]
+    docs = db.collection('offer').stream()
+    for doc in docs:
+        temp_dict=doc.to_dict()
+        temp_dict['offerId']= doc.id
+        offerList.append(temp_dict)
+    session['offerList'] = offerList
+    session.modified = True
+    print(offerList)
+    return render_template('allOfferAdmin.html', offerList=offerList)
+
+
+# This function will give offer to the customer in the backend.
+@views.route('/giveOffer<toGive>')
+def giveOffer(toGive):
+    if session['sessionUser']['userType'] != 'admin':
+        return redirect(url_for('logout'))
+    
+    toGive=int(toGive)
+    toGive=toGive-1
+
+    customerGettingOffer=session['customerGettingOffer']
+    offerId=session['offerList'][toGive]['offerId']
+    
+    try:
+        offer_json_data = db.collection('offer').document(offerId).get().to_dict()
+        doc_reference = db.collection("customer").document(customerGettingOffer).collection("promotionalOfferId").document()
+        offer_json_data['offerId']=doc_reference.id
+        doc_reference.set(offer_json_data)
+        
+    except:
+        pass
+    
+    return redirect(url_for('allCustomers'))
+
+# This will show all the offers received by the customer from the admin
+@views.route('/offerListCustomer')
+def offerListCustomer():
+    if session['sessionUser']['userType'] != 'customer':
+        return redirect(url_for('logout'))
+    user=session['userId']
+    offerList=[]
+    docs = db.collection('customer').document(user).collection('promotionalOfferId').stream()
+    for doc in docs:
+        temp_dict=doc.to_dict()
+        temp_dict['offerId']= doc.id
+        
+        offerList.append(temp_dict)
+    session['offerList']=offerList
+    session.modified = True
+    # print(offerList)
+    return render_template('allOfferCustomer.html', offerList=offerList)
+
+
+# This function will show the details of the order and based on the statuses, the information on the front end will change
+@views.route('/moreDetailsDeliveryRequest<status>')
+def moreDetailsDeliveryRequest(status):
+
+    if session['sessionUser']['userType']!='deliveryAgent':
+        return redirect(url_for('logout'))
+    
+    # if the status is no order, no information is retrieved from the database, nor anything is displayed
+    if status != "NoOrder":
+        session['currentOrderDeliveryAgent'] = db.collection('order').document(session['currentOrderDeliveryAgent']['orderId']).get().to_dict()
+        session.modified = True
+    showButton=3
+    if status == "NoOrder":
+        printTable = False
+    else: 
+        printTable = True
+        # This showButton are to chose which button to show
+        if status == "Accept":
+            showButton = 1
+        elif status == "Details" and session['currentOrderDeliveryAgent']['updateLevel'] == 4 :
+            showButton = 2
+        elif status == "Details" and session['currentOrderDeliveryAgent']['updateLevel']==2:
+            showButton = 0
+        else:
+            showButton = 3
+            
+    currentOrder = None
+    customerName = None
+    restaurantName = None
+    address = None
+    orderList = None
+    cost = None
+    discount = None
+    deliveryCharge = None
+    final = None
+    # Retrieving data from the database
+    if status != "NoOrder":
+        currentOrder = session['currentOrderDeliveryAgent']
+        customerName = db.collection('customer').document(currentOrder['customerId']).get().to_dict()['name']
+        restaurantName = db.collection('restaurant').document(currentOrder['restaurantId']).get().to_dict()['name']
+        address = db.collection('customer').document(currentOrder['customerId']).get().to_dict()['address']
+        orderList = currentOrder['orderList']
+        cost = currentOrder['orderValue']
+        discount = int(currentOrder['discountValue'])
+    # print(discount)
+        deliveryCharge = currentOrder['deliveryCharge']
+        final = currentOrder['paidValue']
+
+    return render_template('moreDetailsDeliveryAgent.html', customerName=customerName, restaurantName=restaurantName, address = address, orderList=orderList, cost= cost, discount=discount, deliveryCharge=deliveryCharge, final= final, showButton = showButton, printTable = printTable)
+
+
+
+# This function will show the order details for the order that the delivery agent chooses from the table
+# will see the list from the one stored in session
+@views.route('/orderDetailDeliveryAgent<orderId>')
+def orderDetailDeliveryAgent(orderId):
+    if session['sessionUser']['userType'] != 'deliveryAgent':
+        return redirect(url_for('logout'))
+    orderId=int(orderId)
+    orderId = orderId-1
+    session['currentOrderDeliveryAgent']=session['currentDeliveryRequest'][orderId]
+    session.modified = True
+    return redirect(url_for('moreDetailsDeliveryRequest', status = "Details"))
+
+
+# This will show the current order of the delivery Agent
+# If there is no current order accepted, then no order will be shown, and a message will be displayed on the page
+@views.route('/currentOrderDeliveryAgent')
+def currentOrderDeliveryAgent():
+    if session['sessionUser']['userType'] != 'deliveryAgent':
+        return redirect(url_for('logout'))
+    user=session['sessionUser']
+    currentOrderId = db.collection(user['userType']).document(session['userId']).get().to_dict()['currentOrderId']
+    if currentOrderId == "":
+        return redirect(url_for('moreDetailsDeliveryRequest', status = "NoOrder"))
+    else: 
+        session['currentOrderDeliveryAgent'] = db.collection('order').document(currentOrderId).get().to_dict()
+        session.modified = True
+        return redirect(url_for('moreDetailsDeliveryRequest', status = "Details")) 
+
+
+# The below functions are to take care of the rating, we are updating the rating document in the firebase database
+# The rating are ranged from 0 to 5 and are stored as double
+
+# This function rates the customer, and the rating is done by the deliveryagent
+@views.route('/ratingDeliveryAgent', methods=['POST', 'GET'])
+def ratingDeliveryAgent():
+    
+    # To prevent un-accessed use through links
+    if session['sessionUser']['userType']!='deliveryAgent':
+        return redirect(url_for('logout'))
+
+
+    customerId=session['currentOrderDeliveryAgent']['customerId']
+    rating=request.form['customerRating']
+    rating=int(rating)
+
+    ratingId=db.collection('customer').document(customerId).get().to_dict()['ratingId']
+    ratingObject=db.collection('rating').document(ratingId).get().to_dict()
+
+    ratingObject['noOfInputs'] = ratingObject['noOfInputs'] + 1
+    ratingObject['sum'] = ratingObject['sum'] + rating
+    ratingObject['rating'] = ratingObject['sum']/ratingObject['noOfInputs']
+
+    db.collection('rating').document(ratingId).set(ratingObject)
+    
+    currentOrder = session['currentOrderDeliveryAgent']
+    
+    # Update the order for the update done by the delivery agent and mention it as delivered
+    db.collection('order').document(currentOrder['orderId']).update({'updateMessage': "Order Delivered"})
+    db.collection('order').document(currentOrder['orderId']).update({'updateLevel': 5})
+    db.collection('order').document(currentOrder['orderId']).update({'isPending': False})
+    db.collection('customer').document(currentOrder['customerId']).update({'pendingOrderId' : firestore.ArrayRemove([currentOrder['orderId']])})
+    db.collection('restaurant').document(currentOrder['restaurantId']).update({'pendingOrderId' : firestore.ArrayRemove([currentOrder['orderId']])})
+    db.collection('deliveryAgent').document(currentOrder['deliveryAgentId']).update({'isAvailable' : True})
+    db.collection('deliveryAgent').document(currentOrder['deliveryAgentId']).update({'currentOrderId': ""})
+    session['currentOrderDeliveryAgent']=None
+    session.modified=True
+    return redirect(url_for('deliveryAgentDashboard'))
+
+
+# This will take the rating from the customer after the order is delivered
+# This can be accessed by going in past orders and more details in customer dashboard
+# Changing the rating of the restaurant and the delivery agent
+@views.route('/ratingCustomer', methods=['POST', 'GET'])
+def ratingCustomer():
+    
+    if session['sessionUser']['userType']!='customer':
+        return redirect(url_for('logout'))
+
+
+    orderId=session['customerCurrentOrderChanging']['orderId']
+    db.collection('order').document(orderId).update({'updateLevel': 6})
+    deliveryAgentId = db.collection("order").document(orderId).get().to_dict()['deliveryAgentId']
+    deliveryAgentRating=request.form['deliveryAgentRating']
+    deliveryAgentRating=int(deliveryAgentRating)
+
+    deliveryAgentRatingId=db.collection('deliveryAgent').document(deliveryAgentId).get().to_dict()['ratingId']
+    deliveryAgentRatingObject=db.collection('rating').document(deliveryAgentRatingId).get().to_dict()
+    
+    
+    
+    deliveryAgentRatingObject['noOfInputs'] = deliveryAgentRatingObject['noOfInputs'] + 1
+    deliveryAgentRatingObject['sum'] = deliveryAgentRatingObject['sum'] + deliveryAgentRating
+    deliveryAgentRatingObject['rating'] = deliveryAgentRatingObject['sum']/deliveryAgentRatingObject['noOfInputs']
+
+    db.collection('rating').document(deliveryAgentRatingId).set(deliveryAgentRatingObject)
+
+
+    restaurantId = db.collection("order").document(orderId).get().to_dict()['restaurantId']
+    restaurantRating=request.form['restaurantRating']
+    restaurantRating=int(restaurantRating)
+
+    restaurantRatingId=db.collection('restaurant').document(restaurantId).get().to_dict()['ratingId']
+    restaurantRatingObject=db.collection('rating').document(restaurantRatingId).get().to_dict()
+
+    restaurantRatingObject['noOfInputs'] = restaurantRatingObject['noOfInputs'] + 1
+    restaurantRatingObject['sum'] = restaurantRatingObject['sum'] + restaurantRating
+    restaurantRatingObject['rating'] = restaurantRatingObject['sum']/restaurantRatingObject['noOfInputs']
+
+    db.collection('rating').document(restaurantRatingId).set(restaurantRatingObject)
+
+    return redirect(url_for('pastOrder'))
 
 
 
