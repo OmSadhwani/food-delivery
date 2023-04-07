@@ -461,8 +461,9 @@ def sendDeliveryRequest(orderId):
         db.collection('order').document(orderId).update({'updateLevel': 2})
     except Exception as e:
         return {"message":"error", "error":str(e)}
-
+    
     return {"message":"Success"}
+    # return redirect(url_for('views.recentOrderRestaurant'))
 
 @views.route('/moreDetailsOrder/<orderId>',methods=['GET','POST'])
 def moreDetailsOrder(orderId):
@@ -500,7 +501,7 @@ def moreDetailsOrder(orderId):
 # This will show the food items in a restaurant, i.e. showing the menu of the restaurant
 @views.route('/allFoodItem11/<restaurantUserId>')
 def allFoodItem11(restaurantUserId):
-    if not session['sessionUser']['userType'] == 'customer' and not session['sessionUser']['userType'] == 'admin':
+    if not session['user']['userType'] == 'customer' and not session['user']['userType'] == 'admin':
         return redirect(url_for('logout'))
     session['currResMenuId']=restaurantUserId
     return redirect(url_for('allFoodItem'))
@@ -509,7 +510,7 @@ def allFoodItem11(restaurantUserId):
 @views.route('/allFoodItem')
 def allFoodItem():
 
-    user=session['sessionUser']
+    user=session['user']
     if not user['userType']=='customer' and not user['userType']=='admin':
         return redirect(url_for('logout'))
 
@@ -590,7 +591,7 @@ def deleteUserFromDatabase(to_delete):
 @views.route('/delete/<user_type>/<delete_id>')
 def deleteUser(user_type, delete_id):
     # print(request.args.get(user_type))
-    if not session['sessionUser']['userType'] == "admin":
+    if not session['user']['userType'] == "admin":
         return redirect(url_for('logout'))
     to_delete = int(delete_id)
     to_delete=to_delete-1
@@ -753,7 +754,7 @@ def acceptDeliveryRequest(orderId):
             db.collection('order').document(orderId).update({'updateLevel': 3})
             db.collection('order').document(orderId).update({'orderUpdates' : firestore.ArrayUnion([updateOrderDic])})
             # print(session['currentOrderDeliveryAgent']['orderId'])
-            # db.collection('area').document(session['sessionUser']['areaId']).update({'availableOrderIdForPickup' : firestore.ArrayRemove([session['currentOrderDeliveryAgent']['orderId']])})
+            # db.collection('area').document(session['user']['areaId']).update({'availableOrderIdForPickup' : firestore.ArrayRemove([session['currentOrderDeliveryAgent']['orderId']])})
             db.collection('deliveryAgent').document(user['deliveryAgentId']).update({"isAvailable" : not user['isAvailable']})
             db.collection('deliveryAgent').document(user['deliveryAgentId']).update({"currentOrderId" : session['currentOrderDeliveryAgent']['orderId']})
             return {"message":"Success"}
@@ -787,7 +788,7 @@ def markLocation():
 
 @views.route('/useOffer<toUse>')
 def useOffer(toUse):
-    if session['sessionUser']['userType'] != 'customer':
+    if session['user']['userType'] != 'customer':
         return redirect(url_for('logout'))
     user=session['userId']
     toUse=int(toUse)
@@ -799,7 +800,7 @@ def useOffer(toUse):
 
 @views.route('/removeOfferFromOrder')
 def removeOfferFromOrder():
-    if session['sessionUser']['userType'] != 'customer':
+    if session['user']['userType'] != 'customer':
         return redirect(url_for('logout'))
     session['currentOrderCreating']['offerId']=None
     session.modified = True
@@ -809,7 +810,7 @@ def removeOfferFromOrder():
 # This will change the recommended status for the restaurant
 @views.route('/changeRecommendRestaurant<id_to_change>')
 def changeRecommendRestaurant(id_to_change):
-    if session['sessionUser']['userType'] != 'admin':
+    if session['user']['userType'] != 'admin':
         return redirect(url_for('logout'))
     id=int(id_to_change)
     id=id-1
@@ -846,7 +847,7 @@ def changeRecommendRestaurant(id_to_change):
 # This function will change the recommend status of the food item, will be used by admin
 @views.route('/changeRecommendFoodItem<id_to_change>')
 def changeRecommendFoodItem(id_to_change):
-    if session['sessionUser']['userType'] != 'admin':
+    if session['user']['userType'] != 'admin':
         return redirect(url_for('logout'))
     id=int(id_to_change)
     id=id-1
@@ -881,7 +882,7 @@ def changeRecommendFoodItem(id_to_change):
 # This function filters all the restaurant from the database that are recommended and stores them in the list and then later shows that list
 @views.route('/recommendedRestaurant')
 def recommendedRestaurant():
-    user=session['sessionUser']
+    user=session['user']
     if not user['userType'] == 'customer':
         return redirect(url_for('logout'))
     restaurantList=[]
@@ -905,7 +906,7 @@ def recommendedRestaurant():
 # This is the front page for the create offer module, and show all the offer created, and a button to create new offers
 @views.route('/createOffer')
 def createOffer():
-    user = session['sessionUser']
+    user = session['user']
     if not user['userType'] == 'admin':
         return redirect(url_for('logout'))
     currentAdminId=session['userId']
@@ -930,9 +931,9 @@ def createOffer():
 # This function will show the page to add offer and will show the input fields
 @views.route('/addOffer')
 def addOffer():
-    if session['sessionUser']['userType'] != 'admin':
+    if session['user']['userType'] != 'admin':
         return redirect(url_for('logout'))
-    user = session['sessionUser']
+    user = session['user']
     if user['userType'] == 'admin':
         message=session['offerAdditionMessage']
         session['offerAdditionMessage']="False"
@@ -944,7 +945,7 @@ def addOffer():
 # This function will add the offers in the database that will be later used in the future
 @views.route('/addOffer/adder', methods=['POST','GET'])
 def offerAdder():
-    if session['sessionUser']['userType'] != 'admin':
+    if session['user']['userType'] != 'admin':
         return redirect(url_for('logout'))
     name = request.form['name']
     discount = request.form['discount']
@@ -976,7 +977,7 @@ def offerAdder():
 # This function will show all the offers to the customer in the frontend
 @views.route('/allOffer<customer_id>')
 def allOffer(customer_id):
-    if session['sessionUser']['userType'] != 'admin':
+    if session['user']['userType'] != 'admin':
         return redirect(url_for('logout'))
     customer_id=int(customer_id)
     customer_id=customer_id-1
@@ -996,7 +997,7 @@ def allOffer(customer_id):
 # This function will give offer to the customer in the backend.
 @views.route('/giveOffer<toGive>')
 def giveOffer(toGive):
-    if session['sessionUser']['userType'] != 'admin':
+    if session['user']['userType'] != 'admin':
         return redirect(url_for('logout'))
 
     toGive=int(toGive)
@@ -1019,7 +1020,7 @@ def giveOffer(toGive):
 # This will show all the offers received by the customer from the admin
 @views.route('/offerListCustomer')
 def offerListCustomer():
-    if session['sessionUser']['userType'] != 'customer':
+    if session['user']['userType'] != 'customer':
         return redirect(url_for('logout'))
     user=session['userId']
     offerList=[]
@@ -1036,11 +1037,12 @@ def offerListCustomer():
 
 
 # This function will show the details of the order and based on the statuses, the information on the front end will change
-@views.route('/moreDetailsDeliveryRequest/<orderId>')
+@views.route('/moreDetailsDeliveryRequest/<orderId>', methods=['POST','GET'])
 def moreDetailsDeliveryRequest(orderId):
 
-    if session['sessionUser']['userType']!='deliveryAgent':
-        return redirect(url_for('logout'))
+    if session['user']['userType']!='deliveryAgent':
+        return {"message":"error"}
+        # return redirect(url_for('logout'))
 
     # if the status is no order, no information is retrieved from the database, nor anything is displayed
     # if status != "NoOrder":
@@ -1075,7 +1077,7 @@ def moreDetailsDeliveryRequest(orderId):
     final = None
     # Retrieving data from the database
     #if status != "NoOrder":
-    currentOrder = db.collection('area').document(orderId).get().to_dict()
+    currentOrder = db.collection('order').document(orderId).get().to_dict()
     customerName = db.collection('customer').document(currentOrder['customerId']).get().to_dict()['name']
     restaurantName = db.collection('restaurant').document(currentOrder['restaurantId']).get().to_dict()['name']
     address = db.collection('customer').document(currentOrder['customerId']).get().to_dict()['address']
@@ -1095,7 +1097,7 @@ def moreDetailsDeliveryRequest(orderId):
 # will see the list from the one stored in session
 @views.route('/orderDetailDeliveryAgent<orderId>')
 def orderDetailDeliveryAgent(orderId):
-    if session['sessionUser']['userType'] != 'deliveryAgent':
+    if session['user']['userType'] != 'deliveryAgent':
         return redirect(url_for('logout'))
     orderId=int(orderId)
     orderId = orderId-1
@@ -1108,9 +1110,9 @@ def orderDetailDeliveryAgent(orderId):
 # If there is no current order accepted, then no order will be shown, and a message will be displayed on the page
 @views.route('/currentOrderDeliveryAgent')
 def currentOrderDeliveryAgent():
-    if session['sessionUser']['userType'] != 'deliveryAgent':
+    if session['user']['userType'] != 'deliveryAgent':
         return redirect(url_for('logout'))
-    user=session['sessionUser']
+    user=session['user']
     currentOrderId = db.collection(user['userType']).document(session['userId']).get().to_dict()['currentOrderId']
     if currentOrderId == "":
         return redirect(url_for('moreDetailsDeliveryRequest', status = "NoOrder"))
@@ -1128,7 +1130,7 @@ def currentOrderDeliveryAgent():
 def ratingDeliveryAgent(orderId):
 
     # To prevent un-accessed use through links
-    if session['sessionUser']['userType']!='deliveryAgent':
+    if session['user']['userType']!='deliveryAgent':
         return {"message":"error"}
         # return redirect(url_for('logout'))
 
@@ -1151,7 +1153,7 @@ def ratingDeliveryAgent(orderId):
 
         db.collection('rating').document(ratingId).set(ratingObject)
 
-        currentOrder = session['currentOrderDeliveryAgent']
+        # currentOrder = session['currentOrderDeliveryAgent']
 
         # Update the order for the update done by the delivery agent and mention it as delivered
         db.collection('order').document(currentOrder['orderId']).update({'updateMessage': "Order Delivered"})
@@ -1175,7 +1177,7 @@ def ratingDeliveryAgent(orderId):
 @views.route('/ratingCustomer', methods=['POST', 'GET'])
 def ratingCustomer():
 
-    if session['sessionUser']['userType']!='customer':
+    if session['user']['userType']!='customer':
         return redirect(url_for('logout'))
 
 

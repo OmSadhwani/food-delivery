@@ -23,7 +23,7 @@ export default function PersonalDataDeliveryAgent() {
     <>
       <div>
         Area <br/>
-        {details['areaId']}
+        {details['area']}
       </div>
       <br/>
       <div>

@@ -24,10 +24,15 @@ import ConfirmOrder from './components/pages/ConfirmOrder'
 import PastOrders from './components/pages/PastOrders'
 import RecentOrderCustomer from './components/pages/RecentOrderCustomer'
 import MoreDetailsOrder from './components/pages/MoreDetailsOrder'
+import SeeDeliveryRequest from './components/pages/SeeDeliveryRequest'
 import PendingOrderRestaurant from './components/pages/PendingOrderRestaurant'
 import OrderDetailsRestaurant from './components/pages/OrderDetailsRestaurant'
 import GiveEstimatedTime from './components/pages/GiveEstimatedTime'
 import SendDeliveryRequest from './components/pages/SendDeliveryRequest'
+import AcceptDeliveryRequest from './components/pages/AcceptDeliveryRequest'
+import MoreDetailsDeliveryRequest from './components/pages/MoreDetailsDeliveryRequest'
+import RatingDeliveryAgent from './components/pages/RatingDeliveryAgent'
+import MarkLocation from './components/pages/MarkLocation'
 import PastOrderRestaurant from './components/pages/PastOrderRestaurant'
 
 function App() {
@@ -68,10 +73,15 @@ function App() {
           <Route exact path='/pastOrders' element={<PastOrders/>} />
           <Route exact path='/presentOrders' element={<RecentOrderCustomer/>} />
           <Route exact path='/orderDetails' element={<ConfirmOrder/>} />
+          <Route exact path='/seeDeliveryRequest' element={<SeeDeliveryRequest/>} />
+          <Route exact path='/acceptDeliveryRequest/:id' element={<AcceptDeliveryRequest/>} />
+          <Route exact path='/moreDetailsDeliveryRequest/:id' element={<MoreDetailsDeliveryRequest/>} />
+          <Route exact path='/ratingDeliveryAgent/:id' element={<RatingDeliveryAgent/>} />
           <Route exact path='/pendingOrdersRestaurant' element={<PendingOrderRestaurant/>} />
           <Route exact path='/orderDetailRestaurant/:id' element={<OrderDetailsRestaurant/>} />
           <Route exact path='/giveEstimatedTime/:id' element={<GiveEstimatedTime/>} />
           <Route exact path='/sendDeliveryRequest/:id' element={<SendDeliveryRequest/>} />
+          <Route exact path='/markLocation' element={<MarkLocation/>} />
           <Route exact path='/PastOrderRestaurant' element={<PastOrderRestaurant/>} />
         </Routes>
       </Router>
