@@ -24,6 +24,7 @@ import ConfirmOrder from './components/pages/ConfirmOrder'
 import PastOrders from './components/pages/PastOrders'
 import RecentOrderCustomer from './components/pages/RecentOrderCustomer'
 import MoreDetailsOrder from './components/pages/MoreDetailsOrder'
+import SeeDeliveryRequest from './components/pages/SeeDeliveryRequest'
 
 function App() {
   // const [initialData, setInitialData] = useState([{}])
@@ -63,6 +64,7 @@ function App() {
           <Route exact path='/pastOrder' element={<PastOrders/>} />
           <Route exact path='/recentOrderCustomer' element={<RecentOrderCustomer/>} />
           <Route exact path='/orderDetails' element={<ConfirmOrder/>} />
+          <Route exact path='/seeDeliveryRequest' element={<SeeDeliveryRequest/>} />
           
         </Routes>
       </Router>

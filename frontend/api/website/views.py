@@ -695,7 +695,7 @@ def seeDeliveryRequest():
     #         deliveryRequestList.append(temp_dict)
     session['currentDeliveryRequest'] = deliveryRequestList
     session.modified = True
-    return render_template("seeDeliveryRequest.html", deliveryRequestList = deliveryRequestList)
+    return  {"deliveryRequestList" : deliveryRequestList}
 
 
 
