@@ -515,11 +515,11 @@ def pastOrder():
     if(userType=="customer"):
         session['presentOrderCustomer']= pastOrderList
         session.modified = True
-        return render_template('pastOrderCustomer.html',pastOrderList=pastOrderList)
+        return {"pastOrderlist" : pastOrderList}
     if(userType=="restaurant"):
         session['presentOrderRestaurant']= pastOrderList
         
-        return render_template('pastOrderRestaurant.html',pastOrderList=pastOrderList)
+        return {"pastOrderlist" : pastOrderList}
 
 
 # This will show all the nearby delivery agent in the same area to the restaurant

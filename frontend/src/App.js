@@ -20,6 +20,7 @@ import PersonalDataRestaurant from './components/pages/PersonalDataRestaurant'
 import PersonalData from './components/pages/PersonalData'
 import AllRestaurants from './components/pages/AllRestaurants'
 import Order from './components/pages/Order'
+import PastOrders from './components/pages/PastOrders'
 
 function App() {
   // const [initialData, setInitialData] = useState([{}])
@@ -53,6 +54,7 @@ function App() {
           <Route exact path='/personalDataRestaurant' element={<PersonalDataRestaurant/>} />
           <Route exact path='/allRestaurants' element={<AllRestaurants/>} />
           <Route exact path='displayFoodItems/:id' element={<Order/>} />
+          <Route exact path='/pastOrder' element={<PastOrders/>}/>
         </Routes>
       </Router>
     </>
