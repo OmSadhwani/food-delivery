@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import '../../App.css';
 
 function PastOrders(){
-    const [orders,setorders] = useState({});
+    const [orders,setorders] = useState([]);
 
     const handlemessage = (msg) => {
     setorders(msg)
@@ -14,7 +14,7 @@ function PastOrders(){
       }).then(response => response.json())
         .then(message => (
             // console.log(message["user"])
-            handlemessage(message)
+            handlemessage(message["pastOrderlist"])
         ))},[])
 
     return(

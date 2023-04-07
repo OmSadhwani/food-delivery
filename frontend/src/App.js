@@ -60,8 +60,8 @@ function App() {
           <Route exact path='/allRestaurants' element={<AllRestaurants/>} />
           <Route exact path='/displayFoodItems/:id' element={<Order/>} />
           <Route exact path='/moreDetailsOrder/:id' element={<MoreDetailsOrder/>} />
-          <Route exact path='/pastOrder' element={<PastOrders/>} />
-          <Route exact path='/recentOrderCustomer' element={<RecentOrderCustomer/>} />
+          <Route exact path='/pastOrders' element={<PastOrders/>} />
+          <Route exact path='/presentOrders' element={<RecentOrderCustomer/>} />
           <Route exact path='/orderDetails' element={<ConfirmOrder/>} />
           
         </Routes>

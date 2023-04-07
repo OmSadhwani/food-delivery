@@ -2,10 +2,10 @@ import React, {useState, useEffect} from 'react';
 import '../../App.css';
 
 function RecentOrderCustomer(){
-    const [orders,setorders] = useState({});
+    const [orders,setorders] = useState([]);
 
     const handlemessage = (msg) => {
-    setorders(msg)
+        setorders(msg)
     }
 
     
@@ -14,7 +14,7 @@ function RecentOrderCustomer(){
       }).then(response => response.json())
         .then(message => (
             // console.log(message["user"])
-            handlemessage(message)
+            handlemessage(message['recentOrderList'])
         ))},[])
     
         function handleButtonClick(menuURL) {
@@ -32,8 +32,8 @@ function RecentOrderCustomer(){
                     {order['restaurantName']}{' '}
                     {/* restid=restaurant['restaurantId']
                     */}
-                    {order['orderValue']}
-                    {order['updateMessage']}
+                    {order['orderValue']}{' '}
+                    {order['updateMessage']}{' '}
                     <button onClick={() => handleButtonClick(order['orderId'])}>More Details</button>
                 </li>
                 ))}

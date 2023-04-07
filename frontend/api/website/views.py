@@ -322,7 +322,7 @@ def recentOrderCustomer():
             recentOrderList.append(temp)
     session['presentOrderCustomer']=recentOrderList
     
-    return render_template('recentOrderCustomer.html', recentOrderList=recentOrderList)
+    return {'recentOrderList':recentOrderList}
 
 @views.route('/recentOrderRestaurant')
 
