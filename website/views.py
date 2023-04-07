@@ -74,7 +74,7 @@ def allRestaurant():
         try:
             temp_dict = res.to_dict()
             temp_dict['userId'] = res.id
-            temp_dict['areaName'] = db.collection('area').document(temp_dict['areaId']).get().to_dict()['name']
+            #temp_dict['areaName'] = db.collection('area').document(temp_dict['areaId']).get().to_dict()['name']
             temp_dict['ratingValue'] = db.collection('rating').document(temp_dict['ratingId']).get().to_dict()['rating']
 
             restaurantList.append(temp_dict)

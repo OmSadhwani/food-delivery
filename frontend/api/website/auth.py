@@ -28,6 +28,7 @@ def customerLogin():
 
             json_data = db.collection("customer").document(user["localId"]).get().to_dict()
             session['user'] = json_data
+            session['userId'] = session['user']['customerId']
             session['user']['userType'] = "customer"
             return {"message": "Success"}
 
@@ -138,6 +139,7 @@ def restaurantLogin():
             json_data = db.collection("restaurant").document(user["localId"]).get().to_dict()
 
             session['user'] = json_data
+            session['userId'] = session['user']['restaurantId']
             session['user']['userType'] = "restaurant"
 
             # return redirect(url_for('views.restaurantDashboard'))
@@ -263,6 +265,7 @@ def deliveryAgentLogin():
             json_data = db.collection("deliveryAgent").document(user["localId"]).get().to_dict()
 
             session['user'] = json_data
+            session['userId'] = session['user']['deliveryAgentId']
             session['user']['userType'] = "deliveryAgent"
 
             return {"message":"Success"}
