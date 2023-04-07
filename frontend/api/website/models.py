@@ -10,39 +10,39 @@ db = firestore.client()
 bucket = storage.bucket()
 
 
-def areaDatabase():
-    areas = ["Delhi","Mumbai","Calcutta"]
+# def areaDatabase():
+#     areas = ["Delhi","Mumbai","Calcutta"]
 
-    area_ref = db.collection("area").stream()
-    included_areas = []
-    for area in area_ref:
-        temp_dict = area.to_dict()
-        included_areas.append(temp_dict['name'])
-
-
-    for area in areas:
-        if area not in included_areas:
-            new_area_ref = db.collection('area').document()
-            new_area_json = {
-                "name": area,
-                "areaId": new_area_ref.id,
-                "restaurantId": [],
-                "orderIdForPickup": []
-            }
-
-            new_area_ref.set(new_area_json)
+#     area_ref = db.collection("area").stream()
+#     included_areas = []
+#     for area in area_ref:
+#         temp_dict = area.to_dict()
+#         included_areas.append(temp_dict['name'])
 
 
-def getDatabaseAreas():
-    areaDatabase()
+#     for area in areas:
+#         if area not in included_areas:
+#             new_area_ref = db.collection('area').document()
+#             new_area_json = {
+#                 "name": area,
+#                 "areaId": new_area_ref.id,
+#                 "restaurantId": [],
+#                 "orderIdForPickup": []
+#             }
+# # 
+#             new_area_ref.set(new_area_json)
 
-    areas_ref = db.collection('area').stream()
-    areas = []
 
-    for area in areas_ref:
-        temp_dict = area.to_dict()
-        areas.append(temp_dict)
+# def getDatabaseAreas():
+#     areaDatabase()
 
-    return areas
+#     areas_ref = db.collection('area').stream()
+#     areas = []
 
-areas = getDatabaseAreas()
+#     for area in areas_ref:
+#         temp_dict = area.to_dict()
+#         areas.append(temp_dict)
+
+#     return areas
+
+# areas = getDatabaseAreas()

@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import '../../App.css';
+import NavbarC from '../NavbarC'
 
 function CustomerDashboard() {
     
@@ -9,16 +10,23 @@ function CustomerDashboard() {
     setusername(msg)
     }
 
-    fetch('/customerDashboard' , {
+      // useEffect(() => {
+  //   fetch('/').then(
+  //     response => response.json()
+  //   ).then(data => setInitialData(data))
+  // }, []);
+
+
+    useEffect(() => {fetch('/customerDashboard' , {
         method:"GET",
       }).then(response => response.json())
         .then(message => (
             // console.log(message["user"])
             handlemessage(message["name"])
-        ))
+        ))},[])
 
     const Redirect1 = (event) => {
-        window.location.href='/order'
+        window.location.href='/allRestaurants'
     }
 
     const Redirect2 = (event) => {
@@ -29,9 +37,9 @@ function CustomerDashboard() {
         window.location.href='/recommendedRestaurant'        //not in backend
     }
 
-    const Redirect4 = (event) => {
-        window.location.href='/allRestaurant'
-    }
+    // const Redirect4 = (event) => {
+    //     window.location.href='/allRestaurant'
+    // }
 
     const Redirect5 = (event) => {
         window.location.href='/presentOrders'           //not in backend
@@ -43,6 +51,7 @@ function CustomerDashboard() {
 
     return(
         <>
+            <NavbarC/>
             <div className="Welcome">
             <h1>Welcome {username}</h1>    
             </div>     
@@ -55,9 +64,9 @@ function CustomerDashboard() {
             <div className="options">
                 <button onClick={Redirect3}>Recommeded Restaurants</button>
             </div>
-            <div className="options">
+            {/* <div className="options">
                 <button onClick={Redirect4}>All Restaurants</button>
-            </div>
+            </div> */}
             <div className="options">
                 <button onClick={Redirect5}>Present Orders</button>
             </div>

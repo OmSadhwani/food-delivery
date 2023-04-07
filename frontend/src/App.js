@@ -18,6 +18,8 @@ import DeliveryAgentDashboard from './components/pages/DeliveryAgentDashboard'
 import PersonalDataDeliveryAgent from './components/pages/PersonalDataDeliveryAgent'
 import PersonalDataRestaurant from './components/pages/PersonalDataRestaurant'
 import PersonalData from './components/pages/PersonalData'
+import AllRestaurants from './components/pages/AllRestaurants'
+import Order from './components/pages/Order'
 
 function App() {
   // const [initialData, setInitialData] = useState([{}])
@@ -49,6 +51,8 @@ function App() {
           <Route exact path='/personalDataAgent' element={<PersonalDataDeliveryAgent/>} />
           <Route exact path='/personalData' element={<PersonalData/>} />
           <Route exact path='/personalDataRestaurant' element={<PersonalDataRestaurant/>} />
+          <Route exact path='/allRestaurants' element={<AllRestaurants/>} />
+          <Route exact path='displayFoodItems/:id' element={<Order/>} />
         </Routes>
       </Router>
     </>

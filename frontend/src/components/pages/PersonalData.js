@@ -1,21 +1,29 @@
-import React,{useState} from 'react';
+import React from 'react';
+import { useState, useEffect } from 'react';
 import '../../App.css';
 import Navbar from '../Navbar';
+import NavbarC from '../NavbarC'
 
 export default function PersonalData() {
 
   const [details,setdetails] = useState({});
 
+  // useEffect(() => {
+  //   fetch('/').then(
+  //     response => response.json()
+  //   ).then(data => setInitialData(data))
+  // }, []);
 
-    fetch('/personalData' , {
+    useEffect (() => { fetch('/personalData' , {
         method:"GET",
       }).then(response => response.json())
         .then(message => (
             // console.log(message),
             setdetails(message)
-        ))
+        ))},[])
   return (
     <>
+    <NavbarC></NavbarC>
           <div>
         Address<br/>
         {details['address']}
