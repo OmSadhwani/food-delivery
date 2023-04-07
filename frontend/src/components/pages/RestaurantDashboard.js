@@ -9,13 +9,19 @@ function RestaurantDashboard() {
     setusername(msg)
     }
 
-    fetch('/restaurantDashboard' , {
+          // useEffect(() => {
+  //   fetch('/').then(
+  //     response => response.json()
+  //   ).then(data => setInitialData(data))
+  // }, []);
+
+    useEffect(() => {fetch('/restaurantDashboard' , {
         method:"POST",
       }).then(response => response.json())
         .then(message => (
             // console.log(message["user"])
             handlemessage(message["name"])
-        ))
+        ))},[])
 
     const Redirect1 = (event) => {
         window.location.href='/personalDataRestaurant'

@@ -10,15 +10,21 @@ function Menu() {
     }
 
 
+      // useEffect(() => {
+  //   fetch('/').then(
+  //     response => response.json()
+  //   ).then(data => setInitialData(data))
+  // }, []);
 
-    fetch('/menu' , {
+
+    useEffect(() => {fetch('/menu' , {
         method:"GET",
       }).then(response => response.json())
         .then(message => (
             // console.log(message["user"])
             handlemessage(message['menuList'])
             // console.log(message['menuList'])
-        ))
+        ))},[])
 
     const Redirect1 = (event) => {
         window.location.href='/addFoodItem'

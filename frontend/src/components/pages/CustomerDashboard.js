@@ -10,13 +10,20 @@ function CustomerDashboard() {
     setusername(msg)
     }
 
-    fetch('/customerDashboard' , {
+      // useEffect(() => {
+  //   fetch('/').then(
+  //     response => response.json()
+  //   ).then(data => setInitialData(data))
+  // }, []);
+
+
+    useEffect(() => {fetch('/customerDashboard' , {
         method:"GET",
       }).then(response => response.json())
         .then(message => (
             // console.log(message["user"])
             handlemessage(message["name"])
-        ))
+        ))},[])
 
     const Redirect1 = (event) => {
         window.location.href='/allRestaurants'

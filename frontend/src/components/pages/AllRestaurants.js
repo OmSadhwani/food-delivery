@@ -7,13 +7,20 @@ export default function AllRestaurants() {
   const [restaurants,setrestaurants] = useState([]);
   const [restid,setrestid]=useState('')
 
-    fetch('/allRestaurant' , {
+    // useEffect(() => {
+  //   fetch('/').then(
+  //     response => response.json()
+  //   ).then(data => setInitialData(data))
+  // }, []);
+
+
+    useEffect(() => {fetch('/allRestaurant' , {
         method:"GET",
       }).then(response => response.json())
         .then(message => (
             // console.log(message),
             setrestaurants(message['restaurantList'])
-        ))
+        ))},[])
 
         function handleButtonClick(menuURL) {
           window.location.href = "/displayFoodItems/".concat(menuURL)

@@ -7,14 +7,19 @@ export default function PersonalData() {
 
   const [details,setdetails] = useState({});
 
+  // useEffect(() => {
+  //   fetch('/').then(
+  //     response => response.json()
+  //   ).then(data => setInitialData(data))
+  // }, []);
 
-    fetch('/personalData' , {
+    useEffect (() => { fetch('/personalData' , {
         method:"GET",
       }).then(response => response.json())
         .then(message => (
             // console.log(message),
             setdetails(message)
-        ))
+        ))},[])
   return (
     <>
     <NavbarC></NavbarC>

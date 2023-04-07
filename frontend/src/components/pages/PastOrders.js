@@ -8,13 +8,20 @@ function customerDashboard(){
     setpast(msg)
     }
 
-    fetch('/pastOrder' , {
+      // useEffect(() => {
+  //   fetch('/').then(
+  //     response => response.json()
+  //   ).then(data => setInitialData(data))
+  // }, []);
+
+
+    useEffect(() => {fetch('/pastOrder' , {
         method:"GET",
       }).then(response => response.json())
         .then(message => (
             // console.log(message["user"])
             handlemessage(message)
-        ))
+        ))},[])
 
     return(
         <>
