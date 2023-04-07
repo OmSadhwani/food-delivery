@@ -432,16 +432,18 @@ def addPendingOrderId():
     db.collection('order').document(session['currentOrderUpdating']['orderId']).update({'updateLevel': 2})
     return redirect(url_for('views.recentOrderRestaurant'))
 
-@views.route('/moreDetailsOrder<orderId>')
+@views.route('/moreDetailsOrder/<orderId>',methods=['GET','POST'])
 def moreDetailsOrder(orderId):
     if session['user']['userType'] != 'customer':
         return redirect(url_for('logout'))
-    orderId=int(orderId)
-    if orderId > len(session['presentOrderCustomer']):
-        return redirect(url_for('recentOrderCustomer'))
-    orderId=orderId-1
-    currentOrder=session['presentOrderCustomer'][orderId]['orderId']
-    currentOrder=db.collection('order').document(currentOrder).get().to_dict()
+    # orderId=int(orderId)
+    # if orderId > len(session['presentOrderCustomer']):
+    #     return redirect(url_for('recentOrderCustomer'))
+    # orderId=orderId-1
+    # currentOrder=session['presentOrderCustomer'][orderId]['orderId']
+    requestt = json.loads(request.data)
+    orderId = requestt['id']
+    currentOrder=db.collection('order').document(orderId).get().to_dict()
     customerName = db.collection('customer').document(currentOrder['customerId']).get().to_dict()['name']
     restaurantName = db.collection('restaurant').document(currentOrder['restaurantId']).get().to_dict()['name']
     session['customerCurrentOrderChanging']=currentOrder
@@ -458,7 +460,8 @@ def moreDetailsOrder(orderId):
     deliveryAgentName=""
     if currentOrder['deliveryAgentId'] != "":
         deliveryAgentName=db.collection('deliveryAgent').document(currentOrder['deliveryAgentId']).get().to_dict()['name']
-    return render_template('moreDetailsOrder.html',  orderList=orderList, customerName=customerName, restaurantName=restaurantName, offerUsed=offerUsed, cost=currentOrder['orderValue'], deliveryCharge=currentOrder['deliveryCharge'], discount=discount, final=final, updateLevel=currentOrder['updateLevel'], orderUpdate = currentOrder['orderUpdates'],restaurantId=currentOrder['restaurantId'],customerId= currentOrder['customerId'], deliveryAgentName=deliveryAgentName)
+    return {"orderList":orderList, "customerName":customerName, "restaurantName":restaurantName, "offerUsed":offerUsed, "cost":currentOrder['orderValue'], "deliveryCharge":currentOrder['deliveryCharge'], "discount":discount, "final":final, "updateLevel":currentOrder["updateLevel"], "orderUpdate":currentOrder["orderUpdates"], "restaurantId":currentOrder["restaurantId"], "customerId":currentOrder["customerId"], "deliveryAgentName":deliveryAgentName}
+    #return render_template('moreDetailsOrder.html',  orderList=orderList, customerName=customerName, restaurantName=restaurantName, offerUsed=offerUsed, cost=currentOrder['orderValue'], deliveryCharge=currentOrder['deliveryCharge'], discount=discount, final=final, updateLevel=currentOrder['updateLevel'], orderUpdate = currentOrder['orderUpdates'],restaurantId=currentOrder['restaurantId'],customerId= currentOrder['customerId'], deliveryAgentName=deliveryAgentName)
 
 #offers walle code daalna baaki hai
 
@@ -517,11 +520,11 @@ def pastOrder():
     if(userType=="customer"):
         session['presentOrderCustomer']= pastOrderList
         session.modified = True
-        return render_template('pastOrderCustomer.html',pastOrderList=pastOrderList)
+        return {"pastOrderlist" : pastOrderList}
     if(userType=="restaurant"):
         session['presentOrderRestaurant']= pastOrderList
         
-        return render_template('pastOrderRestaurant.html',pastOrderList=pastOrderList)
+        return {"pastOrderlist" : pastOrderList}
 
 
 # This will show all the nearby delivery agent in the same area to the restaurant
