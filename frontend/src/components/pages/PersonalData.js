@@ -51,18 +51,7 @@ export default function PersonalData() {
       </div>    <br/>   <div>
         Name <br/>
         {details['name']}
-      </div>    <br/>   <div>
-        Rating ID <br/>
-        {details['ratingId']}
-      </div>
-      <br/>   <div>
-        Pending Order ID <br/>
-        {details['pendingOrderId']}
-      </div>
-      <br/>   <div>
-        userType <br/>
-        {details['userType']}
-        </div>
+      </div>    
         {/* <div>Hello World</div> */}
     </>
   )

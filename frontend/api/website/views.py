@@ -327,8 +327,8 @@ def recentOrderCustomer():
     #         temp['restaurantName']=db.collection('restaurant').document(temp['restaurantId']).get().to_dict()['name']
     #         recentOrderList.append(temp)
     session['presentOrderCustomer']=recentOrderList
-
-    return render_template('recentOrderCustomer.html', recentOrderList=recentOrderList)
+    
+    return {'recentOrderList':recentOrderList}
 
 @views.route('/recentOrderRestaurant')
 
@@ -350,19 +350,20 @@ def recentOrderRestaurant():
     #         temp['customerName']=db.collection('customer').document(temp['customerId']).get().to_dict()['name']
     #         recentOrderList.append(temp)
     session['presentOrderRestaurant'] = recentOrderList
+    
+        
+    return {"recentOrders":recentOrderList}
 
-
-    return render_template('recentOrderRestaurant.html', recentOrderList=recentOrderList)
-
-@views.route('/orderDetailRestaurant<orderId>')
-
+@views.route('/orderDetailRestaurant/<orderId>',methods=['POST','GET'])
 def orderDetailRestaurant(orderId):
-    orderId=int(orderId)
-    if orderId > len(session['presentOrderRestaurant']):
-        return redirect(url_for('recentOrderRestaurant'))
-    orderId=orderId-1
-    currentOrder=session['presentOrderRestaurant'][orderId]['orderId']
-    currentOrder=db.collection('order').document(currentOrder).get().to_dict()
+    # orderId=int(orderId)
+    # if orderId > len(session['presentOrderRestaurant']):
+    #     return redirect(url_for('recentOrderRestaurant'))
+    # orderId=orderId-1
+    # currentOrder=session['presentOrderRestaurant'][orderId]['orderId']
+    requestt = json.loads(request.data)
+    orderId = requestt['id']
+    currentOrder=db.collection('order').document(orderId).get().to_dict()
     customerName = db.collection('customer').document(currentOrder['customerId']).get().to_dict()['name']
     restaurantName = db.collection('restaurant').document(currentOrder['restaurantId']).get().to_dict()['name']
     orderList=currentOrder['orderList']
@@ -370,7 +371,7 @@ def orderDetailRestaurant(orderId):
     session['currentOrderUpdating']=currentOrder
 
     final=max(currentOrder['orderValue']+ currentOrder['deliveryCharge']- discount,0)
-    return render_template('orderDetailsRestaurant.html', currentOrder = currentOrder, orderList=orderList, customerName=customerName, restaurantName=restaurantName, cost=currentOrder['orderValue'], deliveryCharge=currentOrder['deliveryCharge'], discount=discount, final=final, updateLevel=currentOrder['updateLevel'])
+    return  {"currentOrder":currentOrder, "orderList":orderList, "customerName":customerName, "restaurantName":restaurantName, "cost":currentOrder['orderValue'], "deliveryCharge":currentOrder['deliveryCharge'], "discount":discount, "final":final, "updateLevel":currentOrder['updateLevel']}
 
 @views.route('/updateStatus0', methods=['GET','POST'])
 def updateStatus0(val):
