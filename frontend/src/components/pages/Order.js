@@ -66,10 +66,13 @@ function Order(){
             
             {m['pricePerItem']}{' '}
             {/* <button onClick={() => handleButtonClick(restaurant['restaurantId'])}>Menu</button> */}
-           { <input type="number" name="{{m['name']}}" value={inputs.quantity} min="0" onChange={handleChange}></input>}
+           { <input type="number" name={m['name']} defaultValue="0" value={inputs.quantity}  min="0" onChange={handleChange}/>}
           </li>
         ))}
       </ul>
+      <div class="footer">
+              <button type="submit" className="btn1">Place Order</button>
+          </div>
       </form>
       <h1>
         {issuccess}
