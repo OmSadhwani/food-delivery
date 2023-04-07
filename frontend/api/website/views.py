@@ -57,7 +57,6 @@ def adminDashboard():
 #show personal data of the user
 @views.route('/personalData')
 def personalData():
-    # print("Hello World")
     user = session['user']
 
     user['ratingValue'] = db.collection('rating').document(user['ratingId']).get().to_dict()['rating']
@@ -77,14 +76,14 @@ def allRestaurant():
     for res in restaurant_ref:
         temp_dict = res.to_dict()
         temp_dict['userId'] = res.id
-        temp_dict['areaName'] = db.collection('area').document(temp_dict['areaId']).get().to_dict()['name']
+        # temp_dict['areaName'] = db.collection('area').document(temp_dict['areaId']).get().to_dict()['name']
         temp_dict['ratingValue'] = db.collection('rating').document(temp_dict['ratingId']).get().to_dict()['rating']
 
         restaurantList.append(temp_dict)
 
     session['restaurantList'] = restaurantList
-    # print(restaurantList)
-    return {'restaurantList':restaurantList}
+
+    return {"restaurantList":restaurantList}
 
 
 #list of the customers
@@ -99,7 +98,7 @@ def allCustomers():
     for cust in customer_ref:
         temp_dict = cust.to_dict()
         temp_dict['userId'] = cust.id
-        temp_dict['areaName'] = db.collection('area').document(temp_dict['areaId']).get().to_dict()['name']
+        #temp_dict['areaName'] = db.collection('area').document(temp_dict['areaId']).get().to_dict()['name']
         temp_dict['ratingValue'] = db.collection('rating').document(temp_dict['raringId']).get().to_dict()['rating']
 
         session['customerList'].append(temp_dict)
@@ -120,7 +119,7 @@ def allDeliveryAgents():
     for agent in deliveryAgent_ref:
         temp_dict = agent.to_dict()
         temp_dict['userId'] = agent.id
-        temp_dict['areaName'] = db.collection('area').document(temp_dict['areaId']).get().to_dict()['name']
+        #temp_dict['areaName'] = db.collection('area').document(temp_dict['areaId']).get().to_dict()['name']
         temp_dict['ratingValue'] = db.collection('rating').document(temp_dict['ratingId']).get().to_dict()['rating']
 
         session['deliveryAgentList'].append(temp_dict)
@@ -197,8 +196,10 @@ def finishMenu():
         return redirect(url_for('Auth.logout'))
 
 
-@views.route('/displayFoodItems/<restaurantUserId>')
+@views.route('/displayFoodItems/<restaurantUserId>',methods=['GET','POST'])
 def FoodItems(restaurantUserId):
+    rr=json.loads(request.data)
+    restaurantUserId=rr['id']
     user= session['user']
     if not session['user']['userType']=='customer' and not session['user']['userType']=='admin':
         return redirect(url_for('Auth.logout'))
@@ -208,9 +209,11 @@ def FoodItems(restaurantUserId):
     for foodItem in foodItems:
         tdict= foodItem.to_dict()
         foodItemList.append(tdict)
+    # print(foodItemList)
+    # print(restaurantUserId)
     session['currentMenu']=foodItemList
-    return render_template('allFoodItem.html',user=user,foodItemlist=foodItemList)
-
+    return {"menu":foodItemList}
+    
 @views.route('/order', methods=['POST','GET'])
 def order():
     requestt = json.loads(request.data)
@@ -303,7 +306,6 @@ def placeOrder():
 
 
 @views.route('/recentOrderCustomer')
-
 def recentOrderCustomer():
     user = session['user']
     currentOrder = session['currentOrder']
@@ -376,10 +378,9 @@ def updateStatus0(val):
         return render_template('getEstimatedTime.html')
 
 @views.route('/getEstimatedTime', methods=['POST','GET'])
-
 def getEstimatedTime():
     if session['user']['userType'] != 'restaurant':
-        return redirect(url_for('logout'))
+        return redirect(url_for('Auth.logout'))
     try:
         estimatedTime = request.form['time']
         updateOrderDic = {
@@ -401,14 +402,12 @@ def getEstimatedTime():
     return redirect(url_for('views.recentOrderRestaurant'))
 
 @views.route('/updateStatus1')
-
 def updateStatus1():
     if session['user']['userType'] != 'restaurant':
         return redirect(url_for('Auth.logout'))
-    return render_template('views.foodPrepared.html')
+    return render_template('foodPrepared.html')
 
 @views.route('/updateStatus3')
-
 def updateStatus3():
     if session['user']['userType'] != 'restaurant':
         return redirect(url_for('logout'))
@@ -418,7 +417,6 @@ def updateStatus3():
     return redirect(url_for('views.recentOrderRestaurant'))
 
 @views.route('/addPendingOrderId')
-
 def addPendingOrderId():
 
     if session['user']['userType']!='restaurant':
@@ -427,13 +425,12 @@ def addPendingOrderId():
     pendingOrderId=session['currentOrderUpdating']['orderId'] #get from front end
     areaId=session['user']['areaId']
 
-    db.collection('area').document(areaId).update({'availableOrderIdForPickup':firestore.ArrayUnion([pendingOrderId])})
+    #db.collection('area').document(areaId).update({'availableOrderIdForPickup':firestore.ArrayUnion([pendingOrderId])})
     db.collection('order').document(session['currentOrderUpdating']['orderId']).update({'updateMessage': "Food is Prepared"})
     db.collection('order').document(session['currentOrderUpdating']['orderId']).update({'updateLevel': 2})
     return redirect(url_for('views.recentOrderRestaurant'))
 
 @views.route('/moreDetailsOrder<orderId>')
-
 def moreDetailsOrder(orderId):
     if session['user']['userType'] != 'customer':
         return redirect(url_for('logout'))
@@ -464,15 +461,14 @@ def moreDetailsOrder(orderId):
 #offers walle code daalna baaki hai
 
 @views.route('/redirectDashboard')
-
 def redirectDashboard():
-    if session['sessionUser']['userType']=='customer':
+    if session['user']['userType']=='customer':
         return redirect(url_for('customerDashboard'))
-    elif session['sessionUser']['userType']=='restaurant':
+    elif session['user']['userType']=='restaurant':
         return redirect(url_for('restaurantDashboard'))
-    elif session['sessionUser']['userType']=='deliveryAgent':
+    elif session['user']['userType']=='deliveryAgent':
         return redirect(url_for('deliveryAgentDashboard'))
-    elif session['sessionUser']['userType']=='admin':
+    elif session['user']['userType']=='admin':
         return redirect(url_for('adminDashboard'))
     
 
@@ -501,7 +497,7 @@ def pastOrder():
     if not session['user']['userType'] == 'restaurant' and not session['user']['userType'] == 'customer':
         return redirect(url_for('Auth.logout'))
     userId=session['userId']
-    userType=session['sessionUser']['userType']
+    userType=session['user']['userType']
 
     pastOrderList=[]
 
@@ -528,13 +524,12 @@ def pastOrder():
 
 # This will show all the nearby delivery agent in the same area to the restaurant
 @views.route('/nearbyDeliveryAgents')
-
 def nearbyDeliveryAgents():
 
     if session['user']['userType']!='restaurant':
         return redirect(url_for('Auth.logout'))
 
-    areaId=session['sessionUser']['areaId']
+    areaId=session['user']['areaId']
 
     nearbyDeliveryAgentsList=[]
     # Retrieving the data from the database
@@ -543,7 +538,7 @@ def nearbyDeliveryAgents():
     for doc in doc_reference:
         temp_dict=doc.to_dict()
         if temp_dict['areaId']==areaId:
-            temp_dict['areaName'] = db.collection('area').document(temp_dict['areaId']).get().to_dict()['name']
+            #temp_dict['areaName'] = db.collection('area').document(temp_dict['areaId']).get().to_dict()['name']
             temp_dict['ratingValue']= db.collection('rating').document(temp_dict['ratingId']).get().to_dict()['rating']
             nearbyDeliveryAgentsList.append(temp_dict)
     return render_template('nearbyDeliveryAgent.html', nearbyDeliveryAgentsList = nearbyDeliveryAgentsList)
@@ -557,23 +552,74 @@ def seeDeliveryRequest():
 
     if session['user']['userType']!='deliveryAgent':
         return redirect(url_for('Auth.logout'))
+    
+    area = session['user']['area']
 
-    areaId=session['user']['areaId']
-
-    orderIdForADeliveryAgent=db.collection('area').document(areaId).get().to_dict()['availableOrderIdForPickup']
     deliveryRequestList=[]
 
-    for orderId in orderIdForADeliveryAgent:
-        temp_dict=db.collection('order').document(orderId).get().to_dict()
+    restaurants = db.collection('restaurant').stream()
+    for res in restaurants:
+        temp = res.to_dict()
+        if temp['area']!=area:
+            continue
 
-        if temp_dict['isPending']==True: # it will be true , just doing it to be on the safe side
-            temp_dict['restaurant']=db.collection('restaurant').document(temp_dict['restaurantId']).get().to_dict()
-            temp_dict['customer']=db.collection('customer').document(temp_dict['customerId']).get().to_dict()
-            temp_dict['area']=db.collection('area').document(areaId).get().to_dict()
-            deliveryRequestList.append(temp_dict)
+        for id in temp['pendingOrderId']:
+            order_dict = db.collection('order').document(id).get().to_dict()
+            if order_dict['updateLevel']==2:
+                order_dict['restaurant']=db.collection('restaurant').document(order_dict['restaurantId']).get().to_dict()
+                order_dict['customer']=db.collection('customer').document(order_dict['customerId']).get().to_dict()
+                deliveryRequestList.append(order_dict)
+
+    # areaId=session['user']['areaId']
+
+    # orderIdForADeliveryAgent=db.collection('area').document(areaId).get().to_dict()['availableOrderIdForPickup']
+    # deliveryRequestList=[]
+
+    # for orderId in orderIdForADeliveryAgent:
+    #     temp_dict=db.collection('order').document(orderId).get().to_dict()
+
+    #     if temp_dict['isPending']==True: # it will be true , just doing it to be on the safe side
+    #         temp_dict['restaurant']=db.collection('restaurant').document(temp_dict['restaurantId']).get().to_dict()
+    #         temp_dict['customer']=db.collection('customer').document(temp_dict['customerId']).get().to_dict()
+    #         #temp_dict['area']=db.collection('area').document(areaId).get().to_dict()
+    #         deliveryRequestList.append(temp_dict)
     session['currentDeliveryRequest'] = deliveryRequestList
     session.modified = True
     return render_template("seeDeliveryRequest.html", deliveryRequestList = deliveryRequestList)
+
+
+
+# This function will accept delivery request with getting the expected time of arrival and delivery from the delivery agent
+# It will also update the status of the order to show to the customer
+@views.route('/acceptDeliveryRequest', methods=['POST', 'GET'])
+def acceptDeliveryRequest():
+    
+    if session['user']['userType']!='deliveryAgent':
+        return redirect(url_for('logout'))
+    
+    user = session['user']
+    timeToReachRestaurant = request.form['timeToRestaurant']
+    timeToReachCustomer = request.form['timeToCustomer']
+    updateOrderDic = {
+        "timePickUp" : timeToReachRestaurant,
+        "deliveryTime" : timeToReachCustomer
+    }
+    db.collection('order').document(session['currentOrderDeliveryAgent']['orderId']).update({'deliveryAgentId': user['deliveryAgentId']})
+    db.collection('order').document(session['currentOrderDeliveryAgent']['orderId']).update({'updateMessage': "Order Accepted by Delivery Agent"})
+    db.collection('order').document(session['currentOrderDeliveryAgent']['orderId']).update({'updateLevel': 3})
+    db.collection('order').document(session['currentOrderDeliveryAgent']['orderId']).update({'orderUpdates' : firestore.ArrayUnion([updateOrderDic])})
+    # print(session['currentOrderDeliveryAgent']['orderId'])
+    # db.collection('area').document(session['sessionUser']['areaId']).update({'availableOrderIdForPickup' : firestore.ArrayRemove([session['currentOrderDeliveryAgent']['orderId']])})
+    db.collection('deliveryAgent').document(user['deliveryAgentId']).update({"isAvailable" : not user['isAvailable']})
+    db.collection('deliveryAgent').document(user['deliveryAgentId']).update({"currentOrderId" : session['currentOrderDeliveryAgent']['orderId']})
+
+    return redirect(url_for('moreDetailsDeliveryRequest', status = "Details"))
+
+
+@views.route('/markLocation',methods=['POST','GET'])
+def markLocation():
+    if session['user']['userType']!='deliveryAgent':
+        return redirect(url_for('Auth.logout'))
 
 
 
