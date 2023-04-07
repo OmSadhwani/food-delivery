@@ -218,6 +218,7 @@ def FoodItems(restaurantUserId):
 def order():
     requestt = json.loads(request.data)
     foodItemList = session['currentMenu']
+    # print(requestt)
 
     cost=0
     orderList = []
@@ -248,8 +249,8 @@ def order():
             'orderUpdates': [],
             'orderId': ''
         }
-        
-        return {"message":"success"}
+        # print("returning success")
+        return {"message":"Success"}
     
     except Exception as e:
         return {"message":"error", "error":str(e)}
@@ -260,7 +261,8 @@ def order():
 @views.route('/orderDetails')
 def orderDetails():
     currentOrder = session['currentOrder']
-    customerName = db.collection('customer').document(currentOrder)['customerId'].get().to_dict()['name']
+    # print(currentOrder)
+    customerName = db.collection('customer').document(currentOrder['customerId']).get().to_dict()['name']
     restaurantName = db.collection('restaurant').document(currentOrder['restaurantId']).get().to_dict()['name']
     orderList = currentOrder['orderList']
     discount = currentOrder['discountValue']
@@ -275,10 +277,11 @@ def orderDetails():
 
     final = max(currentOrder['orderValue'] + currentOrder['deliveryCharge'] - discount, 0)
     currentOrder['paidValue'] = final
+    print(orderList)
 
-    return render_template('orderDetails.html', orderList=orderList, customerName=customerName, restaurantName=restaurantName, offerUsed=offerUsed, cost=currentOrder['orderValue'], deliveryCharge=currentOrder['deliveryCharge'], discount=discount, final=final)
+    return {"orderList":orderList, "customerName":customerName, "restaurantName":restaurantName, "offerUsed":offerUsed, "cost":currentOrder['orderValue'], "deliveryCharge":currentOrder['deliveryCharge'], "discount":discount, "final":final}
 
-@views.route('/placeOrder')
+@views.route('/placeOrder',methods=['GET'])
 def placeOrder():
     currentOrder = session['currentOrder']
 
@@ -301,8 +304,7 @@ def placeOrder():
     if not currentOrder['offerId'] == None:
         db.collection('order').document(orderId).update({'offerId': db.collection('customer').document(customerId).collection('promotionalOfferId').document(currentOrder['offerId']).get().to_dict()})
         db.collection('customer').document(customerId).collection('prmotionalOfferId').document(currentOrder['offerId']).delete()
-
-    return redirect(url_for('views.recentOrderCustomer'))
+    return {"message":"Success"}
 
 
 @views.route('/recentOrderCustomer')

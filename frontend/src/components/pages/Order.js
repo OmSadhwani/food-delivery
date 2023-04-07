@@ -33,6 +33,7 @@ function Order(){
         const handleSuccess = (msg) => {
           setissuccess(msg)
           if(msg=='Success'){
+            console.log("Hello World")
             window.location.href = '/orderDetails'
           }
           else{
@@ -48,7 +49,8 @@ function Order(){
             body:JSON.stringify(inputs),
           }).then(response => response.json())
             .then(message => (
-                handleSuccess(message)
+              console.log(message),
+                handleSuccess(message['message'])
             ))    
         }
 
