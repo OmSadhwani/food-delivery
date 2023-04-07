@@ -6,6 +6,7 @@ function Order(){
     const id = useParams()
 
     const [menu,setmenu] = useState([]);
+    const [issuccess,setissuccess] = useState('');
     
     // console.log(id)
 
@@ -23,39 +24,39 @@ function Order(){
         const [inputs, setInputs] = useState({});
         // const [issuccess,setissuccess] = useState('');
       
-        // const handleChange = (event) => {
-        //   const name = event.target.name;
-        //   const value = event.target.value;
-        //   setInputs(values => ({...values , [name]:value}))
-        // }
+        const handleChange = (event) => {
+          const name = event.target.name;
+          const value = event.target.value;
+          setInputs(values => ({...values , [name]:value}))
+        }
       
-        // const handleSuccess = (msg) => {
-        //   setissuccess(msg)
-        //   if(msg=='Success'){
-        //     window.location.href = '/customerLogin'
-        //   }
-        //   else{
+        const handleSuccess = (msg) => {
+          setissuccess(msg)
+          if(msg=='Success'){
+            window.location.href = '/orderDetails'
+          }
+          else{
       
-        //   }
-        // }
+          }
+        }
       
-        // const handleSubmit = (event) => {
-        //   event.preventDefault()
-        //   console.log(inputs)
-        //   fetch('/customerSignup' , {
-        //     method:"POST",
-        //     body:JSON.stringify(inputs),
-        //   }).then(response => response.json())
-        //     .then(message => (
-        //         handleSuccess(message['message'])
-        //     ))    
-        // }
+        const handleSubmit = (event) => {
+          event.preventDefault()
+          console.log(inputs)
+          fetch('/order' , {
+            method:"POST",
+            body:JSON.stringify(inputs),
+          }).then(response => response.json())
+            .then(message => (
+                handleSuccess(message)
+            ))    
+        }
 
     return (
 <>
     <div>
       <h2>Menu</h2>
-      {/* <form onSubmit={handleSubmit}> */}
+      <form onSubmit={handleSubmit}>
       <ul>
         {menu.map((m) => (
           <li key={m['foodItemId']}>
@@ -65,11 +66,14 @@ function Order(){
             
             {m['pricePerItem']}{' '}
             {/* <button onClick={() => handleButtonClick(restaurant['restaurantId'])}>Menu</button> */}
-           { <input type="number" name="{{ m['name']}}" value="" min="0"></input>}
+           { <input type="number" name="{{m['name']}}" value={inputs.quantity} min="0" onChange={handleChange}></input>}
           </li>
         ))}
       </ul>
-      {/* </form> */}
+      </form>
+      <h1>
+        {issuccess}
+      </h1>
     </div>
 </>
     );
