@@ -22,7 +22,8 @@ import AllRestaurants from './components/pages/AllRestaurants'
 import Order from './components/pages/Order'
 import ConfirmOrder from './components/pages/ConfirmOrder'
 import PastOrders from './components/pages/PastOrders'
-import recentOrderCustomer from './components/pages/recentOrderCustomer'
+import RecentOrderCustomer from './components/pages/RecentOrderCustomer'
+import MoreDetailsOrder from './components/pages/MoreDetailsOrder'
 
 function App() {
   // const [initialData, setInitialData] = useState([{}])
@@ -57,7 +58,12 @@ function App() {
           <Route exact path='/personalData' element={<PersonalData/>} />
           <Route exact path='/personalDataRestaurant' element={<PersonalDataRestaurant/>} />
           <Route exact path='/allRestaurants' element={<AllRestaurants/>} />
-          <Route exact path='displayFoodItems/:id' element={<Order/>} />
+          <Route exact path='/displayFoodItems/:id' element={<Order/>} />
+          <Route exact path='/moreDetailsOrder/:id' element={<MoreDetailsOrder/>} />
+          <Route exact path='/pastOrder' element={<PastOrders/>} />
+          <Route exact path='/recentOrderCustomer' element={<RecentOrderCustomer/>} />
+
+          
         </Routes>
       </Router>
     </>

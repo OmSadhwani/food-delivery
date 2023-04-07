@@ -1,14 +1,14 @@
 import React, {useState, useEffect} from 'react';
 import '../../App.css';
 
-function customerDashboard(){
+function PastOrders(){
     const [orders,setorders] = useState({});
 
     const handlemessage = (msg) => {
     setorders(msg)
     }
 
-    
+
     useEffect(() => {fetch('/pastOrder' , {
         method:"GET",
       }).then(response => response.json())
@@ -50,4 +50,4 @@ function customerDashboard(){
     );
 
 }
-export default customerDashboard;
+export default PastOrders;

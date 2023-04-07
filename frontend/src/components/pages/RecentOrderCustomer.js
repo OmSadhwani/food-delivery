@@ -23,7 +23,7 @@ function RecentOrderCustomer(){
     
     return(
         <>
-        <NavbarC></NavbarC>
+        
             <div>
             <h2>Restaurants</h2>
             <ul>
@@ -34,7 +34,7 @@ function RecentOrderCustomer(){
                     */}
                     {order['orderValue']}
                     {order['updateMessage']}
-                    <button onClick={() => handleButtonClick(restaurant['orderId'])}>More Details</button>
+                    <button onClick={() => handleButtonClick(order['orderId'])}>More Details</button>
                 </li>
                 ))}
             </ul>
@@ -45,4 +45,4 @@ function RecentOrderCustomer(){
 
 }
 
-export default customerDashboard;
+export default RecentOrderCustomer;
