@@ -1,18 +1,12 @@
 import React, {useState, useEffect} from 'react';
 import '../../App.css';
 
-function customerDashboard(){
-    const [past,setpast] = useState({});
+function PastOrders(){
+    const [orders,setorders] = useState({});
 
     const handlemessage = (msg) => {
-    setpast(msg)
+    setorders(msg)
     }
-
-      // useEffect(() => {
-  //   fetch('/').then(
-  //     response => response.json()
-  //   ).then(data => setInitialData(data))
-  // }, []);
 
 
     useEffect(() => {fetch('/pastOrder' , {
@@ -25,8 +19,35 @@ function customerDashboard(){
 
     return(
         <>
-            
+            <div>
+            <h2>Order Details</h2>
+            <ul>
+                {orders.map((pastOrder) => (
+                <li key={['pastOrderlist']}>
+                    <ul>
+                        OrderId: {pastOrder["orderId"]}
+                        Date&time: {pastOrder["orderDateTime"]}
+                        {pastOrder.orderList.map((item) => (
+                        <li key={['pastOrderlist']}>
+                            Name: {item["name"]}
+                            Quantity: {item["frequency"]}
+                            pricePerItem: {item["pricePerItem"]}
+
+
+                        </li>
+                        
+                    ))}
+                        discount: {pastOrder["dicountValue"]}
+                        delivery charge: {pastOrder["deliveryCharge"]}
+                        Total : {pastOrder["orderValue"]}
+
+                    </ul>
+                </li>
+                ))}
+            </ul>
+            </div>
         </>
     );
 
 }
+export default PastOrders;
