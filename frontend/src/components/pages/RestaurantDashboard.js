@@ -36,7 +36,7 @@ function RestaurantDashboard() {
     }
 
     const Redirect4 = (event) => {
-        window.location.href='/pastOrdersforRestaurant'                      //not in backend
+        window.location.href='/PastOrderRestaurant'                      //not in backend
     }
     
     // const Redirect5 = (event) => {
