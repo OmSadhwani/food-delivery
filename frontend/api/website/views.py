@@ -137,7 +137,7 @@ def allDeliveryAgents():
 def createMenu():
     user = session['user']
     if  not (user['userType']=='restaurant'):
-        return {"msg":"hello"}
+        return {"message":"error"}
     try:
         ResMenuId= user['restaurantId']
         foodItemList=[]
@@ -543,12 +543,15 @@ def redirectDashboard():
         return redirect(url_for('adminDashboard'))
 
 
-@views.route('/deleteFoodItem<foodItemId>')
+@views.route('/deleteFoodItem/<foodItemId>',methods=['POST','GET'])
 def deleteFoodItem(foodItemId):
     if session['user']['userType'] != 'restaurant':
-        return redirect(url_for('Auth.logout'))
+        return {"message":"error"}
+        # return redirect(url_for('Auth.logout'))
     restaurantId=session['userId']
 
+    requestt = json.loads(request.data)
+    foodItemId = requestt['id']
     #command_to delete the id
     try:
         db.collection("restaurant").document(restaurantId).collection('foodItem').document(foodItemId).delete()
@@ -556,8 +559,10 @@ def deleteFoodItem(foodItemId):
     except Exception as e:
         # print(e)
         session['foodMessage']="Error deleting food item from databse"
+        return {"message":"error"}
 
-    return redirect(url_for('views.createMenu'))
+    return {"message":"Success"}
+    # return redirect(url_for('views.createMenu'))
 
 def deleteUserFromDatabase(to_delete):
 
@@ -613,7 +618,7 @@ def deleteUser(user_type, delete_id, methods=['POST','GET']):
     to_delete = int(delete_id)
     to_delete=to_delete-1
     if user_type == "restaurant":
-        for i in range(session['restaurantList']):
+        for i in range(len(session['restaurantList'])):
             if session['restaurantList'][i]['restaurantId']==delete_id:
                 session['restaurantList'].pop(i)
                 break
@@ -626,7 +631,7 @@ def deleteUser(user_type, delete_id, methods=['POST','GET']):
             return {"message":"error"}
         # return redirect(url_for('allRestaurant'))
     elif user_type == "customer":
-        for i in range(session['customerList']):
+        for i in range(len(session['customerList'])):
             if session['customerList'][i]['customerId']==delete_id:
                 session['customerList'].pop(i)
                 break
@@ -639,7 +644,7 @@ def deleteUser(user_type, delete_id, methods=['POST','GET']):
             return {"message":"error"}
         # return redirect(url_for('allCustomers'))
     elif user_type == 'deliveryAgent':
-        for i in range(session['deliveryAgentList']):
+        for i in range(len(session['deliveryAgentList'])):
             if session['deliveryAgentList'][i]['deliveryAgentId']==delete_id:
                 session['deliveryAgentList'].pop(i)
                 break
@@ -849,22 +854,32 @@ def removeOfferFromOrder():
 
 
 # This will change the recommended status for the restaurant
-@views.route('/changeRecommendRestaurant<id_to_change>')
-def changeRecommendRestaurant(id_to_change):
+@views.route('/changeRecommendRestaurant/<restaurantId>', methods=['POST','GET'])
+def changeRecommendRestaurant(restaurantId):
     if session['user']['userType'] != 'admin':
-        return redirect(url_for('logout'))
-    id=int(id_to_change)
-    id=id-1
+        return {"message":"error"}
+        # return redirect(url_for('logout'))
 
-    restaurantId=session['restaurantList'][id]['restaurantId']
+    # id=int(id_to_change)
+    # id=id-1
 
-    if session['restaurantList'][id]['isRecommended'] == False:
-        session['restaurantList'][id]['isRecommended'] = True
-        session.modified = True
+    # restaurantId=session['restaurantList'][id]['restaurantId']
 
-    else :
-        session['restaurantList'][id]['isRecommended'] = False
-        session.modified = True
+    requestt = json.loads(request.data)
+    restaurantId = requestt['id']
+
+    for i in range(len(session['restaurantList'])):
+        if session['restaurantList'][i]['restaurantId']==restaurantId:
+            session['restaurantList'][i]['isRecommended'] = not session['restaurantList'][i]['isRecommended']
+            break
+
+    # if session['restaurantList'][id]['isRecommended'] == False:
+    #     session['restaurantList'][id]['isRecommended'] = True
+    #     session.modified = True
+
+    # else :
+    #     session['restaurantList'][id]['isRecommended'] = False
+    #     session.modified = True
 
     #change in database
     isRecommended=""
@@ -873,34 +888,47 @@ def changeRecommendRestaurant(id_to_change):
     except Exception as e:
         # print(str(e))
         # error retriving isRecommended from database
-        pass
+        return {"message":"error","error":str(e)}
+
 
     try:
         db.collection("restaurant").document(restaurantId).update({'isRecommended':not isRecommended})
     except Exception as e:
         # print(str(e))
         # error changing isRecommended from database
-        pass
-
-    return redirect(url_for('allRestaurant'))
+        return {"message":"error","error":str(e)}
+        
+    return {"message":"Success"}
+    # return redirect(url_for('allRestaurant'))
 
 
 # This function will change the recommend status of the food item, will be used by admin
-@views.route('/changeRecommendFoodItem<id_to_change>')
-def changeRecommendFoodItem(id_to_change):
+@views.route('/changeRecommendFoodItem/<foodItemId>',methods=['POST','GET'])
+def changeRecommendFoodItem(foodItemId):
     if session['user']['userType'] != 'admin':
-        return redirect(url_for('logout'))
-    id=int(id_to_change)
-    id=id-1
-    if session['currentMenu'][id]['isRecommended'] == False:
-        session['currentMenu'][id]['isRecommended'] = True
-        session.modified = True
-    else :
-        session['currentMenu'][id]['isRecommended'] = False
-        session.modified = True
+        return {"message":"error"}
+        # return redirect(url_for('logout'))
+    # id=int(id_to_change)
+    # id=id-1
+    requestt = json.loads(request.data)
+    foodItemId = requestt['id']
 
-    foodItemId=session['currentMenu'][id]['foodItemId']
-    restaurantId=session['currentMenu'][id]['restaurantId']
+    restaurantId=None
+    for i in range(len(session['currentMenu'])):
+        if session['currentMenu'][i]['foodItemId']==foodItemId:
+            session['currentMenu'][i]['isRecommended'] = not session['currentMenu'][i]['isRecommended']
+            restaurantId=session['currentMenu'][i]['restaurantId']
+            break
+
+    # if session['currentMenu'][id]['isRecommended'] == False:
+    #     session['currentMenu'][id]['isRecommended'] = True
+    #     session.modified = True
+    # else :
+    #     session['currentMenu'][id]['isRecommended'] = False
+    #     session.modified = True
+
+    # foodItemId=session['currentMenu'][id]['foodItemId']
+    # restaurantId=session['currentMenu'][id]['restaurantId']
 
     isRecommended=""
     try:
@@ -908,16 +936,18 @@ def changeRecommendFoodItem(id_to_change):
     except Exception as e:
         # print(str(e))
         # error retriving isRecommended from database
-        pass
+        return {"message":"error","error":str(e)}
+
 
     try:
         db.collection("restaurant").document(restaurantId).collection("foodItem").document(foodItemId).update({'isRecommended':not isRecommended})
     except Exception as e:
         # print(str(e))
         # error changing isRecommended from database
-        pass
+        return {"message":"error","error":str(e)}
 
-    return redirect(url_for('allFoodItem11', restaurantUserId = restaurantId ))
+    return {"message":"Success"}
+    # return redirect(url_for('allFoodItem11', restaurantUserId = restaurantId ))
 
 
 # This function filters all the restaurant from the database that are recommended and stores them in the list and then later shows that list
