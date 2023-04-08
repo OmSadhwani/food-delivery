@@ -350,23 +350,46 @@ def deliveryAgentSignup():
 
 @Auth.route('/managementLogin',methods=['GET','POST'])
 def managementLogin():
-    # if request.method == 'POST':
-    #     email = request.form.get('email')
-    #     password = request.form.get('password')
+    if request.method == 'POST':
+        requestt = json.loads(request.data)
+        print(requestt)
+        email = requestt['email']
+        password = requestt['password']
 
-    #     #....to complete..
+        try:
+
+            time.sleep(0.01)
+            user = pyrebase_pb.auth().sign_in_with_email_and_password(email, password)
+
+            type_json = db.collection("userType").document(user["localId"]).get().to_dict()
+            if (type_json["type"]!="admin"):
+                message="Invalid credentials!"
+                return {"message": message}
+
+
+            json_data = db.collection("admin").document(user["localId"]).get().to_dict()
+
+            session['user'] = json_data
+            session['userId'] = session['user']['adminId']
+            session['user']['userType'] = "admin"
+
+            return {"message":"Success"}
+
+
+        except Exception as e:
+            message=str(e)
+            message+=". Unable to process request"
+            return {"message":message}
+
+# @Auth.route('/managementSignup',methods=['GET','POST'])
+# def managementSignup():
+#     # if request.method == 'POST':
+#     #     email = request.form.get('email')
+#     #     password = request.form.get('password')
+
+#     #     #....to complete..
      
-    return "<p>management login page</p>"
-
-@Auth.route('/managementSignup',methods=['GET','POST'])
-def managementSignup():
-    # if request.method == 'POST':
-    #     email = request.form.get('email')
-    #     password = request.form.get('password')
-
-    #     #....to complete..
-     
-    return "<p>management sign up page</p>"
+#     return "<p>management sign up page</p>"
 
 
 @Auth.route('/logout')
