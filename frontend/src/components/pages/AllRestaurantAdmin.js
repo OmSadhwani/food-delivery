@@ -23,7 +23,7 @@ export default function AllRestaurantAdmin() {
         ))},[])
 
         function handleButtonClick(menuURL) {
-          window.location.href = "/displayFoodItems/".concat(menuURL)
+          window.location.href = "/menuAdmin/".concat(menuURL)
         }
         function handleDeleteClick(menuURL,menu) {
             window.location.href = "/delete/".concat(menuURL).concat(menu)

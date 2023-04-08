@@ -43,6 +43,8 @@ import ManagementLogin from './components/pages/ManagementLogin'
 import ChangeRecommendRestaurant from './components/pages/ChangeRecommendRestaurant'
 import CreateOffer from './components/pages/CreateOffer'
 import AddOffer from './components/pages/AddOffer'
+import MenuAdmin from './components/pages/MenuAdmin';
+import ChangeRecommendFoodItem from './components/pages/ChangeRecommendFoodItem';
 
 
 function App() {
@@ -102,6 +104,8 @@ function App() {
           <Route exact path='/changeRecommendRestaurant/:id' element={<ChangeRecommendRestaurant/>} />
           <Route exact path='/createOffer' element={<CreateOffer/>} />
           <Route exact path='/addOffer' element={<AddOffer/>} />
+          <Route exact path='/menuAdmin/:id' element={<MenuAdmin/>} />
+          <Route exact path='/changeRecommendFoodItem/:rid/:fid' element={<ChangeRecommendFoodItem/>} />
         </Routes>
       </Router>
     </>
