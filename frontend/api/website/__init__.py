@@ -1,5 +1,5 @@
 from flask import Flask
-# from .models import areaDatabase
+from .models import addAdmins
 
 #check for bitly
 
@@ -21,4 +21,6 @@ def create_app():
     app.register_blueprint(views,url_prefix='/')
     app.register_blueprint(Auth,url_prefix='/')
 
+    addAdmins()
+    
     return app

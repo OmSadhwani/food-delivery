@@ -1,7 +1,7 @@
 import pyrebase
 import firebase_admin
 import json
-from firebase_admin import credentials, firestore, storage
+from firebase_admin import credentials, firestore, storage,auth
 
 cred = credentials.Certificate('website/fbadminconfig.json')
 firebase = firebase_admin.initialize_app(cred, json.load(open('website/fbconfig.json')))
@@ -46,3 +46,22 @@ bucket = storage.bucket()
 #     return areas
 
 # areas = getDatabaseAreas()
+
+def addAdmins():
+    names = ['Apoorv','Om','Ronit']
+    emails = ['kumar@gmail.com','sadhwani@gmail.com','nanwani@gmail.com']
+    passwords = ['123456','123456','123456']
+
+    for i in range(len(emails)):
+        try:
+            user = auth.create_user(email=emails[i],password=passwords[i])
+            admin_data = {
+                "name":names[i],
+                "email":emails[i],
+                "adminId":user.uid
+            }
+            db.collection('admin').document(user.uid).set(admin_data)
+            db.collection("userType").document(user.uid).set({"type":"admin"})
+        except Exception as e:
+            print(e)
+            continue

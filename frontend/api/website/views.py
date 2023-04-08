@@ -45,14 +45,12 @@ def deliveryAgentDashboard():
 
 @views.route('/adminDashboard')
 def adminDashboard():
-    # user = session['user']
-    # if user['userType']=="admin":
-    #     return render_template('adminDashboard',user=user)
-    # else:
-    #     return redirect(url_for('logout'))
+    user = session['user']
+    if user['userType']=="admin":
+        return user
+    else:
+        return redirect(url_for('Auth.logout'))
 
-
-    return "<h2>this is admin dashboard</h2>"
 
 #show personal data of the user
 @views.route('/personalData')
@@ -92,7 +90,8 @@ def allRestaurant():
 def allCustomers():
     user = session['user']
     if not user['userType']=='admin':
-        return redirect(url_for('Auth.logout'))
+        return {"message":"error"}
+        # return redirect(url_for('Auth.logout'))
 
     session['customerList'] = []
     customer_ref = db.collection('customer').stream()
@@ -104,7 +103,10 @@ def allCustomers():
 
         session['customerList'].append(temp_dict)
 
-    return render_template('allCustomers.html', user=user)
+    customerList = session['customerList']
+
+    return {"customerList":customerList}
+    # return render_template('allCustomers.html', user=user)
 
 
 #list of the deliveryAgents
@@ -112,7 +114,8 @@ def allCustomers():
 def allDeliveryAgents():
     user = session['user']
     if (not user['userType']=='admin') and (not user['userType']=='restaurant'):
-        return redirect(url_for('Auth.logout'))
+        return {"message":""}
+        # return redirect(url_for('Auth.logout'))
 
     session['deliveryAgentList'] = []
 
@@ -125,7 +128,10 @@ def allDeliveryAgents():
 
         session['deliveryAgentList'].append(temp_dict)
 
-    return render_template('allDeliveryAgents.html',user=user)
+    deliveryAgentList = session['deliveryAgentList']
+
+    return {"deliveryAgentList":deliveryAgentList}
+    # return render_template('allDeliveryAgents.html',user=user)
 
 @views.route('/menu',methods=['GET'])
 def createMenu():
@@ -141,7 +147,7 @@ def createMenu():
 
             foodItemList.append(tdict)
         session['foodMessage']="False"
-        return {"user":user,"menuList":foodItemList,"message":"success"}
+        return {"user":user,"menuList":foodItemList,"message":"Success"}
 
     except Exception as e:
         return {"error":str(e)}
@@ -374,13 +380,11 @@ def orderDetailRestaurant(orderId):
     return  {"currentOrder":currentOrder, "orderList":orderList, "customerName":customerName, "restaurantName":restaurantName, "cost":currentOrder['orderValue'], "deliveryCharge":currentOrder['deliveryCharge'], "discount":discount, "final":final, "updateLevel":currentOrder['updateLevel']}
 
 @views.route('/updateStatus0', methods=['GET','POST'])
-def updateStatus0(val):
+def updateStatus0():
     if session['user']['userType'] != 'restaurant':
         return {"message":"error"}
-        #return redirect(url_for('logout'))
-    # if val == "Reject":
     requestt = json.loads(request.data)
-    orderId = requestt['id']
+    orderId = requestt['ordid']
     order = db.collection('order').document(orderId).get().to_dict()
     updateOrderDic = {'heading': "Rejected"}
     db.collection('order').document(orderId).update({'orderUpdates' : firestore.ArrayUnion([updateOrderDic])})
@@ -390,12 +394,10 @@ def updateStatus0(val):
     db.collection('customer').document(order['customerId']).update({'pendingOrderId' : firestore.ArrayRemove([session['currentOrderUpdating']['orderId']])})
     db.collection('restaurant').document(order['restaurantId']).update({'pendingOrderId' : firestore.ArrayRemove([session['currentOrderUpdating']['orderId']])})
     return {"message":"Success"}
-    # else :
-    #     return render_template('getEstimatedTime.html')
+    
 
-
-@views.route('/getEstimatedTime', methods=['POST','GET'])
-def getEstimatedTime():
+@views.route('/getEstimatedTime/<id>', methods=['POST','GET'])
+def getEstimatedTime(id):
     if session['user']['userType'] != 'restaurant':
         return {"message":"error"}
         # return redirect(url_for('Auth.logout'))
@@ -419,8 +421,8 @@ def getEstimatedTime():
     except Exception as e:
         return {"message":"error", "error":str(e)}
 
+    # print("Success")
     return {"message":"Success"}
-    # return redirect(url_for('views.recentOrderRestaurant'))
 
 @views.route('/updateStatus1')
 def updateStatus1():
@@ -428,14 +430,15 @@ def updateStatus1():
         return redirect(url_for('Auth.logout'))
     return render_template('foodPrepared.html')
 
-@views.route('/updateStatus3')
+@views.route('/updateStatus3',methods=['POST'])
 def updateStatus3():
     if session['user']['userType'] != 'restaurant':
         return {"message":"error"}
         # return redirect(url_for('logout'))
 
     requestt = json.loads(request.data)
-    orderId = requestt['id']
+    # print(requestt)
+    orderId = requestt
     # currentOrder = session['currentOrderUpdating']\
     try:
         db.collection('order').document(orderId).update({'updateMessage': "Out for Delivery"})
@@ -564,16 +567,20 @@ def deleteUserFromDatabase(to_delete):
         auth.delete_user(to_delete)
     except:
         print("Error deleting user from authentication")
+        return False
 
     try:
-        user_type = db.collection('type').document(to_delete).get().to_dict()["type"]
+        user_type = db.collection('userType').document(to_delete).get().to_dict()["type"]
         if(user_type=="restaurant"):
             # If you have larger collections, you may want to delete the documents in smaller batches to avoid out-of-memory errors.
             delete_collection(db.collection("restaurant").document(to_delete).collection("foodItem"),1000)
         db.collection(user_type).document(to_delete).delete()
-        db.collection("type").document(to_delete).delete()
+        db.collection("userType").document(to_delete).delete()
     except :
         print("error deleting user from firestore")
+        return False
+    
+    return True
 
     # try:
     #     # deleting profile pictures
@@ -593,27 +600,57 @@ def deleteUserFromDatabase(to_delete):
 
 
 @views.route('/delete/<user_type>/<delete_id>')
-def deleteUser(user_type, delete_id):
+def deleteUser(user_type, delete_id, methods=['POST','GET']):
     # print(request.args.get(user_type))
     if not session['user']['userType'] == "admin":
-        return redirect(url_for('logout'))
+        return {"message":"error"}
+        # return redirect(url_for('logout'))
+    
+    requestt = json.loads(request.data)
+    user_type = requestt['userType']
+    delete_id = requestt['id']
+
     to_delete = int(delete_id)
     to_delete=to_delete-1
     if user_type == "restaurant":
-        user_deleted=session['restaurantList'].pop(to_delete)
+        for i in range(session['restaurantList']):
+            if session['restaurantList'][i]['restaurantId']==delete_id:
+                session['restaurantList'].pop(i)
+                break
+
+        # user_deleted=session['restaurantList'].pop(to_delete)
         session.modified = True
-        deleteUserFromDatabase(user_deleted['userId'])
-        return redirect(url_for('allRestaurant'))
+        if(deleteUserFromDatabase(delete_id)):
+            return {"message":"Success"}
+        else:
+            return {"message":"error"}
+        # return redirect(url_for('allRestaurant'))
     elif user_type == "customer":
-        user_deleted = session['customerList'].pop(to_delete)
+        for i in range(session['customerList']):
+            if session['customerList'][i]['customerId']==delete_id:
+                session['customerList'].pop(i)
+                break
+
+        # user_deleted=session['restaurantList'].pop(to_delete)
         session.modified = True
-        deleteUserFromDatabase(user_deleted['userId'])
-        return redirect(url_for('allCustomers'))
+        if(deleteUserFromDatabase(delete_id)):
+            return {"message":"Success"}
+        else:
+            return {"message":"error"}
+        # return redirect(url_for('allCustomers'))
     elif user_type == 'deliveryAgent':
-        user_deleted = session['deliveryAgentList'].pop(to_delete)
+        for i in range(session['deliveryAgentList']):
+            if session['deliveryAgentList'][i]['deliveryAgentId']==delete_id:
+                session['deliveryAgentList'].pop(i)
+                break
+
+        # user_deleted=session['restaurantList'].pop(to_delete)
         session.modified = True
-        deleteUserFromDatabase(user_deleted['userId'])
-        return redirect(url_for('allDeliveryAgents'))
+        if(deleteUserFromDatabase(delete_id)):
+            return {"message":"Success"}
+        else:
+            return {"message":"error"}
+        # return redirect(url_for('allDeliveryAgents'))
 
 
 def delete_collection(coll_ref, batch_size):
@@ -667,7 +704,7 @@ def nearbyDeliveryAgents(orderId):
     if session['user']['userType']!='restaurant':
         return {"message":"error"}
         # return redirect(url_for('Auth.logout'))
-
+    
 
     area=session['user']['area']
 
@@ -677,15 +714,14 @@ def nearbyDeliveryAgents(orderId):
 
     for doc in doc_reference:
         temp_dict=doc.to_dict()
-        if temp_dict['area']==area and temp_dict['isAvailable']:
+        if temp_dict['area']==area and temp_dict['isAvailable']==True:
             #temp_dict['areaName'] = db.collection('area').document(temp_dict['areaId']).get().to_dict()['name']
             temp_dict['ratingValue']= db.collection('rating').document(temp_dict['ratingId']).get().to_dict()['rating']
             nearbyDeliveryAgentsList.append(temp_dict)
 
     return {"deliveryAgentList":nearbyDeliveryAgentsList}
-    # return render_template('nearbyDeliveryAgent.html', nearbyDeliveryAgentsList = nearbyDeliveryAgentsList)
 
-
+    
 
 
 # This function will show all the delivery request for the customer in the region that are sent by the restaurants
@@ -1218,18 +1254,3 @@ def ratingCustomer():
     db.collection('rating').document(restaurantRatingId).set(restaurantRatingObject)
 
     return redirect(url_for('pastOrder'))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
