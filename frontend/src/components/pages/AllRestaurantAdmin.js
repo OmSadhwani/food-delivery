@@ -1,6 +1,6 @@
 import React,{useState,useEffect} from 'react';
 import '../../App.css';
-import NavbarC from '../NavbarC'
+import NavbarA from '../NavbarA'
 
 export default function AllRestaurantAdmin() {
 
@@ -33,23 +33,32 @@ export default function AllRestaurantAdmin() {
         }
   return (
     <>
-    <NavbarC></NavbarC>
-    <div>
-      <h2>Restaurants</h2>
-      <ul>
-        {restaurants.map((restaurant) => (
-          <li key={restaurant['restaurantId']}>
-            {restaurant['name']}{' '}
-            {/* restid=restaurant['restaurantId']
-             */}
+    <NavbarA></NavbarA>
+    <div className="AllRestaurantAdmin">
+      <h1>Restaurants</h1><br/><br/><br/>
 
-            <button onClick={() => handleButtonClick(restaurant['restaurantId'])}>Menu</button>
-            <button onClick={() => handleDeleteClick("restaurant/",restaurant["restaurantId"])}>Delete</button>
-            {String(restaurant['isRecommended'])}{' '}
-            <button onClick={() => handleChangeClick(restaurant['restaurantId'])}>Change</button>
-          </li>
+      <table className='my-table' style={{width:'60%'}}>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>&nbsp;&nbsp;&nbsp;&nbsp;Menu&nbsp;&nbsp;&nbsp;&nbsp;</th>
+            <th>Remove Restaurant</th>
+            <th>Is Recommended</th>
+            <th>Change Recommendation</th>
+          </tr>
+        </thead>
+        <tbody>
+        {restaurants.map((restaurant) => (
+          <tr>
+            <td>{restaurant['name']}</td>
+            <td><button onClick={() => handleButtonClick(restaurant['restaurantId'])}className='btn1'>Menu</button></td>
+            <td><button onClick={() => handleDeleteClick("restaurant/",restaurant["restaurantId"])}className='btn1'>Delete</button></td>
+            <td>{String(restaurant['isRecommended'])}</td>
+            <td><button onClick={() => handleChangeClick(restaurant['restaurantId'])}className='btn1'>Change</button></td>
+          </tr>
         ))}
-      </ul>
+        </tbody>
+      </table>
     </div>
 
         

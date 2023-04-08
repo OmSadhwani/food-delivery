@@ -55,9 +55,6 @@ export default function DeleteUser(){
         return (
             <>
 
-                <h1>
-                    Hi {userType}
-                </h1>
             </>
         )
 

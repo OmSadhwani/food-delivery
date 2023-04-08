@@ -18,7 +18,7 @@ export default function AcceptDeliveryRequest() {
         setissuccess(msg)
         console.log(msg)
         if(msg=='Success'){
-          window.location.href = '/moreDetailsDeliveryRequests/'.concat(id.id)
+          window.location.href = '/moreDetailsDeliveryRequest/'.concat(id.id)
         }
         else{
             window.location.href = '/seeDeliveryRequest'

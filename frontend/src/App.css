@@ -312,7 +312,8 @@ html, body, #app, #app>div {
 
 .RestaurantDashboard,.PersonalDataRestaurant, .Menu,
 .AddFoodItem,.PendingOrderRestaurant,.PastOrdersRestaurant,
-.OrderDetailsRestaurant{
+.OrderDetailsRestaurant,
+.GiveEstimatedTime,.SendDeliveryRequest{
   text-align:center;
   min-height: 100vh;
   width:100%;
@@ -473,3 +474,37 @@ html, body, #app, #app>div {
   font-size: 14px;
   font-weight: 300;
 }
+
+.AdminDashboard,
+.AllCustomers,
+.AllRestaurantAdmin{
+  text-align:center;
+  min-height: 100vh;
+  width:100%;
+  background-image: url("../src/images/img23.jpg");
+  background-repeat:no-repeat;
+  background-size: cover;
+  background-attachment:fixed;
+  padding-bottom:100px;
+}
+
+
+.addashbuttons{
+  padding: 10px;
+  width:20%;
+  margin-top: 50px;
+  background-color: #ffffff;
+  color: #080710;
+  padding: 15px 0;
+  font-size: 18px;
+  font-weight: 600;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.addashbuttons:hover{
+  background-color: #000;
+  color: #fff;
+  transition-duration: 400ms;
+}
+

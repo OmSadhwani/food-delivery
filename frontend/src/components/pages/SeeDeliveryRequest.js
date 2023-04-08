@@ -25,7 +25,7 @@ export default function SeeDeliveryRequest() {
             <h1>
                 Delivery Requests
             </h1><br/><br/><br/>
-            <table className='my-table' style={{width:'30%'}}>
+            <table className='my-table' style={{width:'40%'}}>
                 <thead>
                     <tr>
                         <th>Restaurant</th>

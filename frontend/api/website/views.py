@@ -2,6 +2,7 @@ from flask import Blueprint, session,request, redirect, url_for, render_template
 from .models import db,pyrebase_pb
 from flask import request,json
 from firebase_admin import firestore, auth
+from datetime import datetime
 
 views = Blueprint('views',__name__)
 
@@ -296,6 +297,7 @@ def placeOrder():
     doc_ref.set(currentOrder)
 
     db.collection('order').document(doc_ref.id).update({'orderId': doc_ref.id})
+    db.collection('order').document(doc_ref.id).update({'orderDateTime':datetime.now().strftime("%d/%m/%Y %H:%M:%S")})
 
     orderId = doc_ref.id
     session['currentOrder']['orderId'] = orderId
@@ -1116,7 +1118,7 @@ def offerListCustomer():
 # This function will show the details of the order and based on the statuses, the information on the front end will change
 @views.route('/moreDetailsDeliveryRequest/<orderId>', methods=['POST','GET'])
 def moreDetailsDeliveryRequest(orderId):
-
+    # print("Hello World")
     if session['user']['userType']!='deliveryAgent':
         return {"message":"error"}
         # return redirect(url_for('logout'))
@@ -1141,7 +1143,8 @@ def moreDetailsDeliveryRequest(orderId):
     #         showButton = 3
 
     requestt = json.loads(request.data)
-    print(requestt)
+    # print("Hello World")
+    # print(requestt)
     orderId = requestt['id']
 
     currentOrder = None

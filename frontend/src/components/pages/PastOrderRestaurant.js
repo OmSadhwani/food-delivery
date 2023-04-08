@@ -21,6 +21,7 @@ function PastOrderRestaurant(){
         <>
             <div className="PastOrdersRestaurant">
             <h1>Order Details</h1>
+            <br/><br/><br/>
             <ul>
                 {orders.map((pastOrder) => (
                     <li key={['pastOrderlist']}>

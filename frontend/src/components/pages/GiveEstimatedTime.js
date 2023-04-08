@@ -39,11 +39,17 @@ function GiveEstimatedTime(){
 
     return (
       <div className="GiveEstimatedTime">
-        <form onSubmit={handleSubmit}>
+        <h1>
+          Give Estimated Time to prepare the Food
+        </h1>
+        <br/>
+        <form onSubmit={handleSubmit} className='regularform'>
         <div className="form-body">
+        <br/><br/>
             <div className="time">
                 <input  type="number" id="time" name="time" className="form__input" placeholder="Estimated Time" min="0" value={inputs.time} onChange={handleChange}/>
             </div>
+            <br/><br/><br/><br/><br/>
         </div>
         <div class="footer">
             <button type="submit" className="btn1">Confirm</button>

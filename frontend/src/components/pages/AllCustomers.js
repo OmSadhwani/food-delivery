@@ -1,6 +1,6 @@
 import React,{useState,useEffect} from 'react';
 import '../../App.css';
-import NavbarC from '../NavbarC'
+import NavbarA from '../NavbarA'
 
 export default function AllCustomers() {
 
@@ -12,7 +12,7 @@ export default function AllCustomers() {
           method:"GET",
         }).then(response => response.json())
           .then(message => (
-              // console.log(message),
+              console.log(message),
               setcustomers(message['customerList'])
           ))},[])
   
@@ -21,27 +21,38 @@ export default function AllCustomers() {
           }
     return (
       <>
-      <NavbarC></NavbarC>
-      <div>
-        <h2>Customers</h2>
-        <ul>
-          {customers.map((customer) => (
-            <li>
-              {customer['name']}{' '}
-              {customer['email']}{' '}
-              {customer['mobile']}{' '}
-              {customer['gender']}{' '}
-              {customer['area']}{' '}
-              {customer['address']}{' '}
-              
-              {/* restid=restaurant['restaurantId']
-               */}
-  
-              {/* <button onClick={() => handleButtonClick("customer/",customer["customerId"])}>Promotional Offers</button> */}
-              <button onClick={() => handleButtonClick("customer/",customer["customerId"])}>Delete</button>
-            </li>
+      <NavbarA></NavbarA>
+      <div className="AllCustomers">
+        <h1>Customers</h1>
+              <table className='my-table'>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Mobile</th>
+                    <th>Gender</th>
+                    <th>Area</th>
+                    <th>Address</th>
+                    <th>Remove Customer</th>
+                  </tr>
+                </thead>
+                <tbody>
+
+                {customers.map((customer) => (
+                      <tr>
+                      <td>{customer['name']}</td>
+                      <td>{customer['email']}</td>
+                      <td>{customer['mobileNumber']}</td>
+                      <td>{customer['gender']}</td>
+                      <td>{customer['area']}</td>
+                      <td>{customer['address']}</td>
+                      <td><button onClick={() => handleButtonClick("customer/",customer["customerId"])} className='btn1'>Delete</button></td>
+                    </tr>
+
           ))}
-        </ul>
+                </tbody>
+              </table>
+
       </div>
   
           

@@ -51,19 +51,31 @@ function SendDeliveryRequest(){
     return (
 
         <div className="SendDeliveryRequest">
-
-    <ul>
-    {deliveryagents.map((m) => (
-      <li key={m['name']}>
-        Name : {m['name']}{' '}
-        Mobile Number : {m['mobileNumber']}{' '}
-        Rating Value : {m['ratingValue']}{' '}
-        Area : {m['area']}{' '}
-      </li>
+            <h1>Send Delivery Request</h1>
+              <table className='my-table'>
+                <thead>
+                    <tr>
+                      <th>Delivery Agent Name</th>
+                      <th>Mobile Number</th>
+                      <th>Rating</th>
+                      <th>Area</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {deliveryagents.map((m) => (
+                  <tr>
+                    <td>{m['name']}</td>
+                    <td>{m['mobileNumber']}</td>
+                    <td>{m['ratingValue']}</td>
+                    <td>{m['area']}</td>
+        </tr>
     ))}
-  </ul>
+                </tbody>
+              </table>
+              <br/><br/><br/><br/>
+
         <div class="footer">
-            <button type="submit" className="btn1" onClick={handleClick}>Send Delivery Request</button>
+            <button type="submit" className="btn1" onClick={handleClick} style={{width:'15%'}}>Send Delivery Request</button>
         </div>
         </div>
 

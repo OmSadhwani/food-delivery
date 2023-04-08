@@ -23,12 +23,12 @@ export default function AdminDashboard(){
   };
 
     return (
-        <div>
-          <h1>Welcome to the Admin Dashboard</h1>
-          <button onClick={handleCustomersClick}>List of Customers</button>
-          <button onClick={handleRestaurantsClick}>List of Restaurants</button>
-          <button onClick={handleAgentsClick}>List of Delivery Agents</button>
-          <button onClick={handleOffersClick}>Promotional Offers</button>
+        <div className="AdminDashboard">
+          <h1>Welcome to the Admin Dashboard</h1><br/><br/><br/><br/>
+          <button onClick={handleCustomersClick} className="addashbuttons">List of Customers</button><br/>
+          <button onClick={handleRestaurantsClick} className="addashbuttons">List of Restaurants</button><br/>
+          <button onClick={handleAgentsClick} className="addashbuttons">List of Delivery Agents</button><br/>
+          <button onClick={handleOffersClick} className="addashbuttons">Promotional Offers</button>
         </div>
       );
 

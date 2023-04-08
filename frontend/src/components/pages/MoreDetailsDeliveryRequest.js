@@ -4,22 +4,28 @@ import { useParams } from 'react-router-dom';
 
 export default function MoreDetailsDeliveryRequest(){
 
-    const id= useParams()
+    const id= useParams();
     const [details,setdetails] = useState({});
-    // console.log(id["id"])
-    useEffect(() => {fetch('/moreDetailsDeliveryRequest/'.concat(id["id"]) , {
+    const [orderList,setorderList] = useState([]);
+    // console.log(id.id);
+    const handlemessage = (msg) => {
+        setdetails(msg)
+        setorderList(msg['orderList'])
+    }
+
+    useEffect (() => {fetch('/moreDetailsDeliveryRequest/'.concat(id.id) , {
         method:"POST",
-        body:JSON.stringify(id),
+        body:JSON.stringify({'id':id.id}),
       }).then(response => response.json())
         .then(message => (
-            // console.log(message),
-            setdetails(message)
+            console.log(message),
+            handlemessage(message)
         ))},[])
 
         const handleSubmit = (event) => {
             
             
-            window.location.href ='/ratingDeliveryAgent/'.concat(id["id"])
+            window.location.href ='/ratingDeliveryAgent/'.concat(id.id)
     
             
            
@@ -48,7 +54,7 @@ export default function MoreDetailsDeliveryRequest(){
                         </tr>
                     </thead>
                     <tbody>
-                    {details["orderList"].map((item) => (
+                    {orderList.map((item) => (
 
                         <tr>
                             <td>{item['name']}</td>
@@ -67,7 +73,7 @@ export default function MoreDetailsDeliveryRequest(){
                 </div>
                 </div>
             </>
-        )
+        );
 
 
 
