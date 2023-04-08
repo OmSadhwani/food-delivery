@@ -45,7 +45,8 @@ import CreateOffer from './components/pages/CreateOffer'
 import AddOffer from './components/pages/AddOffer'
 import MenuAdmin from './components/pages/MenuAdmin';
 import ChangeRecommendFoodItem from './components/pages/ChangeRecommendFoodItem';
-
+import AllOffer from './components/pages/AllOffer';
+import GiveOffer from './components/pages/GiveOffer';
 
 function App() {
   // const [initialData, setInitialData] = useState([{}])
@@ -105,7 +106,10 @@ function App() {
           <Route exact path='/createOffer' element={<CreateOffer/>} />
           <Route exact path='/addOffer' element={<AddOffer/>} />
           <Route exact path='/menuAdmin/:id' element={<MenuAdmin/>} />
+          <Route exact path='/allOffer/:id' element={<AllOffer/>} />
           <Route exact path='/changeRecommendFoodItem/:rid/:fid' element={<ChangeRecommendFoodItem/>} />
+          <Route exact path='/giveOffer/:cid/:oid' element={<GiveOffer/>} />
+
         </Routes>
       </Router>
     </>

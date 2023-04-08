@@ -19,6 +19,9 @@ export default function AllCustomers() {
           function handleButtonClick(menuURL,menu) {
             window.location.href = "/delete/".concat(menuURL).concat(menu)
           }
+          function handleClick(menuURL) {
+            window.location.href = "/allOffer/".concat(menuURL)
+          }
     return (
       <>
       <div className="AllCustomers">
@@ -34,6 +37,7 @@ export default function AllCustomers() {
                     <th>Area</th>
                     <th>Address</th>
                     <th>Remove Customer</th>
+                    <th>Give Offer</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -47,6 +51,7 @@ export default function AllCustomers() {
                       <td>{customer['area']}</td>
                       <td>{customer['address']}</td>
                       <td><button onClick={() => handleButtonClick("customer/",customer["customerId"])} className='btn1'>Delete</button></td>
+                      <td><button onClick={() => handleClick(customer["customerId"])} className='btn1' style={{width:'100%'}}>Offer</button></td>
                     </tr>
 
           ))}

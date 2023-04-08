@@ -265,13 +265,28 @@ def order():
 
     #return redirect(url_for('orderDetails'))
 
+@views.route('/addOfferCustomer/<customer_offerId>')
+def addOfferCustomer(customer_offerId):
+    if session['user']['userType']!='customer':
+        return {"message":"error"}
+    
+    session['currentOrder']['offerId'] = customer_offerId
+    session.modified=True
+    print(session['currentOrder'])
+    return {"message":"Success"}
+
 
 @views.route('/orderDetails')
 def orderDetails():
     currentOrder = session['currentOrder']
-    # print(currentOrder)
+    print(currentOrder)
     customerName = db.collection('customer').document(currentOrder['customerId']).get().to_dict()['name']
     restaurantName = db.collection('restaurant').document(currentOrder['restaurantId']).get().to_dict()['name']
+    offerList=[]
+    offers = db.collection('customer').document(currentOrder['customerId']).collection('promotionalOfferId').stream()
+    for offer in offers:
+        temp = offer.to_dict()
+        offerList.append(temp)
     orderList = currentOrder['orderList']
     discount = currentOrder['discountValue']
     if currentOrder['offerId'] == None:
@@ -285,9 +300,9 @@ def orderDetails():
 
     final = max(currentOrder['orderValue'] + currentOrder['deliveryCharge'] - discount, 0)
     currentOrder['paidValue'] = final
-    print(orderList)
+    # print(orderList)
 
-    return {"orderList":orderList, "customerName":customerName, "restaurantName":restaurantName, "offerUsed":offerUsed, "cost":currentOrder['orderValue'], "deliveryCharge":currentOrder['deliveryCharge'], "discount":discount, "final":final}
+    return {"orderList":orderList, "customerName":customerName, "restaurantName":restaurantName, "offerList":offerList, "offerUsed":offerUsed, "cost":currentOrder['orderValue'], "deliveryCharge":currentOrder['deliveryCharge'], "discount":discount, "final":final}
 
 @views.route('/placeOrder',methods=['GET'])
 def placeOrder():
@@ -502,7 +517,7 @@ def moreDetailsOrder(orderId):
     deliveryAgentName=""
     if currentOrder['deliveryAgentId'] != "":
         deliveryAgentName=db.collection('deliveryAgent').document(currentOrder['deliveryAgentId']).get().to_dict()['name']
-    return {"orderList":orderList, "customerName":customerName, "restaurantName":restaurantName, "offerUsed":offerUsed, "cost":currentOrder['orderValue'], "deliveryCharge":currentOrder['deliveryCharge'], "discount":discount, "final":final, "updateLevel":currentOrder["updateLevel"], "orderUpdate":currentOrder["orderUpdates"], "restaurantId":currentOrder["restaurantId"], "customerId":currentOrder["customerId"], "deliveryAgentName":deliveryAgentName}
+    return {"orderDateTime":currentOrder['orderDateTime'],"orderList":orderList, "customerName":customerName, "restaurantName":restaurantName, "offerUsed":offerUsed, "cost":currentOrder['orderValue'], "deliveryCharge":currentOrder['deliveryCharge'], "discount":discount, "final":final, "updateLevel":currentOrder["updateLevel"], "orderUpdate":currentOrder["orderUpdates"], "restaurantId":currentOrder["restaurantId"], "customerId":currentOrder["customerId"], "deliveryAgentName":deliveryAgentName}
     #return render_template('moreDetailsOrder.html',  orderList=orderList, customerName=customerName, restaurantName=restaurantName, offerUsed=offerUsed, cost=currentOrder['orderValue'], deliveryCharge=currentOrder['deliveryCharge'], discount=discount, final=final, updateLevel=currentOrder['updateLevel'], orderUpdate = currentOrder['orderUpdates'],restaurantId=currentOrder['restaurantId'],customerId= currentOrder['customerId'], deliveryAgentName=deliveryAgentName)
 
 #offers walle code daalna baaki hai
@@ -1054,65 +1069,84 @@ def offerAdder():
 
 
 # This function will show all the offers to the customer in the frontend
-@views.route('/allOffer<customer_id>')
+@views.route('/allOffer/<customer_id>')
 def allOffer(customer_id):
     if session['user']['userType'] != 'admin':
-        return redirect(url_for('logout'))
-    customer_id=int(customer_id)
-    customer_id=customer_id-1
-    session['customerGettingOffer']=session['customerList'][customer_id]['customerId']
+        return {"message":"error"}
+        # return redirect(url_for('logout'))
+    # customer_id=int(customer_id)
+    # customer_id=customer_id-1
+
+    # session['customerGettingOffer']=session['customerList'][customer_id]['customerId']
+    session['customerGettingOffer'] = customer_id
     offerList=[]
     docs = db.collection('offer').stream()
+    # customerOffers = db.collection('customer').document(customer_id).collection('promotionalOfferId').stream()
     for doc in docs:
         temp_dict=doc.to_dict()
         temp_dict['offerId']= doc.id
+        flag=False
+        customerOffers = db.collection('customer').document(customer_id).collection('promotionalOfferId').stream()
+        for offer in customerOffers:
+            temp_offer = offer.to_dict()
+            if temp_dict['offerId'] == temp_offer['offerId']:
+                flag=True
+                break
+        if(flag):
+            continue
         offerList.append(temp_dict)
     session['offerList'] = offerList
     session.modified = True
-    print(offerList)
-    return render_template('allOfferAdmin.html', offerList=offerList)
+    # print(offerList)
+    return {"offerList":offerList}
 
 
 # This function will give offer to the customer in the backend.
-@views.route('/giveOffer<toGive>')
-def giveOffer(toGive):
+@views.route('/giveOffer/<customerId>/<offerId>', methods=['POST','GET'])
+def giveOffer(customerId, offerId):
     if session['user']['userType'] != 'admin':
+        return {"message":'error'}
         return redirect(url_for('logout'))
 
-    toGive=int(toGive)
-    toGive=toGive-1
+    # toGive=int(toGive)
+    # toGive=toGive-1
 
-    customerGettingOffer=session['customerGettingOffer']
-    offerId=session['offerList'][toGive]['offerId']
+    # customerGettingOffer=session['customerGettingOffer']
+    # offerId=session['offerList'][toGive]['offerId']
 
     try:
         offer_json_data = db.collection('offer').document(offerId).get().to_dict()
-        doc_reference = db.collection("customer").document(customerGettingOffer).collection("promotionalOfferId").document()
-        offer_json_data['offerId']=doc_reference.id
+        doc_reference = db.collection("customer").document(customerId).collection("promotionalOfferId").document()
+        offer_json_data['offerId']=offerId
+        offer_json_data['customer_offerId']=doc_reference.id
         doc_reference.set(offer_json_data)
 
-    except:
-        pass
+    except Exception as e:
+        return {"message":"error", "error":str(e)}
+        # pass
 
-    return redirect(url_for('allCustomers'))
+    return {"message":"Success"}
+    # return redirect(url_for('allCustomers'))
 
 # This will show all the offers received by the customer from the admin
 @views.route('/offerListCustomer')
 def offerListCustomer():
     if session['user']['userType'] != 'customer':
-        return redirect(url_for('logout'))
+        return {"message":"error"}
+        # return redirect(url_for('logout'))
     user=session['userId']
     offerList=[]
     docs = db.collection('customer').document(user).collection('promotionalOfferId').stream()
     for doc in docs:
         temp_dict=doc.to_dict()
-        temp_dict['offerId']= doc.id
+        # temp_dict['offerId']= doc.id
 
         offerList.append(temp_dict)
     session['offerList']=offerList
     session.modified = True
     # print(offerList)
-    return render_template('allOfferCustomer.html', offerList=offerList)
+    return {"offerList":offerList}
+    # return render_template('allOfferCustomer.html', offerList=offerList)
 
 
 # This function will show the details of the order and based on the statuses, the information on the front end will change

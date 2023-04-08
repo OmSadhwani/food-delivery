@@ -2,6 +2,58 @@ import React, {useState, useEffect} from 'react';
 import '../../App.css';
 import NavbarC from '../NavbarC';
 
+
+
+function PromoCode(props){
+  const offerList=props.vari;
+
+
+
+  const handleSuccess = (msg) => {
+    if(msg == "Success"){
+      window.location.href='/orderDetails'
+    }
+    else{
+      window.location.href='/allRestaurants'
+    }
+  }
+
+  const handleClick = (event,params) => {
+    fetch('/addOfferCustomer/'.concat(params) , {
+      method:"GET",
+    }).then(response => response.json())
+      .then(message => (
+          handleSuccess(message["message"])
+      )) 
+  }
+
+  return (
+    <table className='my-table' style={{width:'40%'}}>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Discount %</th>
+            <th>Upper Limit</th>
+            <th>Choose</th>
+        </tr>
+    </thead>
+    <tbody>
+    {offerList.map((item) => (
+        <tr>
+            <td>{item["name"]}</td>
+            <td>{item["discount"]}</td>
+            <td>{item["upperLimit"]}</td>
+            <td><button type="submit" className="btn1" onClick={event => handleClick(event , item['customer_offerId'])} style={{width:'50%'}}>Choose Offer</button></td>
+        </tr>
+    ))}
+    </tbody>
+  </table>
+  
+  );
+
+  
+}
+
 function ConfirmOrder() {
 
     const [details, setdetails] = useState({});
@@ -41,13 +93,30 @@ function ConfirmOrder() {
     ).then(message => (
       console.log(message),
       setdetails(message),
-      setorderList(message['orderList'])
+      setorderList(message['orderList']),
+      setofferList(message['offerList'])
     ))
   }, []);
 
-  useEffect(() => {
-    fetch('/offerListCustomer')
-  })
+  // useEffect(() => {
+  //   fetch('/offerListCustomer')
+  // },[])
+
+  let message;
+  let message2;
+
+  if(offerList.length == 0){
+    message=<h1>No Promotional Offers Available</h1>
+    message2=<p>None</p>
+  }
+  else if(details['offerUsed'] === null){
+    message=<PromoCode vari={details['offerList']}/>
+    message2=<>None</>
+  }
+  else{
+    message=<PromoCode vari={details['offerList']}/>
+    message2=<>{details['offerUsed']['name']}</>
+  }
 
     return(
         <>
@@ -87,7 +156,7 @@ function ConfirmOrder() {
             </tr>
             <tr>
               <td>Offer Used</td>
-              <td>{String(details['offerUsed'])}</td>
+              <td>{message2}</td>
             </tr>
           </tbody>
           
@@ -117,8 +186,11 @@ function ConfirmOrder() {
           </tbody>
         </table>
 
-
-
+<br/><br/><br/><br/>
+          <div>
+            {message}
+          </div>
+          <br/><br/>
           <div class="footer">
               <button type="submit" className="btn1" onClick={handleSubmit} style={{width:'10%'}}>Confirm and Pay</button>
           </div>

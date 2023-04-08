@@ -479,7 +479,8 @@ html, body, #app, #app>div {
 .AllRestaurantAdmin,
 .AllDeliveryAgents,
 .CreateOffer,
-.AddOffer{
+.AddOffer,
+.AllOffers{
   text-align:center;
   min-height: 100vh;
   width:100%;
