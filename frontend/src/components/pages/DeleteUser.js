@@ -14,6 +14,7 @@ export default function DeleteUser(){
         const handleSuccess = (msg) => {
             setissuccess(msg)
             if(msg=='Success'){
+                console.log(userType)
                 if(userType == "customer"){
                     window.location.href = '/allCustomers'
                 }
@@ -25,31 +26,38 @@ export default function DeleteUser(){
                 }
             }
             else{
-                window.location.reload()
+                console.log(msg)
               
             }
           }
     
-        const handleSubmit = (event) => {
         
+        //   useEffect(() => {
+            // fetch('/home').then(
+            //   response => response.json()
+            // ).then(data => setInitialData(data))
+        //   }, []);
             
             
     
-            fetch('/delete/'.concat(userType).concat('/').concat(id) , {
+            useEffect (() => {fetch('/delete/'.concat(userType).concat('/').concat(id) , {
               method:"POST",
               body:JSON.stringify(dict),
             }).then(response => response.json())
               .then(message => (
+                console.log(message),
                 handleSuccess(message['message'])
-                  ))
+                  ))},[])
                   
-        }
+        
 
         
         return (
             <>
 
-                
+                <h1>
+                    Hi {userType}
+                </h1>
             </>
         )
 

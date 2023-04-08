@@ -99,7 +99,7 @@ def allCustomers():
         temp_dict = cust.to_dict()
         temp_dict['userId'] = cust.id
         #temp_dict['areaName'] = db.collection('area').document(temp_dict['areaId']).get().to_dict()['name']
-        temp_dict['ratingValue'] = db.collection('rating').document(temp_dict['raringId']).get().to_dict()['rating']
+        temp_dict['ratingValue'] = db.collection('rating').document(temp_dict['ratingId']).get().to_dict()['rating']
 
         session['customerList'].append(temp_dict)
 
@@ -604,8 +604,8 @@ def deleteUserFromDatabase(to_delete):
 
 
 
-@views.route('/delete/<user_type>/<delete_id>')
-def deleteUser(user_type, delete_id, methods=['POST','GET']):
+@views.route('/delete/<user_type>/<delete_id>',methods=['POST','GET'])
+def deleteUser(user_type, delete_id):
     # print(request.args.get(user_type))
     if not session['user']['userType'] == "admin":
         return {"message":"error"}
@@ -615,8 +615,6 @@ def deleteUser(user_type, delete_id, methods=['POST','GET']):
     user_type = requestt['userType']
     delete_id = requestt['id']
 
-    to_delete = int(delete_id)
-    to_delete=to_delete-1
     if user_type == "restaurant":
         for i in range(len(session['restaurantList'])):
             if session['restaurantList'][i]['restaurantId']==delete_id:
@@ -865,8 +863,10 @@ def changeRecommendRestaurant(restaurantId):
 
     # restaurantId=session['restaurantList'][id]['restaurantId']
 
-    requestt = json.loads(request.data)
-    restaurantId = requestt['id']
+    # requestt = json.loads(request.data)
+    # print(requestt)
+    # print(restaurantId)
+    # restaurantId = requestt['id']
 
     for i in range(len(session['restaurantList'])):
         if session['restaurantList'][i]['restaurantId']==restaurantId:

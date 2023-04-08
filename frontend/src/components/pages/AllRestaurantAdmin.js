@@ -28,6 +28,9 @@ export default function AllRestaurantAdmin() {
         function handleDeleteClick(menuURL,menu) {
             window.location.href = "/delete/".concat(menuURL).concat(menu)
         }
+        function handleChangeClick(menuURL) {
+            window.location.href = "/changeRecommendRestaurant/".concat(menuURL)
+        }
   return (
     <>
     <NavbarC></NavbarC>
@@ -42,6 +45,8 @@ export default function AllRestaurantAdmin() {
 
             <button onClick={() => handleButtonClick(restaurant['restaurantId'])}>Menu</button>
             <button onClick={() => handleDeleteClick("restaurant/",restaurant["restaurantId"])}>Delete</button>
+            {String(restaurant['isRecommended'])}{' '}
+            <button onClick={() => handleChangeClick(restaurant['restaurantId'])}>Change</button>
           </li>
         ))}
       </ul>

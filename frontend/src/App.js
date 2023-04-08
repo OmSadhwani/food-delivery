@@ -39,6 +39,8 @@ import AllCustomers from './components/pages/AllCustomers'
 import AllDeliveryAgents from './components/pages/AllDeliveryAgents'
 import AllRestaurantAdmin from './components/pages/AllRestaurantAdmin'
 import DeleteUser from './components/pages/DeleteUser'
+import ManagementLogin from './components/pages/ManagementLogin'
+import ChangeRecommendRestaurant from './components/pages/ChangeRecommendRestaurant'
 
 
 function App() {
@@ -93,7 +95,9 @@ function App() {
           <Route exact path='/allCustomers' element={<AllCustomers/>} />
           <Route exact path='/allDeliveryAgents' element={<AllDeliveryAgents/>} />
           <Route exact path='/allRestaurantAdmin' element={<AllRestaurantAdmin/>} />
-          <Route exact path='/delete/:id1/:id2' element={<DeleteUser/>} />
+          <Route exact path='/delete/:userType/:id' element={<DeleteUser/>} />
+          <Route exact path='/managementLogin' element={<ManagementLogin/>} />
+          <Route exact path='/changeRecommendRestaurant/:id' element={<ChangeRecommendRestaurant/>} />
         </Routes>
       </Router>
     </>
