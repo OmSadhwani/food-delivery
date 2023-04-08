@@ -50,7 +50,7 @@ function CustomerDashboard() {
     }
 
     return(
-        <div className='CustomerDashboard' style={{height: '100vh'}}>
+        <div className='CustomerDashboard'>
             <NavbarC/>
             <div className="Welcome">
             <h1>Welcome {username}</h1>    

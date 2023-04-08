@@ -19,31 +19,51 @@ function PastOrderRestaurant(){
 
     return(
         <>
-            <div>
-            <h2>Order Details</h2>
+            <div className="PastOrdersRestaurant">
+            <h1>Order Details</h1>
             <ul>
                 {orders.map((pastOrder) => (
-                <li key={['pastOrderlist']}>
+                    <li key={['pastOrderlist']}>
                     <ul>
-                        OrderId: {pastOrder["orderId"]}
+
+                        <h3>
+                        OrderId: {pastOrder["orderId"]}&nbsp;&nbsp;
                         Date&time: {pastOrder["orderDateTime"]}
-                        {pastOrder.orderList.map((item) => (
-                        <li key={['pastOrderlist']}>
-                            Name: {item["name"]}
-                            Quantity: {item["frequency"]}
-                            pricePerItem: {item["pricePerItem"]}
+                        </h3>
 
+                        <table className='my-table'>
+                            <thead>
+                                <tr>
+                                    <th>Item Name</th>
+                                    <th>Quantity</th>
+                                    <th>Price Per Item</th>
+                                </tr>
+                            </thead>
 
-                        </li>
-                        
+                            <tbody>
+                            {pastOrder.orderList.map((item) => (
+                                <tr>
+                                    <td>{item["name"]}</td>
+                                    <td>{item["frequency"]}</td>
+                                    <td>{item["pricePerItem"]}</td> 
+                                </tr>                       
                     ))}
-                        discount: {pastOrder["dicountValue"]}
-                        delivery charge: {pastOrder["deliveryCharge"]}
-                        Total : {pastOrder["orderValue"]}
+                            </tbody>
+                        </table><br/><br/>
+
+                        <h3>
+
+                        Discount: {pastOrder["dicountValue"]}&nbsp;
+                        Delivery Charge: {pastOrder["deliveryCharge"]}&nbsp;
+                        Total : {pastOrder["orderValue"]}</h3>
 
                     </ul>
+                <br/><br/>
+                <h6 className="gradient1" >&nbsp;</h6>
+                    <br/><br/>
                 </li>
                 ))}
+                <br/><br/><br/>
             </ul>
             </div>
         </>

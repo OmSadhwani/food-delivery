@@ -21,23 +21,30 @@ export default function SeeDeliveryRequest() {
           }
 
     return (
-        <div>
+        <div className='SeeDeliveryRequest'>
             <h1>
                 Delivery Requests
-            </h1>
-            <ul>
+            </h1><br/><br/><br/>
+            <table className='my-table' style={{width:'30%'}}>
+                <thead>
+                    <tr>
+                        <th>Restaurant</th>
+                        <th>Location</th>
+                        <th>Customer Name</th>
+                        <th>Accept</th>
+                    </tr>
+                </thead>
+                <tbody>
                 {requests.map((request) => (
-                <li>
-                    {request['restaurant']["name"]}{' '}
-                    {/* restid=restaurant['restaurantId']
-                    */}
-                    {request['customer']['address']}
-                    {request['customer']['name']}
-                    {/* {order['updateMessage']} */}
-                    <button onClick={() => handleButtonClick(request['orderId'])}>Accept</button>
-                </li>
+                    <tr>
+                        <td>{request['restaurant']["name"]}</td>
+                        <td>{request['customer']['address']}</td>
+                        <td>{request['customer']['name']}</td>
+                    <button onClick={() => handleButtonClick(request['orderId']) } className='btn1'>Accept</button>
+                    </tr>
                 ))}
-            </ul>
+                </tbody>
+            </table>
         </div>
     );
 

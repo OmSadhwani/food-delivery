@@ -20,43 +20,44 @@ export default function PersonalDataDeliveryAgent() {
           setdetails(message)
         ))},[])
   return (
-    <>
-      <div>
-        Area <br/>
-        {details['area']}
-      </div>
-      <br/>
-      <div>
-        CurrentOrderId <br/>
-        {details['currentOrderId']}
-      </div>    <br/>   <div>
-        Delivery Agent ID <br/>
-        {details['deliveryAgentId']}
-      </div>     <br/>  <div>
-        Email <br/>
-        {details['email']}
-      </div>    <br/>   <div>
-        Gender <br/>
-        {details['gender']}
-      </div>     <br/>  <div>
-        Status (Availability) <br/>
-        {String(details['isAvailable'])}
-      </div>    <br/>   <div>
-        Mobile Number <br/>
-        {details['mobileNumber']}
-      </div>    <br/>   <div>
-        Name <br/>
-        {details['name']}
-      </div>    
-      <br/>   <div>
-        userType <br/>
-        {details['userType']}
-        </div>
-        <br/>   <div>
-        Rating <br/>
-        {details['ratingValue']}
-        </div>
+    <div className="PersonalDataDeliveryAgent">
+      <h1>Personal Details</h1>
+      <table className='my-table' style={{width:'50%',height:'40%'}}>
 
-    </>
-  )
-}
+      <thead>
+      <tr>
+        <th>Delivery Agent Name</th>
+        <th>{details['name']}</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>Delivery Agent Id</td>
+        <td>{details['deliveryAgentId']}</td>
+      </tr>
+      <tr>
+        <td>Email</td>
+        <td>{details['email']}</td>
+      </tr>
+      <tr>
+        <td>Gender</td>
+        <td>{details['gender']}</td>
+      </tr>
+      <tr>
+        <td>Status (Availability)</td>
+        <td>{String(details['isAvailable'])}</td>
+      </tr>
+      <tr>
+        <td>Mobile Number</td>
+        <td>{details['mobileNumber']}</td>
+      </tr>
+      <tr>
+        <td>Rating</td>
+        <td>{details['ratingValue']}</td>
+      </tr>
+      </tbody>
+      </table>
+      </div>
+
+);
+  }

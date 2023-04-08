@@ -40,9 +40,10 @@ function AddFoodItem() {
 
     return(
         <>
-        <div className="form">
+        <div className="AddFoodItem">
         <h1>Add Food Item</h1>
-        <form onSubmit={handleSubmit}>
+        <div className="regularform">
+        <form onSubmit={handleSubmit} >
           <div className="form-body">
               <div className="form-input">
                   <input  type="test" id="name" name="name" className="form__input" placeholder="Dish Name" value={inputs.name} onChange={handleChange}/>
@@ -52,14 +53,16 @@ function AddFoodItem() {
                   <input className="form__input" type="number" name="price" id="price" placeholder="Price" min="0" step="1" value={inputs.price} onChange={handleChange}/>
               </div>
           </div>
+          <br/><br/><br/>
           <div class="footer">
               <button type="submit" className="btn1">Add Food Item</button>
           </div>
         </form>
+      </div>  
         <div>
             <h1>{issuccess}</h1>
         </div>
-      </div>      
+      </div>    
         </>
     );
 }

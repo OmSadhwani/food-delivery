@@ -37,7 +37,7 @@ function LoginRestaurant() {
 
     return(
         <>
-        <div className='Login' style={{height: '100vh'}}>
+        <div className='Login' style={{height:'100vh'}}>
         <Navbar/>
 
         <div class="background-form">

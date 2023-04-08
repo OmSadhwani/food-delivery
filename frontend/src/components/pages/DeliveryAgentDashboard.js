@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import '../../App.css';
+import NavbarD from '../NavbarD'
 
 function DeliveryAgentDashboard() {
     
@@ -46,23 +47,29 @@ function DeliveryAgentDashboard() {
 
     return(
         <>
+        <div className="DeliveryAgentDashboard">
+        <NavbarD/>
             <div className="Welcome">
             <h1>Welcome {username}</h1>    
             </div>     
-            <div className="options">
-                <button onClick={Redirect1}>Personal Details</button>
+            <br/><br/><br/>
+            <div className='ddashcont'>
+            <div className="ddashoptions">
+                <button onClick={Redirect1} className="ddashbuttons">Personal Details</button>
             </div>
-            <div className="options">
-                <button onClick={Redirect2}>Mark Location</button>
+            <div className="ddashoptions">
+                <button onClick={Redirect2} className="ddashbuttons">Mark Location</button>
             </div>
-            <div className="options">
-                <button onClick={Redirect3}>See Delivery Request</button>
+            <div className="ddashoptions">
+                <button onClick={Redirect3} className="ddashbuttons">See Delivery Request</button>
             </div>
-            <div className="options">
-                <button onClick={Redirect4}>Accept Delivery Request</button>
+            <div className="ddashoptions">
+                <button onClick={Redirect4} className="ddashbuttons">Accept Delivery Request</button>
             </div>
-            <div className="options">
-                <button onClick={Redirect5}>See Current Order</button>
+            <div className="ddashoptions">
+                <button onClick={Redirect5} className="ddashbuttons">See Current Order</button>
+            </div>
+            </div>
             </div>
         </>
     );

@@ -1,6 +1,7 @@
 import React from 'react'
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import '../../App.css';
 
 function Order(){
     const id = useParams()
@@ -56,26 +57,37 @@ function Order(){
 
     return (
 <>
-    <div>
-      <h2>Menu</h2>
-      <form onSubmit={handleSubmit}>
-      <ul>
-        {menu.map((m) => (
-          <li key={m['foodItemId']}>
-            {m['name']}{' '}
-            {/* restid=restaurant['restaurantId']
-             */}
-            
-            {m['pricePerItem']}{' '}
-            {/* <button onClick={() => handleButtonClick(restaurant['restaurantId'])}>Menu</button> */}
-           { <input type="number" name={m['name']} defaultValue="0" value={inputs.quantity}  min="0" onChange={handleChange}/>}
-          </li>
-        ))}
-      </ul>
+    <div className="Order">
+      <h1>Menu</h1>
+
+      <table className='my-table'>
+
+      </table>
+
+      
+      <table className='my-table' style={{height:'30vh',width:'40%'}}>
+        <thead>
+          <tr>
+            <th>Food Item</th>
+            <th>Price per Item</th>
+            <th>Enter Quantity</th>
+          </tr>
+        </thead>
+        <tbody>
+          {menu.map((item) => (
+                      <tr>
+                      <td>{item['name']}</td>
+                      <td>{item['pricePerItem']}</td>
+                      <td>{ <input type="number" name={item['name']} defaultValue="0" value={inputs.quantity}  min="0" onChange={handleChange}/>}</td>
+                    </tr>
+          ))}
+        </tbody>
+      </table>
+
       <div class="footer">
-              <button type="submit" className="btn1">Place Order</button>
+              <button type="submit" className="btn1" onClick={handleSubmit} style={{width:'15%'}}>Place Order</button>
           </div>
-      </form>
+      {/* </form> */}
       <h1>
         {issuccess}
       </h1>

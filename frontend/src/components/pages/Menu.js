@@ -63,26 +63,43 @@ function Menu() {
     // document.body.appendChild(table);
 
 
-    let content = [];
-    for (let i=0;i<menu.length;i++) {
-      // console.log(menu[i]['pricePerItem'])
-      // console.log(menu[i]['name'])
-      // console.log("Hello World")
-      content.push(<li>{menu[i]['name']}</li>);
-      content.push(<li>{menu[i]['pricePerItem']}</li>);
-    }
+    // let content = [];
+    // for (let i=0;i<menu.length;i++) {
+    //   // console.log(menu[i]['pricePerItem'])
+    //   // console.log(menu[i]['name'])
+    //   // console.log("Hello World")
+    //   content.push(<li>{menu[i]['name']}</li>);
+    //   content.push(<li>{menu[i]['pricePerItem']}</li>);
+    // }
     
 
     return(
         <>
+        <div className="Menu">
             <div className="Welcome">
-            <h1>Menu</h1>    
+            <h1>Menu</h1>   <br/><br/> 
             </div>
-            <div>
-            <ul>{content}</ul>
-            </div>
+            <table className='my-table' style={{width:'40%'}}>
+              <thead>
+                <tr>
+                  <th>Item Name</th>
+                  <th>Price</th>
+                </tr>
+              </thead>
+              <tbody>
+              {menu.map((m) => (
+                      <tr>
+                      <td>{m['name']}</td>
+                      <td>{m['pricePerItem']}</td>
+                    </tr>
+          ))}
+              </tbody>
+            </table>
+                <br/><br/><br/><br/><br/>
             <div className="options">
-                <button onClick={Redirect1}>Add Food Item</button>
+                <button onClick={Redirect1} className='btntemp' style={{width:'10%'}}>Add Food Item</button>
+            
+            </div>
             </div>
         </>
     );

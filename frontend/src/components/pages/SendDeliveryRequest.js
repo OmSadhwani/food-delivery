@@ -49,7 +49,8 @@ function SendDeliveryRequest(){
       
 
     return (
-        <>
+
+        <div className="SendDeliveryRequest">
 
     <ul>
     {deliveryagents.map((m) => (
@@ -64,7 +65,7 @@ function SendDeliveryRequest(){
         <div class="footer">
             <button type="submit" className="btn1" onClick={handleClick}>Send Delivery Request</button>
         </div>
-  </>
+        </div>
 
     );
 }

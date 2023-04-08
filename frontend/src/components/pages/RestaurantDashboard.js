@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import '../../App.css';
+import NavbarR from '../NavbarR'
 
 function RestaurantDashboard() {
     
@@ -44,27 +45,26 @@ function RestaurantDashboard() {
     // }
 
     return(
-        <>  
-            
+        <div className="RestaurantDashboard">  
+            <NavbarR/>
             <div className="Welcome">
             <h1>Welcome {username}</h1>    
-            </div>     
-            <div className="options">
-                <button onClick={Redirect1}>Personal Details</button>
+            </div>   
+            <div className='rdashcont'>  
+            <div className="rdashoptions">
+                <button onClick={Redirect1} className='rdashbuttons'>Personal Details</button>
             </div>
-            <div className="options">
-                <button onClick={Redirect2}>Menu</button>
+            <div className="rdashoptions">
+                <button onClick={Redirect2} className='rdashbuttons'>Menu</button>
             </div>
-            <div className="options">
-                <button onClick={Redirect3}>Pending Orders</button>
+            <div className="rdashoptions">
+                <button onClick={Redirect3} className='rdashbuttons'>Pending Orders</button>
             </div>
-            <div className="options">
-                <button onClick={Redirect4}>Past Orders</button>
+            <div className="rdashoptions">
+                <button onClick={Redirect4} className='rdashbuttons'>Past Orders</button>
             </div>
-            {/* <div className="options">
-                <button onClick={Redirect5}>See Current Menu</button>
-            </div> */}
-        </>
+            </div>
+        </div>
     );
 }
 

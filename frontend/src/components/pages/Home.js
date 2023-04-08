@@ -18,10 +18,12 @@ function Home() {
 
   return (
     <>
+    <div className="Home">
       <Navbar/>
       <HeroSection />
       <Cards />
       <Footer />
+      </div>
     </>
   );
 }

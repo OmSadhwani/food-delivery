@@ -38,6 +38,7 @@ function GiveEstimatedTime(){
       }
 
     return (
+      <div className="GiveEstimatedTime">
         <form onSubmit={handleSubmit}>
         <div className="form-body">
             <div className="time">
@@ -48,6 +49,7 @@ function GiveEstimatedTime(){
             <button type="submit" className="btn1">Confirm</button>
         </div>
       </form>
+      </div>
     );
 }
 

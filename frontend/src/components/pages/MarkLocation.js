@@ -41,18 +41,16 @@ export default function MarkLocation() {
 
       return (
         <>
-            <div className="form">
+        <div className="MarkLocation">
             <h1>Mark Your Location</h1>
+            <br/><br/><br/><br/>
             <form onSubmit={handleSubmit}>
-            <div className="form-body">
                 <div className="Location">
-                    <input  type="text" min="0" id="Location" name="location" className="form__input" placeholder="Your Location" value={inputs.location} onChange={handleChange}/>
+                    <input  type="text" id="Location" name="location" className="form__input" placeholder="Your Location" value={inputs.location} onChange={handleChange}/>
                 </div>
-                <br/>
-                
-            </div>
+                <br/><br/><br/>
             <div class="footer">
-                <button type="submit" className="btn1">Submit</button>
+                <button type="submit" className="btn1" style={{width:'10%'}}>Submit</button>
             </div>
             </form>
             </div>

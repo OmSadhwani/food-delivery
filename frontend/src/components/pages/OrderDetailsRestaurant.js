@@ -31,9 +31,9 @@ function AcceptReject(props){
     }
     return(
         <>
-            <button onClick={handleClick1}>Accept</button>
+            <button onClick={handleClick1} className='btn1' style={{width:'10%'}}>Accept</button>
             <br/>
-            <button onClick={handleClick2}>Reject</button>
+            <button onClick={handleClick2} className='btn1' style={{width:'10%'}}>Reject</button>
         </>
     );
 }
@@ -43,7 +43,7 @@ function FoodPrepared(props){
         window.location.href='/sendDeliveryRequest/'.concat(props.det)
     }
     return(
-        <button onClick={handleClick3}>Food Prepared</button>
+        <button onClick={handleClick3} className='btn1' style={{width:'10%'}}>Food Prepared</button>
     );
 }
 
@@ -70,13 +70,13 @@ function OutforDelivery(props){
             body:JSON.stringify(props.det),
           }).then(response => response.json())
             .then(message => (
-                console.log(message['message']),
+                // console.log(message['message']),
                 handleSuccess(message['message'])
             ))
 
     }
     return(
-        <button onClick={handleClick4}>Out For Delivery</button>
+        <button onClick={handleClick4} className="btn1" style={{width:'10%'}}>Out For Delivery</button>
     );
 }
 
@@ -137,16 +137,20 @@ function OrderDetailsRestaurant(){
     
     return(
         <>
-        
+        <div className="OrderDetailsRestaurant">
             <div>
-            <h2>Order Details</h2>
+            <h1>Order Details</h1>
             </div>
+            <br/><br/><br/>
             <div>
+                <h2>
                 Customer : {details['customerName']}
+                </h2>
             </div>
             <br/>
             <div>
-                <table class='my-table'>
+                <table class='my-table' style={{width:'40%'} }>
+                    <thead>
                     <tr>
                     <th>
                         Item
@@ -161,6 +165,8 @@ function OrderDetailsRestaurant(){
                         Cost
                     </th>
                     </tr>
+                    </thead>
+                    <tbody>
                     
                     {orderList.map((m) => (
           <tr>
@@ -169,28 +175,36 @@ function OrderDetailsRestaurant(){
             <td>{m['frequency']}</td>
             <td>{m['frequency']*m['pricePerItem']}</td>
             </tr>
-      ))}
+            
+      ))}</tbody>
 
 
                 </table>
+<br/><br/>
                 <br/>
-                <table class='my-table'>
+                <table class='my-table' style={{width:'30%'}}>
+                    <thead>
                     <tr>
                         <th>Base Price</th>
                         <th>Delivery Charge</th>
                         <th>Discount</th>
                         <th>Amount to Pay</th>
                     </tr>
+                    </thead>
+                    <tbody>
                     <tr>
                         <td>{details['cost']}</td>
                         <td>{details['deliveryCharge']}</td>
                         <td>{details['discount']}</td>
                         <td>{details['final']}</td>
                     </tr>
+                    </tbody>
                 </table>
             </div>
+            <br/><br/><br/>
             <div>
                 {message}
+            </div>
             </div>
         </>
     )

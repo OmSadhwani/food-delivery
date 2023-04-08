@@ -26,18 +26,36 @@ function PendingOrderRestaurant(){
     return(
         <>
         
-            <div>
-            <h2>Pending Orders</h2>
-            <ul>
+            <div className="PendingOrderRestaurant">
+            <h1>Pending Orders</h1>
+
+            <table className='my-table' style={{width:'50%'}}>
+                <thead>
+                    <tr>
+                    <th>Customer Name</th>
+                    <th>Price</th>
+                    <th>Status</th>
+                    <th>More Details</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
                 {orders.map((order) => (
-                <li key={order['orderId']}>
-                    {order['customerName']}{' '}
-                    {order['orderValue']}{' '}
-                    {order['updateMessage']}{' '}
-                    <button onClick={() => handleButtonClick(order['orderId'])}>More Details</button>
-                </li>
+
+<tr>
+
+                    <td>{order['customerName']}</td>
+                    <td>{order['orderValue']}</td>
+                    <td>{order['updateMessage']}</td>
+                    <td>    <button onClick={() => handleButtonClick(order['orderId'])} className='btn1'>More Details</button></td>
+
+</tr>
                 ))}
-            </ul>
+
+                </tbody>
+            </table>
+
             </div>
 
         </>

@@ -1064,6 +1064,7 @@ def moreDetailsDeliveryRequest(orderId):
     #         showButton = 3
 
     requestt = json.loads(request.data)
+    print(requestt)
     orderId = requestt['id']
 
     currentOrder = None
@@ -1136,20 +1137,21 @@ def ratingDeliveryAgent(orderId):
 
     try:
         requestt = json.loads(request.data)
+        # print(requestt)
         orderId = requestt['id']
 
         currentOrder = db.collection('order').document(orderId).get().to_dict()
         customerId=currentOrder['customerId']
 
-        rating=request.form['customerRating']
+        rating=requestt['rating']
         rating=int(rating)
 
         ratingId=db.collection('customer').document(customerId).get().to_dict()['ratingId']
         ratingObject=db.collection('rating').document(ratingId).get().to_dict()
 
-        ratingObject['noOfInputs'] = ratingObject['noOfInputs'] + 1
+        ratingObject['inputs'] = ratingObject['inputs'] + 1
         ratingObject['sum'] = ratingObject['sum'] + rating
-        ratingObject['rating'] = ratingObject['sum']/ratingObject['noOfInputs']
+        ratingObject['rating'] = ratingObject['sum']/ratingObject['inputs']
 
         db.collection('rating').document(ratingId).set(ratingObject)
 
@@ -1192,9 +1194,9 @@ def ratingCustomer():
 
 
 
-    deliveryAgentRatingObject['noOfInputs'] = deliveryAgentRatingObject['noOfInputs'] + 1
+    deliveryAgentRatingObject['inputs'] = deliveryAgentRatingObject['inputs'] + 1
     deliveryAgentRatingObject['sum'] = deliveryAgentRatingObject['sum'] + deliveryAgentRating
-    deliveryAgentRatingObject['rating'] = deliveryAgentRatingObject['sum']/deliveryAgentRatingObject['noOfInputs']
+    deliveryAgentRatingObject['rating'] = deliveryAgentRatingObject['sum']/deliveryAgentRatingObject['inputs']
 
     db.collection('rating').document(deliveryAgentRatingId).set(deliveryAgentRatingObject)
 
@@ -1206,9 +1208,9 @@ def ratingCustomer():
     restaurantRatingId=db.collection('restaurant').document(restaurantId).get().to_dict()['ratingId']
     restaurantRatingObject=db.collection('rating').document(restaurantRatingId).get().to_dict()
 
-    restaurantRatingObject['noOfInputs'] = restaurantRatingObject['noOfInputs'] + 1
+    restaurantRatingObject['inputs'] = restaurantRatingObject['inputs'] + 1
     restaurantRatingObject['sum'] = restaurantRatingObject['sum'] + restaurantRating
-    restaurantRatingObject['rating'] = restaurantRatingObject['sum']/restaurantRatingObject['noOfInputs']
+    restaurantRatingObject['rating'] = restaurantRatingObject['sum']/restaurantRatingObject['inputs']
 
     db.collection('rating').document(restaurantRatingId).set(restaurantRatingObject)
 

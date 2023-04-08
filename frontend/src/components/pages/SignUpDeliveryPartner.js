@@ -39,7 +39,7 @@ function SignUpDeliveryAgent() {
   // const handleSubmit
   return(
     <>
-    <div className='SignUp' style={{height: '100vh'}}>
+    <div className='SignUp' style={{height:'100vh'}}>
     <Navbar/>
           <form onSubmit={handleSubmit} className='signup-form'>
         <h1 className='header'>Sign Up Form</h1>

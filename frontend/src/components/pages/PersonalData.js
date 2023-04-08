@@ -23,36 +23,40 @@ export default function PersonalData() {
         ))},[])
   return (
     <>
+    <div className="PersonalData">
     <NavbarC></NavbarC>
-          <div>
-        Address<br/>
-        {details['address']}
-      </div>
-      <br/>
-      <div>
-        Area <br/>
-        {details['area']}
-      </div>
-      <br/>
-      <div>
-        customerID <br/>
-        {details['customerId']}
-      </div>
-      <br/>
-      <div>
-        Email <br/>
-        {details['email']}
-      </div>    <br/>   <div>
-        Gender <br/>
-        {details['gender']}
-      </div>     <br/>     <div>
-        Mobile Number <br/>
-        {details['mobileNumber']}
-      </div>    <br/>   <div>
-        Name <br/>
-        {details['name']}
-      </div>    
-        {/* <div>Hello World</div> */}
+    <h1> Personal Details</h1>
+    <table className='my-table' style={{width:'50%',height:'40%'}}>
+      <thead>
+      <tr>
+        <th>Customer Name</th>
+        <th>{details['name']}</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>Address</td>
+        <td>{details['address']}</td>
+      </tr>
+      <tr>
+        <td>Area</td>
+        <td>{details['area']}</td>
+      </tr>
+      <tr>
+        <td>Email</td>
+        <td>{details['email']}</td>
+      </tr>
+      <tr>
+        <td>Gender</td>
+        <td>{details['gender']}</td>
+      </tr>
+      <tr>
+        <td>Mobile Number</td>
+        <td>{details['mobileNumber']}</td>
+      </tr>
+      </tbody>
+    </table>
+        </div>
     </>
   )
 }

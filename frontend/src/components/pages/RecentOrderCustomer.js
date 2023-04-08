@@ -24,20 +24,28 @@ function RecentOrderCustomer(){
     return(
         <>
         
-            <div>
-            <h2>Restaurants</h2>
-            <ul>
-                {orders.map((order) => (
-                <li key={order['orderId']}>
-                    {order['restaurantName']}{' '}
-                    {/* restid=restaurant['restaurantId']
-                    */}
-                    {order['orderValue']}{' '}
-                    {order['updateMessage']}{' '}
-                    <button onClick={() => handleButtonClick(order['orderId'])}>More Details</button>
-                </li>
-                ))}
-            </ul>
+            <div className='RecentOrderCustomer'>
+            <h1>Recent Orders</h1>
+            <table className='my-table' style={{width:'50%'}}>
+                <thead>
+                    <tr>
+                        <th>Restaurant</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>More Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {orders.map((order) => (
+                    <tr>
+                        <td>{order['restaurantName']}</td>
+                        <td>{order['orderValue']}</td>
+                        <td>{order['updateMessage']}</td>
+                        <td><button  className='btn1' onClick={() => handleButtonClick(order['orderId']) }>More Details</button></td>
+                    </tr>
+                    ))}
+                </tbody>
+            </table>
             </div>
 
         </>

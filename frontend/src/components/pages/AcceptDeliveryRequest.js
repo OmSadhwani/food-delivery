@@ -43,8 +43,10 @@ export default function AcceptDeliveryRequest() {
 
     
         return(
-            <div className="form">
+          <div className="AcceptDeliveryRequest">
+            <div className="regularform">
             <h1>Accept Delivery Request</h1>
+            <br/>
             <form onSubmit={handleSubmit}>
             <div className="form-body">
                 <div className="estimated time to reach restaurant">
@@ -55,10 +57,12 @@ export default function AcceptDeliveryRequest() {
                     <input className="form__input" type="number" min="0" name="ctime" id="ctime" placeholder="Time to reach customer" value={inputs.ctime} onChange={handleChange}/>
                 </div>
             </div>
+            <br/>
             <div class="footer">
                 <button type="submit" className="btn1">Accept</button>
             </div>
             </form>
+        </div>
         </div>
         )
 }

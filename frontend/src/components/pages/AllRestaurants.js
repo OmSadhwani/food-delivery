@@ -26,24 +26,27 @@ export default function AllRestaurants() {
           window.location.href = "/displayFoodItems/".concat(menuURL)
         }
   return (
-    <>
+    <div className="AllRestaurants">
     <NavbarC></NavbarC>
-    <div>
-      <h2>Restaurants</h2>
-      <ul>
-        {restaurants.map((restaurant) => (
-          <li key={restaurant['restaurantId']}>
-            {restaurant['name']}{' '}
-            {/* restid=restaurant['restaurantId']
-             */}
+      <h1>Restaurants</h1>
+      <table className='my-table'>
+        <thead>
+          <tr>
+            <th>Restaurant Name</th>
+            <th>Restaurant Menu</th>
+          </tr>
+        </thead>
+        <tbody>
+          {restaurants.map((restaurant) => (
+                      <tr>
+                      <td>{restaurant['name']}</td>
+                      <td><button onClick={() => handleButtonClick(restaurant['restaurantId'])} className="btn1">Menu</button></td>
+                    </tr>
+          ))}
 
-            <button onClick={() => handleButtonClick(restaurant['restaurantId'])}>Menu</button>
-          </li>
-        ))}
-      </ul>
+        </tbody>
+      </table>
     </div>
 
-        
-    </>
   )
 }

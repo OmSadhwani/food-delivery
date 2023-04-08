@@ -12,7 +12,7 @@ function MoreDetailsOrder(){
         body:JSON.stringify(id),
       }).then(response => response.json())
         .then(message => (
-            console.log(message),
+            // console.log(message),
             setdetails(message),
             setorderList(message['orderList'])
         ))},[])
@@ -21,26 +21,35 @@ function MoreDetailsOrder(){
 
     return (
         <>
-            <div>
-            <h2>Order Details</h2>
-            
-                    <ul>
-                        {/* <li>OrderId: {details["orderId"]}</li> */}
-                        <li>Date&time: {details["orderDateTime"]}</li>
-                        <li>Resturant Name: {details["restaurantName"]}</li>
+            <div className="MoreDetailsOrder">
+            <h1>Order Details</h1>
+            <br/><br/><br/>
+                        <h2>Date&time: {details["orderDateTime"]}</h2>
+                        <br/><br/><br/>
+                        <h2>Restaurant Name: {details["restaurantName"]}</h2>
+                    <table className='my-table'>
+                        <thead>
+                            <tr>
+                                <th>Item Name</th>
+                                <th>Quantity</th>
+                            </tr>
+                        </thead>
+                        <tbody>
                         {orderList.map((item) => (
-                        <li>
-                            Name: {item["name"]}
-                            Quantity: {item["frequency"]}
-                        </li>
-                        
+                            <tr>
+                            <td>{item['name']}</td>
+                            <td>{item['frequency']}</td>
+                            </tr>         
                     ))}
-                        <li>discount: {details["discount"]}</li>
-                        <li>delivery charge: {details["deliveryCharge"]}</li>
-                        <li>Total : {details["cost"]}</li>
-                    </ul>
+                        </tbody>
+                    </table>
+                    <br/><br/><br/>
+                    <h2>
+                        Base Price : {details['cost']}<br/>                        
+                        Discount : {details["discount"]}<br/>
+                        Delivery Charge : {details["deliveryCharge"]}<br/>
+                        Total : {details["final"]}</h2>
 
-             
             </div>
 
         </>
