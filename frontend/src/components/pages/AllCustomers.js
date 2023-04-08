@@ -19,6 +19,9 @@ export default function AllCustomers() {
           function handleButtonClick(menuURL,menu) {
             window.location.href = "/delete/".concat(menuURL).concat(menu)
           }
+          function handleClick(menuURL) {
+            window.location.href = "/allOffer/".concat(menuURL)
+          }
     return (
       <>
       <NavbarC></NavbarC>
@@ -39,6 +42,7 @@ export default function AllCustomers() {
   
               {/* <button onClick={() => handleButtonClick("customer/",customer["customerId"])}>Promotional Offers</button> */}
               <button onClick={() => handleButtonClick("customer/",customer["customerId"])}>Delete</button>
+              <button onClick={() => handleClick(customer["customerId"])}>Offers</button>
             </li>
           ))}
         </ul>
