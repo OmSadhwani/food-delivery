@@ -33,6 +33,7 @@ import AcceptDeliveryRequest from './components/pages/AcceptDeliveryRequest'
 import MoreDetailsDeliveryRequest from './components/pages/MoreDetailsDeliveryRequest'
 import RatingDeliveryAgent from './components/pages/RatingDeliveryAgent'
 import MarkLocation from './components/pages/MarkLocation'
+import PastOrderRestaurant from './components/pages/PastOrderRestaurant'
 
 function App() {
   // const [initialData, setInitialData] = useState([{}])
@@ -81,6 +82,7 @@ function App() {
           <Route exact path='/giveEstimatedTime/:id' element={<GiveEstimatedTime/>} />
           <Route exact path='/sendDeliveryRequest/:id' element={<SendDeliveryRequest/>} />
           <Route exact path='/markLocation' element={<MarkLocation/>} />
+          <Route exact path='/PastOrderRestaurant' element={<PastOrderRestaurant/>} />
         </Routes>
       </Router>
     </>
