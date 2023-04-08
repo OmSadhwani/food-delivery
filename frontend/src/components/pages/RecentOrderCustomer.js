@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import '../../App.css';
+import NavbarC from '../NavbarC'
 
 function RecentOrderCustomer(){
     const [orders,setorders] = useState([]);
@@ -25,6 +26,7 @@ function RecentOrderCustomer(){
         <>
         
             <div className='RecentOrderCustomer'>
+                <NavbarC/>
             <h1>Recent Orders</h1>
             <table className='my-table' style={{width:'50%'}}>
                 <thead>

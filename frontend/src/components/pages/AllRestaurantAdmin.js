@@ -23,7 +23,7 @@ export default function AllRestaurantAdmin() {
         ))},[])
 
         function handleButtonClick(menuURL) {
-          window.location.href = "/displayFoodItems/".concat(menuURL)
+          window.location.href = "/menuAdmin/".concat(menuURL)
         }
         function handleDeleteClick(menuURL,menu) {
             window.location.href = "/delete/".concat(menuURL).concat(menu)
@@ -33,8 +33,8 @@ export default function AllRestaurantAdmin() {
         }
   return (
     <>
-    <NavbarA></NavbarA>
     <div className="AllRestaurantAdmin">
+    <NavbarA></NavbarA>
       <h1>Restaurants</h1><br/><br/><br/>
 
       <table className='my-table' style={{width:'60%'}}>

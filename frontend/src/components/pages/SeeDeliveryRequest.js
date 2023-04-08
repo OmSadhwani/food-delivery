@@ -1,6 +1,7 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import '../../App.css';
+import NavbarD from '../NavbarD'
 
 export default function SeeDeliveryRequest() {
 
@@ -22,6 +23,7 @@ export default function SeeDeliveryRequest() {
 
     return (
         <div className='SeeDeliveryRequest'>
+            <NavbarD/>
             <h1>
                 Delivery Requests
             </h1><br/><br/><br/>

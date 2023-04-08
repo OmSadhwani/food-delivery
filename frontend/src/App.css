@@ -238,8 +238,7 @@ html, body, #app, #app>div {
   color:#fff;
 }
 
-.CustomerDashboard,.PersonalData,.Order,.AllRestaurants,.ConfirmOrder,.RecentOrderCustomer,.MoreDetailsOrder, .PastOrders,
-.MoreDetailsOrder{
+.CustomerDashboard,.PersonalData,.Order,.AllRestaurants,.ConfirmOrder,.RecentOrderCustomer,.MoreDetailsOrder, .PastOrders{
   text-align:center;
   min-height: 100vh;
   width:100%;
@@ -477,7 +476,10 @@ html, body, #app, #app>div {
 
 .AdminDashboard,
 .AllCustomers,
-.AllRestaurantAdmin{
+.AllRestaurantAdmin,
+.AllDeliveryAgents,
+.CreateOffer,
+.AddOffer{
   text-align:center;
   min-height: 100vh;
   width:100%;
@@ -507,4 +509,6 @@ html, body, #app, #app>div {
   color: #fff;
   transition-duration: 400ms;
 }
+
+
 

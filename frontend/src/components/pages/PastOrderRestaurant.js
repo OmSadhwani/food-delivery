@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import '../../App.css';
+import NavbarR from '../NavbarR'
 
 function PastOrderRestaurant(){
     const [orders,setorders] = useState([]);
@@ -20,6 +21,7 @@ function PastOrderRestaurant(){
     return(
         <>
             <div className="PastOrdersRestaurant">
+                <NavbarR/>
             <h1>Order Details</h1>
             <br/><br/><br/>
             <ul>

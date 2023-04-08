@@ -1,6 +1,7 @@
 import React from 'react'
 import { useState, useEffect } from 'react';
 import { redirect, useParams } from 'react-router-dom';
+import NavbarD from '../NavbarD'
 
 
 export default function RatingDeliveryAgent() {
@@ -44,6 +45,7 @@ export default function RatingDeliveryAgent() {
 
     return(
         <div className="RatingDeliveryAgent">
+          <NavbarD/>
         <h1>Give Feedback</h1>
         <form onSubmit={handleSubmit} className='regularform'>
         <div className="form-body">

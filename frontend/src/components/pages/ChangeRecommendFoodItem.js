@@ -2,15 +2,15 @@ import React from 'react'
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
-export default function ChangeRecommendRestaurant(){
+export default function ChangeRecommendFoodItem(){
 
-    const {id}= useParams()
+    const {rid,fid}= useParams()
     const [issuccess,setissuccess] = useState('');
     const handleSuccess = (msg) => {
         setissuccess(msg)
         if(msg=='Success'){
             
-                window.location.href = '/allRestaurantAdmin'
+                window.location.href = '/MenuAdmin/'.concat(rid)
             
         }
         else{
@@ -28,9 +28,8 @@ export default function ChangeRecommendRestaurant(){
         
         
 
-        useEffect (() => {fetch('/changeRecommendRestaurant/'.concat(id), {
-          method:"POST",
-          body:JSON.stringify(id),
+        useEffect (() => {fetch('/changeRecommendFoodItem/'.concat(rid).concat('/').concat(fid), {
+          method:"GET"
         }).then(response => response.json())
           .then(message => (
             console.log(message),
@@ -40,7 +39,7 @@ export default function ChangeRecommendRestaurant(){
             
         return (
             <>
-                {id}
+                {rid}
             </>
         )
 

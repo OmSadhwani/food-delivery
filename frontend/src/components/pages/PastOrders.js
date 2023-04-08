@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import '../../App.css';
+import NavbarC from '../NavbarC'
 
 function PastOrders(){
     const [orders,setorders] = useState([]);
@@ -13,13 +14,14 @@ function PastOrders(){
         method:"GET",
       }).then(response => response.json())
         .then(message => (
-            console.log(message["pastOrderist"]),
+            console.log(message["pastOrderlist"]),
             handlemessage(message["pastOrderlist"])
         ))},[])
 
     return(
         <>
             <div className="PastOrders">
+                <NavbarC/>
             <h1>Order Details</h1><br/><br/><br/>
             <ul>
                 {orders.map((pastOrder) => (
@@ -29,6 +31,8 @@ function PastOrders(){
                         OrderId: {pastOrder["orderId"]} &nbsp;&nbsp;
                         Date&time: {pastOrder["orderDateTime"]}
                         </h3>
+                        <br/><br/>
+                        <h3>Status: {pastOrder['updateMessage']}</h3>
                         
 
                         <table className='my-table'>

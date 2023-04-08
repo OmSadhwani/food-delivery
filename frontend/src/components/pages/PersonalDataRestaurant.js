@@ -26,8 +26,8 @@ export default function PersonalDataRestaurant() {
         ))},[])
   return (
     <>
-    <NavbarR/>
     <div className="PersonalDataRestaurant">
+    <NavbarR/>
       <div className='Welcome'>
         <h1>Welcome {details['name']}</h1>
       </div>

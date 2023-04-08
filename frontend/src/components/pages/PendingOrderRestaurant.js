@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import '../../App.css';
+import NavbarR from '../NavbarR'
 
 function PendingOrderRestaurant(){
     const [orders,setorders] = useState([]);
@@ -27,6 +28,7 @@ function PendingOrderRestaurant(){
         <>
         
             <div className="PendingOrderRestaurant">
+                <NavbarR/>
             <h1>Pending Orders</h1>
 
             <table className='my-table' style={{width:'50%'}}>

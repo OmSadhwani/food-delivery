@@ -1,6 +1,6 @@
 import React,{useState,useEffect} from 'react';
 import '../../App.css';
-import NavbarC from '../NavbarC'
+import NavbarA from '../NavbarA'
 
 export default function AllDeliveryAgents() {
 
@@ -12,7 +12,7 @@ export default function AllDeliveryAgents() {
           method:"GET",
         }).then(response => response.json())
           .then(message => (
-              // console.log(message),
+              console.log(message),
               setdeliveryAgents(message['deliveryAgentList'])
           ))},[])
   
@@ -21,27 +21,40 @@ export default function AllDeliveryAgents() {
           }
     return (
       <>
-      <NavbarC></NavbarC>
-      <div>
+      <div className='AllDeliveryAgents'>
+<NavbarA/>
         <h2>Delivery Agents</h2>
-        <ul>
+        <table className='my-table'>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Mobile Number</th>
+              <th>Gender</th>
+              <th>Area</th>
+              <th>Remove Agent</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+
           {deliveryAgents.map((deliveryAgents) => (
-            <li>
-              {deliveryAgents['name']}{' '}
-              {deliveryAgents['email']}{' '}
-              {deliveryAgents['mobile']}{' '}
-              {deliveryAgents['gender']}{' '}
-              {deliveryAgents['area']}{' '}
-              {deliveryAgents['address']}{' '}
-              
-              {/* restid=restaurant['restaurantId']
-               */}
-  
-              {/* <button onClick={() => handleButtonClick("deliveryAgents/",deliveryAgents["deliveryAgentsId"])}>Promotional Offers</button> */}
-              <button onClick={() => handleButtonClick("deliveryAgent/",deliveryAgents["deliveryAgentId"])}>Delete</button>
-            </li>
+             
+            <tr>
+              <td>{deliveryAgents['name']}</td>
+              <td>{deliveryAgents['email']}</td>
+              <td>{deliveryAgents['mobileNumber']}</td>
+              <td>{deliveryAgents['gender']}</td>
+              <td>{deliveryAgents['area']}</td>
+              <td><button onClick={() => handleButtonClick("deliveryAgent/",deliveryAgents["deliveryAgentId"])} className='btn1'>Delete</button></td>
+            </tr>
           ))}
-        </ul>
+          </tbody>
+        </table>
+
+
+
       </div>
   
           

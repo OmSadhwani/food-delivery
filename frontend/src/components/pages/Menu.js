@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import '../../App.css';
-
+import NavbarR from '../NavbarR';
 function Menu() {
     
     const [menu,setmenu] = useState([]);
@@ -76,6 +76,7 @@ function Menu() {
     return(
         <>
         <div className="Menu">
+          <NavbarR/>
             <div className="Welcome">
             <h1>Menu</h1>   <br/><br/> 
             </div>

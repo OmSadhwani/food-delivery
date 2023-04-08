@@ -1,6 +1,6 @@
 import React, {useState,useEffect} from 'react'
 import { useParams } from 'react-router-dom'
-
+import NavbarR from '../NavbarR'
 function SendDeliveryRequest(){
     const temp = useParams()
     // console.log(temp)
@@ -51,6 +51,7 @@ function SendDeliveryRequest(){
     return (
 
         <div className="SendDeliveryRequest">
+          <NavbarR/>
             <h1>Send Delivery Request</h1>
               <table className='my-table'>
                 <thead>

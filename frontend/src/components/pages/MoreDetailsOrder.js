@@ -1,6 +1,7 @@
 import React from 'react'
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import NavbarC from '../NavbarC'
 
 function MoreDetailsOrder(){
     const id = useParams()
@@ -22,6 +23,7 @@ function MoreDetailsOrder(){
     return (
         <>
             <div className="MoreDetailsOrder">
+                <NavbarC/>
             <h1>Order Details</h1>
             <br/><br/><br/>
                         <h2>Date&time: {details["orderDateTime"]}</h2>

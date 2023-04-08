@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import '../../App.css';
-
+import NavbarD from '../NavbarD';
 export default function MarkLocation() {
 
     const [inputs, setInputs] = useState({});
@@ -42,6 +42,7 @@ export default function MarkLocation() {
       return (
         <>
         <div className="MarkLocation">
+          <NavbarD/>
             <h1>Mark Your Location</h1>
             <br/><br/><br/><br/>
             <form onSubmit={handleSubmit}>

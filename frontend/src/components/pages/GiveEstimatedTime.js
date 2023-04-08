@@ -1,5 +1,6 @@
 import React, {useState,useEffect} from 'react'
 import { useParams } from 'react-router-dom'
+import NavbarR from '../NavbarR';
 
 function GiveEstimatedTime(){
     const temp = useParams()
@@ -39,6 +40,7 @@ function GiveEstimatedTime(){
 
     return (
       <div className="GiveEstimatedTime">
+<NavbarR/>
         <h1>
           Give Estimated Time to prepare the Food
         </h1>

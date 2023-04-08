@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import '../../App.css';
 import { useParams } from 'react-router-dom';
+import NavbarR from '../NavbarR'
 
 
 function AcceptReject(props){
@@ -138,6 +139,7 @@ function OrderDetailsRestaurant(){
     return(
         <>
         <div className="OrderDetailsRestaurant">
+            <NavbarR/>
             <div>
             <h1>Order Details</h1>
             </div>

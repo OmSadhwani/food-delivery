@@ -21,8 +21,8 @@ export default function AllCustomers() {
           }
     return (
       <>
-      <NavbarA></NavbarA>
       <div className="AllCustomers">
+      <NavbarA></NavbarA>
         <h1>Customers</h1>
               <table className='my-table'>
                 <thead>

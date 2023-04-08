@@ -1,6 +1,7 @@
 import React from 'react'
 import { useState, useEffect } from 'react';
 import { redirect, useParams } from 'react-router-dom';
+import NavbarD from '../NavbarD';
 
 
 export default function AcceptDeliveryRequest() {
@@ -44,6 +45,7 @@ export default function AcceptDeliveryRequest() {
     
         return(
           <div className="AcceptDeliveryRequest">
+            <NavbarD/>
             <div className="regularform">
             <h1>Accept Delivery Request</h1>
             <br/>

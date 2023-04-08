@@ -1,5 +1,6 @@
 import React from 'react'
 import { useState, useEffect } from 'react';
+import NavbarA from '../NavbarA';
 
 export default function AdminDashboard(){
 
@@ -23,7 +24,8 @@ export default function AdminDashboard(){
   };
 
     return (
-        <div className="AdminDashboard">
+      <div className="AdminDashboard">
+          <NavbarA/>
           <h1>Welcome to the Admin Dashboard</h1><br/><br/><br/><br/>
           <button onClick={handleCustomersClick} className="addashbuttons">List of Customers</button><br/>
           <button onClick={handleRestaurantsClick} className="addashbuttons">List of Restaurants</button><br/>

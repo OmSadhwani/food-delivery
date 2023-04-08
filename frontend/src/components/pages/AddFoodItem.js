@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import '../../App.css';
+import NavbarR from '../NavbarR';
 
 function AddFoodItem() {
     const [inputs, setInputs] = useState({});
@@ -41,6 +42,7 @@ function AddFoodItem() {
     return(
         <>
         <div className="AddFoodItem">
+          <NavbarR/>
         <h1>Add Food Item</h1>
         <div className="regularform">
         <form onSubmit={handleSubmit} >

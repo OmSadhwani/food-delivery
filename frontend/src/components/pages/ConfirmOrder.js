@@ -1,12 +1,13 @@
 import React, {useState, useEffect} from 'react';
 import '../../App.css';
-import Navbar from '../Navbar';
+import NavbarC from '../NavbarC';
 
 function ConfirmOrder() {
 
     const [details, setdetails] = useState({});
     const [issuccess,setissuccess] = useState("");
     const [orderList,setorderList] = useState([]);
+    const [offerList,setofferList] = useState([]);
 
     // const handleChange = (event) => {
     //   const name = event.target.name;
@@ -44,13 +45,19 @@ function ConfirmOrder() {
     ))
   }, []);
 
+  useEffect(() => {
+    fetch('/offerListCustomer')
+  })
+
     return(
         <>
         <div className="ConfirmOrder">
-        <Navbar/>
+        <NavbarC/>
+
+
         <h1>Order Details</h1>
 
-        <table className='my-table'>
+        <table className='my-table' style={{width:'35%'}}>
           <thead>
             <tr>
               <th>Customer Name</th>
@@ -75,7 +82,7 @@ function ConfirmOrder() {
               <td>{details['discount']}</td>
             </tr>
             <tr>
-              <td>Taotal amount to pay</td>
+              <td>Total amount to pay</td>
               <td>{details['final']}</td>
             </tr>
             <tr>
@@ -109,9 +116,15 @@ function ConfirmOrder() {
             ))}
           </tbody>
         </table>
+
+
+
           <div class="footer">
               <button type="submit" className="btn1" onClick={handleSubmit} style={{width:'10%'}}>Confirm and Pay</button>
           </div>
+
+
+
 
 
 

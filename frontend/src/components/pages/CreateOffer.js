@@ -1,5 +1,6 @@
 import React from 'react'
 import { useState, useEffect } from 'react';
+import NavbarA from '../NavbarA'
 
 export default function CreateOffer(){
         const [details,setdetails] = useState([]);
@@ -25,23 +26,41 @@ export default function CreateOffer(){
 
           return(
             <>
+            <div className='CreateOffer'>
+            <NavbarA/>
                 <h1>
                     Promotional Offers
-                </h1>
+                </h1><br/><br/><br/><br/>
 
                 <div>
-                <ul>
+
+                   
+
+
+                <table className='my-table' style={{width:'40%'}}>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Discount</th>
+                            <th>Upper Limit</th>
+                            <th>Offer Id</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
                     {details.map((item) => (
-                    <li>
-                        Name: {item["name"]}
-                        Dicount: {item["discount"]}
-                        Upper Limit: {item["price"]}
-                        Offer Id :{ item["offerId"]}
-                        
-                    </li>
+                        <tr>
+                            <td>{item["name"]}</td>
+                            <td>{item["discount"]}</td>
+                            <td>{item["upperLimit"]}</td>
+                            <td>{item["offerId"]}</td>
+                        </tr>
                     ))}
-                    <button onClick={handleRestaurantsClick}>Create Offer</button>
-                </ul>
+                    </tbody>
+                </table>
+                <br/><br/><br/>
+                <button onClick={handleRestaurantsClick} className='btn1' style={{width:'15%'}}>Create Offer</button>
+                </div>
                 </div>
 
             </>

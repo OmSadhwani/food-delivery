@@ -905,21 +905,21 @@ def changeRecommendRestaurant(restaurantId):
 
 
 # This function will change the recommend status of the food item, will be used by admin
-@views.route('/changeRecommendFoodItem/<foodItemId>',methods=['POST','GET'])
-def changeRecommendFoodItem(foodItemId):
+@views.route('/changeRecommendFoodItem/<restaurantId>/<foodItemId>',methods=['POST','GET'])
+def changeRecommendFoodItem(restaurantId,foodItemId):
     if session['user']['userType'] != 'admin':
         return {"message":"error"}
         # return redirect(url_for('logout'))
     # id=int(id_to_change)
     # id=id-1
-    requestt = json.loads(request.data)
-    foodItemId = requestt['id']
+    
+    # foodIemId = requestt['id']
 
-    restaurantId=None
+    # restaurantId=None
     for i in range(len(session['currentMenu'])):
         if session['currentMenu'][i]['foodItemId']==foodItemId:
             session['currentMenu'][i]['isRecommended'] = not session['currentMenu'][i]['isRecommended']
-            restaurantId=session['currentMenu'][i]['restaurantId']
+            # restaurantId=session['currentMenu'][i]['restaurantId']
             break
 
     # if session['currentMenu'][id]['isRecommended'] == False:

@@ -2,6 +2,7 @@ import React from 'react'
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import '../../App.css';
+import NavbarC from '../NavbarC'
 
 function Order(){
     const id = useParams()
@@ -58,6 +59,7 @@ function Order(){
     return (
 <>
     <div className="Order">
+      <NavbarC/>
       <h1>Menu</h1>
 
       <table className='my-table'>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import '../../App.css';
-import Navbar from '../Navbar';
+import NavbarD from '../NavbarD';
 
 export default function PersonalDataDeliveryAgent() {
 
@@ -21,6 +21,7 @@ export default function PersonalDataDeliveryAgent() {
         ))},[])
   return (
     <div className="PersonalDataDeliveryAgent">
+      <NavbarD/>
       <h1>Personal Details</h1>
       <table className='my-table' style={{width:'50%',height:'40%'}}>
 

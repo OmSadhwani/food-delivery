@@ -1,6 +1,7 @@
 import React from 'react'
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import NavbarD from '../NavbarD';
 
 export default function MoreDetailsDeliveryRequest(){
 
@@ -36,6 +37,7 @@ export default function MoreDetailsDeliveryRequest(){
         return (
             <>
 <div className="MoreDetailsDeliveryRequest">
+    <NavbarD/>
                 <div>
                 <h1>Order Details</h1><br/><br/>
 
