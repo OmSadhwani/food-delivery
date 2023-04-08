@@ -103,8 +103,9 @@ def allCustomers():
         temp_dict['ratingValue'] = db.collection('rating').document(temp_dict['raringId']).get().to_dict()['rating']
 
         session['customerList'].append(temp_dict)
+    customerList=session['customerList']
 
-    return render_template('allCustomers.html', user=user)
+    return {"customerList": customerList}
 
 
 #list of the deliveryAgents
@@ -124,8 +125,9 @@ def allDeliveryAgents():
         temp_dict['ratingValue'] = db.collection('rating').document(temp_dict['ratingId']).get().to_dict()['rating']
 
         session['deliveryAgentList'].append(temp_dict)
+    deliveryAgentList= session['deliveryAgentList']
 
-    return render_template('allDeliveryAgents.html',user=user)
+    return {"deliveryAgentList": deliveryAgentList}
 
 @views.route('/menu',methods=['GET'])
 def createMenu():

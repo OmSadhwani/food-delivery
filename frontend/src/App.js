@@ -34,6 +34,12 @@ import MoreDetailsDeliveryRequest from './components/pages/MoreDetailsDeliveryRe
 import RatingDeliveryAgent from './components/pages/RatingDeliveryAgent'
 import MarkLocation from './components/pages/MarkLocation'
 import PastOrderRestaurant from './components/pages/PastOrderRestaurant'
+import AdminDashboard from './components/pages/AdminDashboard'
+import AllCustomers from './components/pages/AllCustomers'
+import AllDeliveryAgents from './components/pages/AllDeliveryAgents'
+import AllRestaurantAdmin from './components/pages/AllRestaurantAdmin'
+import DeleteUser from './components/pages/DeleteUser'
+
 
 function App() {
   // const [initialData, setInitialData] = useState([{}])
@@ -83,6 +89,11 @@ function App() {
           <Route exact path='/sendDeliveryRequest/:id' element={<SendDeliveryRequest/>} />
           <Route exact path='/markLocation' element={<MarkLocation/>} />
           <Route exact path='/PastOrderRestaurant' element={<PastOrderRestaurant/>} />
+          <Route exact path='/adminDashboard' element={<AdminDashboard/>} />
+          <Route exact path='/allCustomers' element={<AllCustomers/>} />
+          <Route exact path='/allDeliveryAgents' element={<AllDeliveryAgents/>} />
+          <Route exact path='/allRestaurantAdmin' element={<AllRestaurantAdmin/>} />
+          <Route exact path='/delete/:id1/:id2' element={<DeleteUser/>} />
         </Routes>
       </Router>
     </>
