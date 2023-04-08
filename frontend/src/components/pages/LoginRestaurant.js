@@ -37,10 +37,16 @@ function LoginRestaurant() {
 
     return(
         <>
+        <div className='Login' style={{height: '100vh'}}>
         <Navbar/>
-        <div className="form">
+
+        <div class="background-form">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        </div>
+
+        <form onSubmit={handleSubmit} className='login-form'>
         <h1>Login</h1>
-        <form onSubmit={handleSubmit}>
           <div className="form-body">
               <div className="email">
                   <input  type="email" id="email" name="email" className="form__input" placeholder="Email" value={inputs.email || ""} onChange={handleChange}/>
@@ -51,10 +57,10 @@ function LoginRestaurant() {
               </div>
           </div>
           <div class="footer">
-              <button type="submit" className="btn1">Login</button>
+              <button type="submit" className="btnlogin">Login</button>
           </div>
         </form>
-      </div>      
+      </div>     
         </>
     );
 }

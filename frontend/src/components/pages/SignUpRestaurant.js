@@ -38,10 +38,10 @@ function SignUpRestaurant() {
   // const handleSubmit
   return(
     <>
+    <div className='SignUp' style={{height: '100vh'}}>
       <Navbar/>
-      <div className="form">
-        <h1>Sign Up Form</h1>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} className='signup-form'>
+        <h1 className='header'>Sign Up</h1>
               <div className="Name">
                   <input className="form__input" type="text" id="name" name="name" placeholder="Name" required value={inputs.name || ""} onChange={handleChange}/>
               </div>
@@ -62,7 +62,7 @@ function SignUpRestaurant() {
                   <input className="form__input" name="confirmpassword" type="password" required id="confirm-password" placeholder="Confirm Password" value={inputs.confirmpassword} onChange={handleChange}/>
               </div>
           <div class="footer">
-              <button type="submit" className="btn1">Register</button>
+              <button type="submit" className="btnsignup">Register</button>
           </div>
           </form>
           <div>

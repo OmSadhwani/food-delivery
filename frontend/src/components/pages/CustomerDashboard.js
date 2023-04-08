@@ -50,30 +50,33 @@ function CustomerDashboard() {
     }
 
     return(
-        <>
+        <div className='CustomerDashboard' style={{height: '100vh'}}>
             <NavbarC/>
             <div className="Welcome">
             <h1>Welcome {username}</h1>    
-            </div>     
-            <div className="options">
-                <button onClick={Redirect1}>Order Now</button>
             </div>
-            <div className="options">
-                <button onClick={Redirect2}>Personal Details</button>
+            <br/><br/><br/>
+            <div className="cdashcont">     
+            <div className="cdashoptions">
+                <button onClick={Redirect1} className="cdashbuttons">Order Now</button>
             </div>
-            <div className="options">
-                <button onClick={Redirect3}>Recommeded Restaurants</button>
+            <div className="cdashoptions">
+                <button onClick={Redirect2} className="cdashbuttons">Personal Details</button>
+            </div>
+            <div className="cdashoptions">
+                <button onClick={Redirect3} className="cdashbuttons">Recommeded Restaurants</button>
             </div>
             {/* <div className="options">
                 <button onClick={Redirect4}>All Restaurants</button>
             </div> */}
-            <div className="options">
-                <button onClick={Redirect5}>Present Orders</button>
+            <div className="cdashoptions">
+                <button onClick={Redirect5} className="cdashbuttons">Present Orders</button>
             </div>
-            <div className="options">
-                <button onClick={Redirect6}>Past Orders</button>
+            <div className="cdashoptions">
+                <button onClick={Redirect6} className="cdashbuttons">Past Orders</button>
             </div>
-        </>
+            </div>
+            </div>
     );
 }
 
