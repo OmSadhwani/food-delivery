@@ -264,12 +264,12 @@ def order():
 
     #return redirect(url_for('orderDetails'))
 
-@views.route('/addOfferCustomer/<offerId>')
-def addOfferCustomer(offerId):
+@views.route('/addOfferCustomer/<customer_offerId>')
+def addOfferCustomer(customer_offerId):
     if session['user']['userType']!='customer':
         return {"message":"error"}
     
-    session['currentOrder']['offerId'] = offerId
+    session['currentOrder']['offerId'] = customer_offerId
 
     return {"message":"Success"}
 
@@ -1124,19 +1124,21 @@ def giveOffer(customerId, offerId):
 @views.route('/offerListCustomer')
 def offerListCustomer():
     if session['user']['userType'] != 'customer':
-        return redirect(url_for('logout'))
+        return {"message":"error"}
+        # return redirect(url_for('logout'))
     user=session['userId']
     offerList=[]
     docs = db.collection('customer').document(user).collection('promotionalOfferId').stream()
     for doc in docs:
         temp_dict=doc.to_dict()
-        temp_dict['offerId']= doc.id
+        # temp_dict['offerId']= doc.id
 
         offerList.append(temp_dict)
     session['offerList']=offerList
     session.modified = True
     # print(offerList)
-    return render_template('allOfferCustomer.html', offerList=offerList)
+    return {"offerList":offerList}
+    # return render_template('allOfferCustomer.html', offerList=offerList)
 
 
 # This function will show the details of the order and based on the statuses, the information on the front end will change
