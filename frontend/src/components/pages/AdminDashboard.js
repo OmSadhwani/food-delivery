@@ -19,7 +19,7 @@ export default function AdminDashboard(){
   };
 
   const handleOffersClick = () => {
-    window.location.href='/offers';
+    window.location.href='/createOffer';
   };
 
     return (

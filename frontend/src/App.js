@@ -41,6 +41,8 @@ import AllRestaurantAdmin from './components/pages/AllRestaurantAdmin'
 import DeleteUser from './components/pages/DeleteUser'
 import ManagementLogin from './components/pages/ManagementLogin'
 import ChangeRecommendRestaurant from './components/pages/ChangeRecommendRestaurant'
+import CreateOffer from './components/pages/CreateOffer'
+import AddOffer from './components/pages/AddOffer'
 
 
 function App() {
@@ -98,6 +100,8 @@ function App() {
           <Route exact path='/delete/:userType/:id' element={<DeleteUser/>} />
           <Route exact path='/managementLogin' element={<ManagementLogin/>} />
           <Route exact path='/changeRecommendRestaurant/:id' element={<ChangeRecommendRestaurant/>} />
+          <Route exact path='/createOffer' element={<CreateOffer/>} />
+          <Route exact path='/addOffer' element={<AddOffer/>} />
         </Routes>
       </Router>
     </>

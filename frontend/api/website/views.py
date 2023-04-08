@@ -979,7 +979,8 @@ def recommendedRestaurant():
 def createOffer():
     user = session['user']
     if not user['userType'] == 'admin':
-        return redirect(url_for('logout'))
+        return {"message":"error"}
+        # return redirect(url_for('logout'))
     currentAdminId=session['userId']
     offerList=[]
     # Add statement for getting a docs for the offers
@@ -994,33 +995,36 @@ def createOffer():
     except:
         session['offerAdditionMessage']="False"
         message="False"
-    return render_template('createOffer.html', user=user, offerList=offerList, message=message)
+    return {"offerList": offerList}
 
 
 
 
 # This function will show the page to add offer and will show the input fields
-@views.route('/addOffer')
-def addOffer():
-    if session['user']['userType'] != 'admin':
-        return redirect(url_for('logout'))
-    user = session['user']
-    if user['userType'] == 'admin':
-        message=session['offerAdditionMessage']
-        session['offerAdditionMessage']="False"
-        return render_template('addOffer.html', user=user, message=message)
-    else:
-        return redirect(url_for('logout'))
+# @views.route('/addOffer')
+# def addOffer():
+#     if session['user']['userType'] != 'admin':
+#         return redirect(url_for('logout'))
+#     user = session['user']
+#     if user['userType'] == 'admin':
+#         message=session['offerAdditionMessage']
+#         session['offerAdditionMessage']="False"
+#         return render_template('addOffer.html', user=user, message=message)
+#     else:
+#         return redirect(url_for('logout'))
 
 
 # This function will add the offers in the database that will be later used in the future
-@views.route('/addOffer/adder', methods=['POST','GET'])
+@views.route('/addOffer', methods=['POST','GET'])
 def offerAdder():
     if session['user']['userType'] != 'admin':
-        return redirect(url_for('logout'))
-    name = request.form['name']
-    discount = request.form['discount']
-    price = request.form['price']
+        return {"message":"error"}
+        # return redirect(url_for('logout'))
+
+    requestt = json.loads(request.data)
+    name = requestt['name']
+    discount = requestt['discount']
+    price = requestt['upperLimit']
 
     try:
         json_data = {
@@ -1035,12 +1039,14 @@ def offerAdder():
         db.collection("offer").document(doc_reference.id).update({"offerId":doc_reference.id})
 
         session['offerAdditionMessage']="Offer added successfully."
-        return redirect(url_for('createOffer'))
+        return {"message":"Success"}
+        # return redirect(url_for('createOffer'))
 
     except Exception as e:
-        print(str(e))
+        # print(str(e))
         session['offerAdditionMessage'] = "Error adding offer in database"
-        return redirect(url_for('addOffer'))
+        return {"message":"error","error":str(e)}
+        # return redirect(url_for('addOffer'))
 
 
 
