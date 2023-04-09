@@ -21,6 +21,15 @@ function PastOrders(){
             handlemessage(message["pastOrderlist"])
         ))},[])
 
+        let rating;
+    
+        const callrating = (updtlvl,id) => {
+            if(updtlvl == 5){
+                rating=<button className="btn1" onClick={() => handleChangeClick(id)}  style={{width:'20%'}}>Rate Restaurant and Delivery Agent</button>
+            }
+        }
+
+
     return(
         <>
             <div className="PastOrders">
@@ -39,9 +48,9 @@ function PastOrders(){
                         
                         <br>
                         </br>
-                        <h3>
-                        <button className="btn1" onClick={() => handleChangeClick(pastOrder['orderId'])}  style={{width:'20%'}}>Rate Restaurant and Delivery Agent</button>
-                        </h3>
+                            {callrating(pastOrder['updateLevel'],pastOrder['orderId'])}
+                            {rating}
+                        
                         
 
                         <table className='my-table'>
