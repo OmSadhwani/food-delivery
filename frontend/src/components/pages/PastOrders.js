@@ -9,6 +9,9 @@ function PastOrders(){
     setorders(msg)
     }
 
+    function handleChangeClick(restaurantId) {
+        window.location.href = "/rateRestaurant/".concat(restaurantId)
+    }
 
     useEffect(() => {fetch('/pastOrder' , {
         method:"GET",
@@ -33,6 +36,12 @@ function PastOrders(){
                         </h3>
                         <br/><br/>
                         <h3>Status: {pastOrder['updateMessage']}</h3>
+                        
+                        <br>
+                        </br>
+                        <h3>
+                        <button className="btn1" onClick={() => handleChangeClick(pastOrder['orderId'])}  style={{width:'20%'}}>Rate Restaurant and Delivery Agent</button>
+                        </h3>
                         
 
                         <table className='my-table'>

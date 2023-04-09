@@ -1291,17 +1291,25 @@ def ratingDeliveryAgent(orderId):
 # This will take the rating from the customer after the order is delivered
 # This can be accessed by going in past orders and more details in customer dashboard
 # Changing the rating of the restaurant and the delivery agent
-@views.route('/ratingCustomer', methods=['POST', 'GET'])
-def ratingCustomer():
+@views.route('/ratingCustomer/<orderId>', methods=['POST', 'GET'])
+def ratingCustomer(orderId):
 
     if session['user']['userType']!='customer':
-        return redirect(url_for('logout'))
+        return {"message":"error"}
+        # return redirect(url_for('logout'))
 
 
-    orderId=session['customerCurrentOrderChanging']['orderId']
+    # orderId=session['customerCurrentOrderChanging']['orderId']
+    requestt = json.loads(request.data)
+
+    orderId = requestt['id']
+
     db.collection('order').document(orderId).update({'updateLevel': 6})
     deliveryAgentId = db.collection("order").document(orderId).get().to_dict()['deliveryAgentId']
-    deliveryAgentRating=request.form['deliveryAgentRating']
+
+    print(deliveryAgentId)
+    
+    deliveryAgentRating=requestt['ratingDeliveryAgent']
     deliveryAgentRating=int(deliveryAgentRating)
 
     deliveryAgentRatingId=db.collection('deliveryAgent').document(deliveryAgentId).get().to_dict()['ratingId']
@@ -1317,7 +1325,7 @@ def ratingCustomer():
 
 
     restaurantId = db.collection("order").document(orderId).get().to_dict()['restaurantId']
-    restaurantRating=request.form['restaurantRating']
+    restaurantRating=requestt['ratingRestaurant']
     restaurantRating=int(restaurantRating)
 
     restaurantRatingId=db.collection('restaurant').document(restaurantId).get().to_dict()['ratingId']
@@ -1329,4 +1337,5 @@ def ratingCustomer():
 
     db.collection('rating').document(restaurantRatingId).set(restaurantRatingObject)
 
-    return redirect(url_for('pastOrder'))
+    return {"message":"Success"}
+    # return redirect(url_for('pastOrder'))

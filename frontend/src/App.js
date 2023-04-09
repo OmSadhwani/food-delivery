@@ -48,6 +48,7 @@ import ChangeRecommendFoodItem from './components/pages/ChangeRecommendFoodItem'
 import AllOffer from './components/pages/AllOffer';
 import GiveOffer from './components/pages/GiveOffer';
 import RecommendedRestaurant from './components/pages/RecommendedRestaurant'
+import RateRestaurant from './components/pages/RateRestaurant';
 
 function App() {
   // const [initialData, setInitialData] = useState([{}])
@@ -111,6 +112,7 @@ function App() {
           <Route exact path='/changeRecommendFoodItem/:rid/:fid' element={<ChangeRecommendFoodItem/>} />
           <Route exact path='/giveOffer/:cid/:oid' element={<GiveOffer/>} />
           <Route exact path='/recommendedRestaurant' element={<RecommendedRestaurant/>} />
+          <Route exact path='/rateRestaurant/:id' element={<RateRestaurant/>} />
 
         </Routes>
       </Router>
