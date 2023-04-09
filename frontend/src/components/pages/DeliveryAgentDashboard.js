@@ -63,12 +63,12 @@ function DeliveryAgentDashboard() {
             <div className="ddashoptions">
                 <button onClick={Redirect3} className="ddashbuttons">See Delivery Request</button>
             </div>
-            <div className="ddashoptions">
+            {/* <div className="ddashoptions">
                 <button onClick={Redirect4} className="ddashbuttons">Accept Delivery Request</button>
             </div>
             <div className="ddashoptions">
                 <button onClick={Redirect5} className="ddashbuttons">See Current Order</button>
-            </div>
+            </div> */}
             </div>
             </div>
         </>
