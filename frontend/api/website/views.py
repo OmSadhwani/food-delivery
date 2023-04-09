@@ -301,7 +301,7 @@ def orderDetails():
     final = max(currentOrder['orderValue'] + currentOrder['deliveryCharge'] - discount, 0)
     currentOrder['paidValue'] = final
     # print(orderList)
-
+    session.modified=True
     return {"orderList":orderList, "customerName":customerName, "restaurantName":restaurantName, "offerList":offerList, "offerUsed":offerUsed, "cost":currentOrder['orderValue'], "deliveryCharge":currentOrder['deliveryCharge'], "discount":discount, "final":final}
 
 @views.route('/placeOrder',methods=['GET'])

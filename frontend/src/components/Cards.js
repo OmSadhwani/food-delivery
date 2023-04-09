@@ -30,7 +30,7 @@ function Cards() {
         <div className='cards__wrapper'>
           <ul className='cards__items'>
             <li className='cards__item'>
-              <Link className='cards__item__link' to='/login'>
+              <Link className='cards__item__link' to='/restaurantLogin'>
                 <figure className='cards__item__pic-wrap' data-category='Restaurant'>
                   <img
                     className='cards__item__img'
@@ -47,7 +47,7 @@ function Cards() {
           </ul>
           <ul className='cards__items'>
             <li className='cards__item'>
-                <Link className='cards__item__link' to='/login'>
+                <Link className='cards__item__link' to='/deliveryAgentLogin'>
                   <figure className='cards__item__pic-wrap' data-category='Delivery Partner'>
                     <img
                       className='cards__item__img'

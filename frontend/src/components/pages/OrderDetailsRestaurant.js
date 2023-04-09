@@ -110,7 +110,7 @@ function OrderDetailsRestaurant(){
         body:JSON.stringify(id),
       }).then(response => response.json())
         .then(message => (
-            // console.log(message['currentOrder']['orderId']),
+            console.log(message),
             handlemessage(message)
         ))},[])
     

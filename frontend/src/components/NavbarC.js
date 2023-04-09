@@ -40,13 +40,12 @@ function NavbarC() {
   return (
     <>
       <nav className='navbar'>
-        <div className='navbar-container'>
+        <div className='navbar-dashboard'>
           <Link to='/customerDashboard' className='navbar-logo' onClick={closeMobileMenu}>
             DashBoard &nbsp; <RxDashboard/>
           </Link>
-
         </div>
-        <button onClick={handlelogout} className='btn1' style={{width:'20%'}}>Logout</button>
+        <button onClick={handlelogout} className='btnlogout' style={{width:'7%'}}>Logout</button>
       </nav>
     </>
   );

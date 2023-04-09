@@ -111,7 +111,6 @@ function App() {
           <Route exact path='/changeRecommendFoodItem/:rid/:fid' element={<ChangeRecommendFoodItem/>} />
           <Route exact path='/giveOffer/:cid/:oid' element={<GiveOffer/>} />
           <Route exact path='/recommendedRestaurant' element={<RecommendedRestaurant/>} />
-
         </Routes>
       </Router>
     </>
