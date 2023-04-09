@@ -28,7 +28,7 @@ function SignUp() {
 
   const handleSubmit = (event) => {
     event.preventDefault()
-    console.log(inputs)
+    // console.log(inputs)
     fetch('/customerSignup' , {
       method:"POST",
       body:JSON.stringify(inputs),

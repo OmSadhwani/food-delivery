@@ -65,7 +65,7 @@ function OutforDelivery(props){
 
     const handleClick4 = (event) => {
 
-        console.log(props.det)
+        // console.log(props.det)
         fetch('/updateStatus3' , {
             method:"POST",
             body:JSON.stringify(props.det),

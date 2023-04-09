@@ -18,7 +18,7 @@ function AddFoodItem() {
 
     const handleSuccess = (msg) => {
         setissuccess(msg)
-        console.log(msg)
+        // console.log(msg)
         if(msg=='Success'){
           window.location.href = '/menu'
         }
@@ -29,7 +29,7 @@ function AddFoodItem() {
 
     const handleSubmit = (event) => {
         event.preventDefault()
-        console.log(inputs)
+        // console.log(inputs)
         fetch('/addFoodItem' , {
           method:"POST",
           body:JSON.stringify(inputs),

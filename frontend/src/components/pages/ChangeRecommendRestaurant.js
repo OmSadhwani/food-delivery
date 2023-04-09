@@ -33,7 +33,7 @@ export default function ChangeRecommendRestaurant(){
           body:JSON.stringify(id),
         }).then(response => response.json())
           .then(message => (
-            console.log(message),
+            // console.log(message),
             handleSuccess(message['message'])
               ))},[])
 

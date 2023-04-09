@@ -14,7 +14,7 @@ export default function DeleteUser(){
         const handleSuccess = (msg) => {
             setissuccess(msg)
             if(msg=='Success'){
-                console.log(userType)
+                // console.log(userType)
                 if(userType == "customer"){
                     window.location.href = '/allCustomers'
                 }
@@ -45,7 +45,7 @@ export default function DeleteUser(){
               body:JSON.stringify(dict),
             }).then(response => response.json())
               .then(message => (
-                console.log(message),
+                // console.log(message),
                 handleSuccess(message['message'])
                   ))},[])
                   

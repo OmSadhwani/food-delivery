@@ -25,7 +25,7 @@ function Login() {
 
     const handleSubmit = (event) => {
         event.preventDefault()
-        console.log(inputs)
+        // console.log(inputs)
         fetch('/deliveryAgentLogin' , {
           method:"POST",
           body:JSON.stringify(inputs),

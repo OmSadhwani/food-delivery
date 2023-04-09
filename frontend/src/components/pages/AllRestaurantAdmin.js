@@ -41,6 +41,7 @@ export default function AllRestaurantAdmin() {
         <thead>
           <tr>
             <th>Name</th>
+            <th>Restaurant Rating</th>
             <th>&nbsp;&nbsp;&nbsp;&nbsp;Menu&nbsp;&nbsp;&nbsp;&nbsp;</th>
             <th>Remove Restaurant</th>
             <th>Is Recommended</th>
@@ -51,6 +52,7 @@ export default function AllRestaurantAdmin() {
         {restaurants.map((restaurant) => (
           <tr>
             <td>{restaurant['name']}</td>
+            <td>{restaurant['ratingValue']}</td>
             <td><button onClick={() => handleButtonClick(restaurant['restaurantId'])}className='btn1'>Menu</button></td>
             <td><button onClick={() => handleDeleteClick("restaurant/",restaurant["restaurantId"])}className='btn1'>Delete</button></td>
             <td>{String(restaurant['isRecommended'])}</td>

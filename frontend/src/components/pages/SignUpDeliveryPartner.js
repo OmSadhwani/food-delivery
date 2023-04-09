@@ -16,7 +16,7 @@ function SignUpDeliveryAgent() {
 
   const handleSubmit = (event) => {
     event.preventDefault()
-    console.log(inputs)
+    // console.log(inputs)
     fetch('/deliveryAgentSignup' , {
       method:"POST",
       body:JSON.stringify(inputs),

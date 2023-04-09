@@ -17,7 +17,7 @@ export default function AcceptDeliveryRequest() {
 
     const handleSuccess = (msg) => {
         setissuccess(msg)
-        console.log(msg)
+        // console.log(msg)
         if(msg=='Success'){
           window.location.href = '/moreDetailsDeliveryRequest/'.concat(id.id)
         }
@@ -29,14 +29,14 @@ export default function AcceptDeliveryRequest() {
     const handleSubmit = (event) => {
         event.preventDefault()
         inputs["id"]=id
-        console.log(inputs)
+        // console.log(inputs)
 
         fetch('/acceptDeliveryRequest/'.concat(id.id) , {
           method:"POST",
           body:JSON.stringify(inputs),
         }).then(response => response.json())
           .then(message => (
-            console.log(message),
+            // console.log(message),
             handleSuccess(message['message'])
               ))
               

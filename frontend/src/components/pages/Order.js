@@ -35,7 +35,7 @@ function Order(){
         const handleSuccess = (msg) => {
           setissuccess(msg)
           if(msg=='Success'){
-            console.log("Hello World")
+            // console.log("Hello World")
             window.location.href = '/orderDetails'
           }
           else{
@@ -45,13 +45,13 @@ function Order(){
       
         const handleSubmit = (event) => {
           event.preventDefault()
-          console.log(inputs)
+          // console.log(inputs)
           fetch('/order' , {
             method:"POST",
             body:JSON.stringify(inputs),
           }).then(response => response.json())
             .then(message => (
-              console.log(message),
+              // console.log(message),
                 handleSuccess(message['message'])
             ))    
         }

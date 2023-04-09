@@ -25,7 +25,7 @@ function SignUpRestaurant() {
 
   const handleSubmit = (event) => {
     event.preventDefault()
-    console.log(inputs)
+    // console.log(inputs)
     fetch('/restaurantSignup' , {
       method:"POST",
       body:JSON.stringify(inputs),

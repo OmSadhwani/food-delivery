@@ -33,6 +33,7 @@ export default function AllRestaurants() {
         <thead>
           <tr>
             <th>Restaurant Name</th>
+            <th>Restaurant Rating</th>
             <th>Restaurant Menu</th>
           </tr>
         </thead>
@@ -40,6 +41,7 @@ export default function AllRestaurants() {
           {restaurants.map((restaurant) => (
                       <tr>
                       <td>{restaurant['name']}</td>
+                      <td>{restaurant['ratingValue']}</td>
                       <td><button onClick={() => handleButtonClick(restaurant['restaurantId'])} className="btn1">Menu</button></td>
                     </tr>
           ))}

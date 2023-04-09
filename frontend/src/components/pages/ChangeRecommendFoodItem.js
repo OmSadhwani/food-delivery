@@ -14,7 +14,7 @@ export default function ChangeRecommendFoodItem(){
             
         }
         else{
-            console.log(msg)
+            // console.log(msg)
           
         }
       }
@@ -32,7 +32,7 @@ export default function ChangeRecommendFoodItem(){
           method:"GET"
         }).then(response => response.json())
           .then(message => (
-            console.log(message),
+            // console.log(message),
             handleSuccess(message['message'])
               ))},[])
 

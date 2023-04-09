@@ -12,7 +12,7 @@ export default function AllDeliveryAgents() {
           method:"GET",
         }).then(response => response.json())
           .then(message => (
-              console.log(message),
+              // console.log(message),
               setdeliveryAgents(message['deliveryAgentList'])
           ))},[])
   

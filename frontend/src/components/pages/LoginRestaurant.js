@@ -25,7 +25,7 @@ function LoginRestaurant() {
 
     const handleSubmit = (event) => {
         event.preventDefault()
-        console.log(inputs)
+        // console.log(inputs)
         fetch('/restaurantLogin' , {
           method:"POST",
           body:JSON.stringify(inputs),

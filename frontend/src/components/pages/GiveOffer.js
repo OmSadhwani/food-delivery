@@ -32,7 +32,7 @@ export default function GiveOffer(){
           method:"GET"
         }).then(response => response.json())
           .then(message => (
-            console.log(message),
+            // console.log(message),
             handleSuccess(message['message'])
               ))},[])
 

@@ -6,7 +6,7 @@ import NavbarA from '../NavbarA';
 
 function MenuAdmin(){
     const id = useParams()
-    console.log(id["id"])
+    // console.log(id["id"])
 
     const [menu,setmenu] = useState([]);
     const [issuccess,setissuccess] = useState('');
@@ -19,7 +19,7 @@ function MenuAdmin(){
         body:JSON.stringify(id),
       }).then(response => response.json())
         .then(message => (
-            console.log(message["menu"]),
+            // console.log(message["menu"]),
             setmenu(message["menu"])
         ))},[])
 
@@ -36,7 +36,7 @@ function MenuAdmin(){
         const handleSuccess = (msg) => {
           setissuccess(msg)
           if(msg=='Success'){
-            console.log("Hello World")
+            // console.log("Hello World")
             window.location.href = '/allRestaurantAdmin'
           }
           else{
@@ -49,13 +49,13 @@ function MenuAdmin(){
       
         const handleSubmit = (event) => {
           event.preventDefault()
-          console.log(inputs)
+          // console.log(inputs)
           fetch('/order' , {
             method:"POST",
             body:JSON.stringify(inputs),
           }).then(response => response.json())
             .then(message => (
-              console.log(message),
+              // console.log(message),
                 handleSuccess(message['message'])
             ))    
         }
