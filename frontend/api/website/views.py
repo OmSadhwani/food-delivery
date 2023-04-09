@@ -972,7 +972,8 @@ def changeRecommendFoodItem(restaurantId,foodItemId):
 def recommendedRestaurant():
     user=session['user']
     if not user['userType'] == 'customer':
-        return redirect(url_for('logout'))
+        return {"message":"error"}
+        # return redirect(url_for('logout'))
     restaurantList=[]
     tempRestaurantList=[]
     docs=db.collection('restaurant').stream()
@@ -980,7 +981,7 @@ def recommendedRestaurant():
         temp_dict=doc.to_dict()
         temp_dict['userId']= doc.id
         #temp_dict['pic'] = getImageURL(temp_dict['picSrc'])
-        temp_dict['areaName'] = db.collection('area').document(temp_dict['areaId']).get().to_dict()['name']
+        # temp_dict['areaName'] = db.collection('area').document(temp_dict['areaId']).get().to_dict()['name']
         temp_dict['ratingValue'] = db.collection('rating').document(temp_dict['ratingId']).get().to_dict()['rating']
         tempRestaurantList.append(temp_dict)
     for restaurant in tempRestaurantList:
@@ -989,7 +990,7 @@ def recommendedRestaurant():
     session['restaurantList']=restaurantList
     session.modified = True
 
-    return render_template('recommendedRestaurant.html', restaurantList=restaurantList, user=user)
+    return {"restaurantList":restaurantList}
 
 # This is the front page for the create offer module, and show all the offer created, and a button to create new offers
 @views.route('/createOffer')

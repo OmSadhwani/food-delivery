@@ -24,6 +24,16 @@ function NavbarC() {
   useEffect(() => {
     showButton();
   }, []);
+  
+
+  const handlelogout = (event) => {
+    {fetch('/logout' , {
+      method:"GET",
+    }).then(response => response.json())
+      .then(message => (
+        window.location.href='/'
+      ))}
+  } 
 
   window.addEventListener('resize', showButton);
 
@@ -34,7 +44,9 @@ function NavbarC() {
           <Link to='/customerDashboard' className='navbar-logo' onClick={closeMobileMenu}>
             DashBoard &nbsp; <RxDashboard/>
           </Link>
+
         </div>
+        <button onClick={handlelogout} className='btn1' style={{width:'20%'}}>Logout</button>
       </nav>
     </>
   );

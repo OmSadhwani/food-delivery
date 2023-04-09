@@ -395,4 +395,4 @@ def managementLogin():
 @Auth.route('/logout')
 def logout():
     session.clear()
-    return redirect(url_for('views.home'))
+    return {'message' : 'Success'}

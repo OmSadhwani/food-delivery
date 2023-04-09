@@ -25,6 +25,15 @@ function NavbarD() {
     showButton();
   }, []);
 
+  const handlelogout = (event) => {
+    {fetch('/logout' , {
+      method:"GET",
+    }).then(response => response.json())
+      .then(message => (
+        window.location.href='/'
+      ))}
+  } 
+
   window.addEventListener('resize', showButton);
 
   return (
@@ -35,6 +44,7 @@ function NavbarD() {
             DashBoard &nbsp; <RxDashboard/>
           </Link>
         </div>
+        <button onClick={handlelogout} className='btn1' style={{width:'20%'}}>Logout</button>
       </nav>
     </>
   );

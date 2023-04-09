@@ -47,6 +47,7 @@ import MenuAdmin from './components/pages/MenuAdmin';
 import ChangeRecommendFoodItem from './components/pages/ChangeRecommendFoodItem';
 import AllOffer from './components/pages/AllOffer';
 import GiveOffer from './components/pages/GiveOffer';
+import RecommendedRestaurant from './components/pages/RecommendedRestaurant'
 
 function App() {
   // const [initialData, setInitialData] = useState([{}])
@@ -109,6 +110,7 @@ function App() {
           <Route exact path='/allOffer/:id' element={<AllOffer/>} />
           <Route exact path='/changeRecommendFoodItem/:rid/:fid' element={<ChangeRecommendFoodItem/>} />
           <Route exact path='/giveOffer/:cid/:oid' element={<GiveOffer/>} />
+          <Route exact path='/recommendedRestaurant' element={<RecommendedRestaurant/>} />
 
         </Routes>
       </Router>
